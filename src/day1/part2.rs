@@ -7,13 +7,17 @@ fn main() {
 
 fn puzzle(input: &str) -> u32 {
     println!("test case {}", input);
-    let input: Vec<char> = input.chars().filter(|&c| c >= '0' && c <= '9').collect();
+    let input: Vec<u32> = input
+        .chars()
+        .filter(|c| c.is_digit(10))
+        .map(|c| c.to_digit(10).unwrap())
+        .collect();
     let offset_input = input.iter().cycle().skip(input.len() / 2);
 
-    let mut sum = 0;
-    for (a, b) in input.iter().zip(offset_input) {
+    let mut sum: u32 = 0;
+    for (&a, &b) in input.iter().zip(offset_input) {
         if a == b {
-            sum += a.to_digit(10).unwrap();
+            sum += a;
         }
     }
     sum

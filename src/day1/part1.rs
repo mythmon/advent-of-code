@@ -6,13 +6,19 @@ fn main() {
 }
 
 fn puzzle(input: &str) -> u32 {
-    let mut input: Vec<char> = input.chars().filter(|&c| c >= '0' && c <= '9').collect();
+    let mut input: Vec<u32> = input
+        .chars()
+        .filter(|c| c.is_digit(10))
+        .map(|c| c.to_digit(10).unwrap())
+        .collect();
+
     let first = input.first().unwrap().clone();
     input.push(first);
+
     let mut sum = 0;
-    for (a, b) in input.iter().zip(&input[1..]) {
+    for (&a, &b) in input.iter().zip(&input[1..]) {
         if a == b {
-            sum += a.to_digit(10).unwrap();
+            sum += a;
         }
     }
     sum
