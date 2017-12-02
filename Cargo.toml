@@ -1,9 +1,14 @@
 [package]
-name = "advent2017"
+name = "advent"
 version = "0.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 
 [dependencies]
+rand = "*"
+
+[lib]
+name = "advent"
+path = "src/lib.rs"
 
 [[bin]]
 name = "day1_part1"
@@ -12,3 +17,11 @@ path = "src/day1/part1.rs"
 [[bin]]
 name = "day1_part2"
 path = "src/day1/part2.rs"
+
+[[bin]]
+name = "day2_part1"
+path = "src/day2/part1.rs"
+
+[[bin]]
+name = "day2_part2"
+path = "src/day2/part2.rs"
