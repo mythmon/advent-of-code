@@ -1,4 +1,5 @@
 #![feature(test)]
+#![feature(conservative_impl_trait)]
 extern crate test;
 extern crate rand;
 
@@ -26,12 +27,20 @@ where
     }
 }
 
+pub fn odds() -> impl Iterator<Item=u32> {
+    (1..).filter(|n| n % 2 == 1)
+}
+
+pub fn evens() -> impl Iterator<Item=u32> {
+    (0..).filter(|n| n % 2 == 0)
+}
+
 #[cfg(test)]
 mod tests {
     use test::{Bencher, black_box};
     use rand::{thread_rng, Rng};
 
-    use super::extremes;
+    use super::*;
 
     #[test]
     fn test_extremes() {
@@ -55,4 +64,15 @@ mod tests {
         });
     }
 
+    #[test]
+    fn test_odds() {
+        let xs: Vec<u32> = odds().take(5).collect();
+        assert_eq!(xs, vec![1, 3, 5, 7, 9]);
+    }
+
+    #[test]
+    fn test_evens() {
+        let xs: Vec<u32> = evens().take(5).collect();
+        assert_eq!(xs, vec![0, 2, 4, 6, 8]);
+    }
 }
