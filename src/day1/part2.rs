@@ -1,7 +1,7 @@
 use std::iter::Iterator;
 
 fn main() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     println!("{}", puzzle(input));
 }
 
@@ -34,6 +34,6 @@ fn examples() {
 
 #[test]
 fn correct_solution() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     assert_eq!(puzzle(input), 950);
 }

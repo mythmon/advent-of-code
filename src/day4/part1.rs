@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn main() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     println!("{}", puzzle(input));
 }
 
@@ -47,6 +47,6 @@ fn test_puzzle_example() {
 
 #[test]
 fn test_correct_answer() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     assert_eq!(puzzle(input), 466);
 }

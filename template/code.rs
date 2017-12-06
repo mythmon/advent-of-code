@@ -4,7 +4,7 @@ fn main() {
 }
 
 fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     input
 }
 

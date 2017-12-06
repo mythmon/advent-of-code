@@ -1,7 +1,7 @@
 #![feature(range_contains)]
 
 fn main() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     let input: Vec<i32> = input.lines().map(|l| l.parse().unwrap()).collect();
     println!("{}", puzzle(input));
 }
@@ -33,7 +33,7 @@ fn test_example() {
 
 #[test]
 fn test_correct_answer() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     let input: Vec<i32> = input.lines().map(|l| l.parse().unwrap()).collect();
     assert_eq!(puzzle(input), 27763113);
 }

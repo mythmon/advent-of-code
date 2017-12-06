@@ -3,7 +3,7 @@ extern crate advent;
 use advent::extremes;
 
 fn main() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     println!("{}", puzzle(input));
 }
 
@@ -34,6 +34,6 @@ fn test_examples() {
 
 #[test]
 fn test_correct_answer() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     puzzle(input);
 }

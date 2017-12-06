@@ -1,7 +1,7 @@
 use std::collections::{HashSet, HashMap};
 
 fn main() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     println!("{}", puzzle(input));
 }
 
@@ -44,7 +44,7 @@ fn letter_counts(s: &str) -> HashMap<char, usize> {
 
 #[test]
 fn test_correct_answer() {
-    let input: &'static str = include_str!("input.txt");
+    let input: &'static str = include_str!("input");
     assert_eq!(puzzle(input), 251);
 }
 

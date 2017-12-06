@@ -34,5 +34,5 @@ if ! grep "day${DAY}_part1" "${DIR}/Cargo.toml" > /dev/null; then
 fi
 
 wget "https://adventofcode.com/2017/day/${DAY}/input" \
-    -q -O "${DAY_DIR}/input.txt" \
-    || (echo "Error: could not fetch input"; rm -f "${DAY_DIR}/input.txt")
+    -q -P "${DAY_DIR}" \
+    || echo "Error: could not fetch input"
