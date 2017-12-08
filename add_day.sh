@@ -17,11 +17,14 @@ DAY=$1
 DAY_DIR="${DIR}/src/day${DAY}/"
 
 mkdir -p "${DAY_DIR}"
+if [[ ! -e "${DAY_DIR}/part2.rs" ]]; then
+    if [[ -e "${DAY_DIR}/part1.rs" ]]; then
+        cp "${DAY_DIR}/part1.rs" "${DAY_DIR}/part2.rs"
+    fi
+fi
+
 if [[ ! -e "${DAY_DIR}/part1.rs" ]]; then
     cp "${DIR}/template/code.rs" "${DAY_DIR}/part1.rs"
-fi
-if [[ ! -e "${DAY_DIR}/part2.rs" ]]; then
-    cp "${DIR}/template/code.rs" "${DAY_DIR}/part2.rs"
 fi
 
 if ! grep "day${DAY}_part1" "${DIR}/Cargo.toml" > /dev/null; then
@@ -34,5 +37,6 @@ if ! grep "day${DAY}_part1" "${DIR}/Cargo.toml" > /dev/null; then
 fi
 
 wget "https://adventofcode.com/2017/day/${DAY}/input" \
-    -q -P "${DAY_DIR}" \
+     -q -P "${DAY_DIR}" \
+     --header "Cookie: session=$ADVENT_COOKIE" \
     || echo "Error: could not fetch input"
