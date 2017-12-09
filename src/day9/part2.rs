@@ -1,3 +1,7 @@
+extern crate advent;
+
+use advent::day9::ParseState;
+
 fn main() {
     let input = get_input();
     println!("{}", puzzle(input));
@@ -50,13 +54,6 @@ fn puzzle(input: &str) -> u32 {
     assert_eq!(state_stack.len(), 0);
 
     garbage_count
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum ParseState {
-    InGroup(u32),
-    Garbage,
-    Cancel,
 }
 
 

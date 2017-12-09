@@ -5,6 +5,9 @@ extern crate rand;
 
 use std::cmp;
 
+pub mod day8;
+pub mod day9;
+
 /// Find the lowest and highest value in `items`.
 pub fn extremes<T>(items: T) -> Option<(T::Item, T::Item)>
 where
