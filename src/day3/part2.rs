@@ -1,6 +1,6 @@
 #![feature(conservative_impl_trait)]
-use std::ops::{Add, AddAssign};
 use std::collections::HashMap;
+use std::ops::{Add, AddAssign};
 
 const INPUT: u32 = 289326;
 

@@ -1,8 +1,8 @@
 extern crate advent;
 
-use std::collections::HashMap;
-use std::cmp;
 use advent::day8::{Instruction, Operation};
+use std::cmp;
+use std::collections::HashMap;
 
 fn main() {
     let input = get_input();

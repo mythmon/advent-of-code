@@ -1,7 +1,7 @@
 #![feature(conservative_impl_trait)]
-use std::str::FromStr;
 use std::collections::HashMap;
 use std::rc::{Rc, Weak};
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();
@@ -118,11 +118,10 @@ impl Node {
                 normal_weight = Some(k);
             }
         }
-        odd_one_out
-            .unwrap()[0]
-            .upgrade()
-            .unwrap()
-            .make_equal_to(*normal_weight.unwrap())
+        odd_one_out.unwrap()[0].upgrade().unwrap().make_equal_to(
+            *normal_weight
+                .unwrap(),
+        )
     }
 
     fn make_equal_to(&self, target: u32) -> u32 {

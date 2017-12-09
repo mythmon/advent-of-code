@@ -2,7 +2,10 @@ use std::collections::HashMap;
 
 fn main() {
     let input: &'static str = include_str!("input");
-    let input = input.split_whitespace().map(|s| s.parse().unwrap()).collect();
+    let input = input
+        .split_whitespace()
+        .map(|s| s.parse().unwrap())
+        .collect();
     println!("{}", puzzle(input));
 }
 
@@ -50,6 +53,9 @@ fn test_example() {
 #[test]
 fn test_correct_answer() {
     let input: &'static str = include_str!("input");
-    let input = input.split_whitespace().map(|s| s.parse().unwrap()).collect();
+    let input = input
+        .split_whitespace()
+        .map(|s| s.parse().unwrap())
+        .collect();
     assert_eq!(puzzle(input), 2765);
 }

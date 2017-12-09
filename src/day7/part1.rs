@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use std::collections::HashMap;
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();
@@ -33,12 +33,25 @@ impl FromStr for NodeDesc {
         let parts: Vec<String> = input.split_whitespace().map(|s| String::from(s)).collect();
 
         if parts.len() == 2 {
-            Ok(NodeDesc { name: parts[0].clone(), blocks: vec![] })
+            Ok(NodeDesc {
+                name: parts[0].clone(),
+                blocks: vec![],
+            })
         } else if parts.len() >= 4 {
-            let blocks: Vec<String> = parts[3..].iter().map(|s| String::from(s.trim_right_matches(","))).collect();
-            Ok(NodeDesc { name: parts[0].clone(), blocks: blocks })
+            let blocks: Vec<String> = parts[3..]
+                .iter()
+                .map(|s| String::from(s.trim_right_matches(",")))
+                .collect();
+            Ok(NodeDesc {
+                name: parts[0].clone(),
+                blocks: blocks,
+            })
         } else {
-            panic!(format!("Unexpected number of parts in {}: {}", input, parts.len()));
+            panic!(format!(
+                "Unexpected number of parts in {}: {}",
+                input,
+                parts.len()
+            ));
         }
     }
 }

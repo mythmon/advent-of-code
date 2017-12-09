@@ -1,4 +1,4 @@
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 fn main() {
     let input: &'static str = include_str!("input");
@@ -18,7 +18,7 @@ fn is_valid(passphrase: &str) -> bool {
             return false;
         }
         seen_words.insert(word1);
-        for word2 in &words[(idx+1)..] {
+        for word2 in &words[(idx + 1)..] {
             if is_anagram(word1, word2) {
                 return false;
             }
@@ -75,6 +75,7 @@ fn test_valid_example_5() {
 
 #[test]
 fn test_puzzle_example() {
-    let input = "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi oooo\noiii ioii iioi iiio";
+    let input = "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi \
+                 oooo\noiii ioii iioi iiio";
     assert_eq!(puzzle(input), 3);
 }

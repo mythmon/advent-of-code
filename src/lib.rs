@@ -30,18 +30,18 @@ where
     }
 }
 
-pub fn odds() -> impl Iterator<Item=u32> {
+pub fn odds() -> impl Iterator<Item = u32> {
     (1..).filter(|n| n % 2 == 1)
 }
 
-pub fn evens() -> impl Iterator<Item=u32> {
+pub fn evens() -> impl Iterator<Item = u32> {
     (0..).filter(|n| n % 2 == 0)
 }
 
 #[cfg(test)]
 mod tests {
+    use rand::{Rng, thread_rng};
     use test::{Bencher, black_box};
-    use rand::{thread_rng, Rng};
 
     use super::*;
 
@@ -62,9 +62,7 @@ mod tests {
 
         assert_eq!(Some((min, max)), extremes(&inp));
 
-        b.iter(|| {
-            black_box(extremes(&inp));
-        });
+        b.iter(|| { black_box(extremes(&inp)); });
     }
 
     #[test]
