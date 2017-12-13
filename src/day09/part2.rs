@@ -1,6 +1,6 @@
 extern crate advent;
 
-use advent::day9::ParseState;
+use advent::day09::ParseState;
 
 fn main() {
     let input = get_input();

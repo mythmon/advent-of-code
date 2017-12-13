@@ -1,7 +1,6 @@
 extern crate advent;
 
-use advent::day8::{Instruction, Operation};
-use std::cmp;
+use advent::day08::{Instruction, Operation};
 use std::collections::HashMap;
 
 fn main() {
@@ -20,31 +19,27 @@ fn parse_input(input: &str) -> Vec<Instruction> {
 
 fn puzzle(input: Vec<Instruction>) -> isize {
     let mut registers = HashMap::new();
-    let mut highest_ever = 0;
     for instr in input {
         let condition_target = *registers.get(&instr.condition.register).unwrap_or(&0);
         if instr.condition.matches(condition_target) {
-            let reg = registers.entry(instr.register).or_insert(0);
             match instr.op {
-                Operation::Inc => *reg += instr.amount,
-                Operation::Dec => *reg -= instr.amount,
+                Operation::Inc => *registers.entry(instr.register).or_insert(0) += instr.amount,
+                Operation::Dec => *registers.entry(instr.register).or_insert(0) -= instr.amount,
             }
-            highest_ever = cmp::max(highest_ever, *reg);
         }
     }
-    highest_ever
+    *registers.values().max().unwrap()
+}
+
+#[test]
+fn test_example() {
+    let input = "b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10";
+    let input = parse_input(input);
+    assert_eq!(puzzle(input), 1);
 }
 
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    assert_eq!(puzzle(input), 7491);
-}
-
-#[test]
-fn test_dec_can_affect_highest_ever() {
-    // dec can raise the value of a register, which should affect
-    // highest ever.
-    let input = parse_input("a dec -1 if a == 0");
-    assert_eq!(puzzle(input), 1);
+    assert_eq!(puzzle(input), 5221);
 }

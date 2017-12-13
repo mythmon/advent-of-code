@@ -11,76 +11,76 @@ name = "advent"
 path = "src/lib.rs"
 
 [[bin]]
-name = "day1_part1"
-path = "src/day1/part1.rs"
+name = "day01_part1"
+path = "src/day01/part1.rs"
 
 [[bin]]
-name = "day1_part2"
-path = "src/day1/part2.rs"
+name = "day01_part2"
+path = "src/day01/part2.rs"
 
 [[bin]]
-name = "day2_part1"
-path = "src/day2/part1.rs"
+name = "day02_part1"
+path = "src/day02/part1.rs"
 
 [[bin]]
-name = "day2_part2"
-path = "src/day2/part2.rs"
+name = "day02_part2"
+path = "src/day02/part2.rs"
 
 [[bin]]
-name = "day3_part1"
-path = "src/day3/part1.rs"
+name = "day03_part1"
+path = "src/day03/part1.rs"
 
 [[bin]]
-name = "day3_part2"
-path = "src/day3/part2.rs"
+name = "day03_part2"
+path = "src/day03/part2.rs"
 
 [[bin]]
-name = "day4_part1"
-path = "src/day4/part1.rs"
+name = "day04_part1"
+path = "src/day04/part1.rs"
 
 [[bin]]
-name = "day4_part2"
-path = "src/day4/part2.rs"
+name = "day04_part2"
+path = "src/day04/part2.rs"
 
 [[bin]]
-name = "day5_part1"
-path = "src/day5/part1.rs"
+name = "day05_part1"
+path = "src/day05/part1.rs"
 
 [[bin]]
-name = "day5_part2"
-path = "src/day5/part2.rs"
+name = "day05_part2"
+path = "src/day05/part2.rs"
 
 [[bin]]
-name = "day6_part1"
-path = "src/day6/part1.rs"
+name = "day06_part1"
+path = "src/day06/part1.rs"
 
 [[bin]]
-name = "day6_part2"
-path = "src/day6/part2.rs"
+name = "day06_part2"
+path = "src/day06/part2.rs"
 
 [[bin]]
-name = "day7_part1"
-path = "src/day7/part1.rs"
+name = "day07_part1"
+path = "src/day07/part1.rs"
 
 [[bin]]
-name = "day7_part2"
-path = "src/day7/part2.rs"
+name = "day07_part2"
+path = "src/day07/part2.rs"
 
 [[bin]]
-name = "day8_part1"
-path = "src/day8/part1.rs"
+name = "day08_part1"
+path = "src/day08/part1.rs"
 
 [[bin]]
-name = "day8_part2"
-path = "src/day8/part2.rs"
+name = "day08_part2"
+path = "src/day08/part2.rs"
 
 [[bin]]
-name = "day9_part1"
-path = "src/day9/part1.rs"
+name = "day09_part1"
+path = "src/day09/part1.rs"
 
 [[bin]]
-name = "day9_part2"
-path = "src/day9/part2.rs"
+name = "day09_part2"
+path = "src/day09/part2.rs"
 
 [[bin]]
 name = "day10_part1"
