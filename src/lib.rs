@@ -4,9 +4,12 @@ extern crate test;
 extern crate rand;
 
 use std::cmp;
+use std::collections::HashSet;
+use std::hash::Hash;
 
 pub mod day08;
 pub mod day09;
+pub mod day10;
 pub mod day11;
 
 /// Find the lowest and highest value in `items`.
