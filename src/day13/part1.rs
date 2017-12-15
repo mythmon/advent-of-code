@@ -1,6 +1,6 @@
+use std::cmp;
 use std::collections::HashMap;
 use std::str::FromStr;
-use std::cmp;
 
 fn main() {
     let input = get_input();

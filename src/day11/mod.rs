@@ -90,24 +90,12 @@ impl FromStr for HexDir {
 impl Into<HexVec> for HexDir {
     fn into(self) -> HexVec {
         match self {
-            HexDir::North => {
-                (0, 1, -1).into()
-            }
-            HexDir::NorthEast => {
-                (1, 0, -1).into()
-            }
-            HexDir::NorthWest => {
-                (-1, 1, 0).into()
-            }
-            HexDir::South => {
-                (0, -1, 1).into()
-            }
-            HexDir::SouthEast => {
-                (1, -1, 0).into()
-            }
-            HexDir::SouthWest => {
-                (-1, 0, 1).into()
-            }
+            HexDir::North => (0, 1, -1).into(),
+            HexDir::NorthEast => (1, 0, -1).into(),
+            HexDir::NorthWest => (-1, 1, 0).into(),
+            HexDir::South => (0, -1, 1).into(),
+            HexDir::SouthEast => (1, -1, 0).into(),
+            HexDir::SouthWest => (-1, 0, 1).into(),
         }
     }
 }
