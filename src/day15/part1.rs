@@ -11,18 +11,25 @@ fn get_input() -> &'static str {
 }
 
 fn puzzle(input: &str, iterations: usize) -> usize {
-    let initial_values: Vec<u64> = input.lines().filter_map(|l| {
-        let parts: Vec<&str> = l.split_whitespace().collect();
-        assert_eq!(parts.len(), 5);
-        parts[4].parse().ok()
-    }).collect();
+    let initial_values: Vec<u64> = input
+        .lines()
+        .filter_map(|l| {
+            let parts: Vec<&str> = l.split_whitespace().collect();
+            assert_eq!(parts.len(), 5);
+            parts[4].parse().ok()
+        })
+        .collect();
 
     assert_eq!(initial_values.len(), 2);
 
     let generator_a = Generator::new(initial_values[0], 16807);
     let generator_b = Generator::new(initial_values[1], 48271);
 
-    generator_a.zip(generator_b).take(iterations).filter(|&(a, b)| (a & 0xFFFF) == (b & 0xFFFF)).count()
+    generator_a
+        .zip(generator_b)
+        .take(iterations)
+        .filter(|&(a, b)| (a & 0xFFFF) == (b & 0xFFFF))
+        .count()
 }
 
 struct Generator {
@@ -55,13 +62,10 @@ impl Iterator for Generator {
 fn test_example_a() {
     let g = Generator::new(65, 16807);
     let vals: Vec<u64> = g.take(5).collect();
-    assert_eq!(vals, vec![
-        1092455,
-        1181022009,
-        245556042,
-        1744312007,
-        1352636452,
-    ]);
+    assert_eq!(
+        vals,
+        vec![1092455, 1181022009, 245556042, 1744312007, 1352636452]
+    );
 }
 
 
@@ -69,13 +73,10 @@ fn test_example_a() {
 fn test_example_b() {
     let g = Generator::new(8921, 48271);
     let vals: Vec<u64> = g.take(5).collect();
-    assert_eq!(vals, vec![
-        430625591,
-        1233683848,
-        1431495498,
-        137874439,
-        285222916,
-    ]);
+    assert_eq!(
+        vals,
+        vec![430625591, 1233683848, 1431495498, 137874439, 285222916]
+    );
 }
 
 #[test]
