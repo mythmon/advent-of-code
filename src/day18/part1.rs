@@ -62,7 +62,6 @@ impl Machine {
                             ((self.program_counter as i64) + self.value(&a2) - 1) as usize;
                     }
                 }
-                _ => panic!(format!("Unexpected instruction {:?}", instr)),
             }
             self.program_counter += 1;
             assert!(self.program_counter < self.instructions.len());
