@@ -1,4 +1,3 @@
-#![feature(match_default_bindings)]
 #![feature(slice_patterns)]
 
 use std::collections::HashMap;

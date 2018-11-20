@@ -1,4 +1,3 @@
-#![feature(match_default_bindings)]
 #![feature(slice_patterns)]
 
 extern crate advent;

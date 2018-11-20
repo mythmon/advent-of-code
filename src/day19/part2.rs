@@ -1,4 +1,3 @@
-#![feature(inclusive_range_syntax)]
 #![feature(range_contains)]
 use std::ops::{Add, AddAssign};
 
@@ -58,7 +57,7 @@ fn puzzle(input: &str) -> usize {
                     panic!("couldn't find anywhere to go");
                 }
             }
-            c if ('A' ..= 'Z').contains(c) => (),
+            c if ('A' ..= 'Z').contains(&c) => (),
             ' ' => break,
             c => panic!(format!("unexpected character '{}'", c)),
         }

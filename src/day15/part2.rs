@@ -40,15 +40,6 @@ struct Generator {
 }
 
 impl Generator {
-    fn new(initial_value: u64, factor: u64) -> Self {
-        Self {
-            factor: factor,
-            divisor: 2147483647,
-            last_value: initial_value,
-            multiple_of: 1,
-        }
-    }
-
     fn with_multiple_of(initial_value: u64, factor: u64, multiple_of: u64) -> Self {
         Self {
             factor: factor,
@@ -108,5 +99,5 @@ fn test_example_long() {
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    assert_eq!(puzzle(input), 336);
+    assert_eq!(puzzle(input, 5_000_000), 336);
 }

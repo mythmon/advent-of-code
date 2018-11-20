@@ -74,7 +74,7 @@ impl KnotGrid {
         let (row_idx, col_idx) = index.into();
         let row = &self.hash_rows[row_idx];
         let cell = row[col_idx / 8];
-        assert!((0..256).contains(cell));
+        assert!((0..256).contains(&cell));
         let cell_idx = 7 - (col_idx % 8);
         cell >> cell_idx & 1 == 1
     }

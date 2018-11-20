@@ -81,7 +81,7 @@ impl Machine {
     pub fn run(&mut self) {
         let l =self.instructions.len();
         let mut input = VecDeque::new();
-        while (0..l).contains(self.program_counter) {
+        while (0..l).contains(&self.program_counter) {
             let (blocked, _) = self.step(&mut input);
             if blocked {
                 break;

@@ -1,4 +1,3 @@
-#![feature(conservative_impl_trait)]
 use std::collections::HashMap;
 use std::rc::{Rc, Weak};
 use std::str::FromStr;

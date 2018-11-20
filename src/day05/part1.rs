@@ -12,7 +12,7 @@ fn puzzle(mut input: Vec<i32>) -> u32 {
 
     let bounds = 0..(input.len() as i32);
 
-    while bounds.contains(pc) {
+    while bounds.contains(&pc) {
         steps += 1;
         let next = pc + input[pc as usize];
         input[pc as usize] += 1;

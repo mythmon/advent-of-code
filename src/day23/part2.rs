@@ -1,7 +1,5 @@
-#![feature(match_default_bindings)]
 #![feature(slice_patterns)]
 #![feature(iterator_step_by)]
-#![feature(inclusive_range_syntax)]
 
 extern crate advent;
 

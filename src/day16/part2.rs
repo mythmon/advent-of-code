@@ -1,5 +1,3 @@
-#![feature(inclusive_range_syntax)]
-#![feature(slice_rotate)]
 
 #[macro_use] extern crate lazy_static;
 extern crate regex;
@@ -61,7 +59,7 @@ impl Instruction {
         let l = dancers.len();
         match self {
             &Instruction::Spin(x) => {
-                dancers.rotate(l - x);
+                dancers.rotate_left(l - x);
             },
             &Instruction::Exchange(a_idx, b_idx) => {
                 dancers.swap(a_idx, b_idx);
@@ -106,12 +104,6 @@ fn test_example_series() {
     assert_eq!(dancers, "eabdc".bytes().collect::<Vec<u8>>());
     Instruction::Partner(b'e', b'b').exec(&mut dancers);
     assert_eq!(dancers, "baedc".bytes().collect::<Vec<u8>>());
-}
-
-#[test]
-fn test_example() {
-    let input = "s1,x3/4,pe/b";
-    assert_eq!(puzzle(5, input), "baedc");
 }
 
 #[test]

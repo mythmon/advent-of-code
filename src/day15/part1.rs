@@ -94,5 +94,5 @@ fn test_example_long() {
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    assert_eq!(puzzle(input), 650);
+    assert_eq!(puzzle(input, 40_000_000), 650);
 }

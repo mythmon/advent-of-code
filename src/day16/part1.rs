@@ -1,6 +1,3 @@
-#![feature(inclusive_range_syntax)]
-#![feature(slice_rotate)]
-
 #[macro_use] extern crate lazy_static;
 extern crate regex;
 
@@ -39,7 +36,7 @@ impl Instruction {
         let l = dancers.len();
         match self {
             &Instruction::Spin(x) => {
-                dancers.rotate(l - x);
+                dancers.rotate_left(l - x);
             },
             &Instruction::Exchange(a_idx, b_idx) => {
                 dancers.swap(a_idx, b_idx);

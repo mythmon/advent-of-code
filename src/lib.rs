@@ -1,6 +1,4 @@
 #![feature(test)]
-#![feature(conservative_impl_trait)]
-#![feature(match_default_bindings)]
 #![feature(slice_patterns)]
 #![feature(range_contains)]
 
