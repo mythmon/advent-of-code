@@ -128,9 +128,7 @@ fn test_example() {
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    // assert_eq!(puzzle(input), 8148);
-    assert!(puzzle(input) < 1265);
-    assert!(puzzle(input) > 1154);
+    assert_eq!(puzzle(input), 1180);
 }
 
 #[test]

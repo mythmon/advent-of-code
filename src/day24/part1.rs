@@ -110,8 +110,7 @@ fn test_example() {
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    puzzle(input);
-    // assert_eq!(puzzle(input), 42);
+    assert_eq!(puzzle(input), 1906);
 }
 
 #[test]

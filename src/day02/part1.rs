@@ -35,5 +35,5 @@ fn test_examples() {
 #[test]
 fn test_correct_answer() {
     let input: &'static str = include_str!("input");
-    puzzle(input);
+    assert_eq!(puzzle(input), 34_581);
 }

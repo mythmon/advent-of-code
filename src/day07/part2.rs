@@ -211,7 +211,6 @@ fn test_example() {
     // ugml (68) -> gyxo, ebii, jptl
     // gyxo (61)
     // cntj (57)
-    //
 
     let input = vec![
         NodeDesc {

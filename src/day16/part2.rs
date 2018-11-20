@@ -48,6 +48,7 @@ fn puzzle(num_dancers: usize, input: &str) -> String {
     String::from_utf8(dancers).unwrap()
 }
 
+#[derive(Debug)]
 enum Instruction {
     Spin(usize),
     Exchange(usize, usize),
@@ -110,5 +111,5 @@ fn test_example_series() {
 fn test_correct_answer() {
     let input = get_input();
     puzzle(16, input);
-    // assert_eq!(puzzle(input), 42);
+    assert_eq!(puzzle(16, input), "fjpmholcibdgeakn");
 }

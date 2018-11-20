@@ -38,9 +38,5 @@ fn test_part_1() {
 
 #[test]
 fn test_correct_answer() {
-    let v = puzzle(1);
-    assert_ne!(v, 1);
-    assert!(v < 6407);
-    assert_ne!(v, 1454);
-    assert_ne!(v, 1455);
+    assert_eq!(puzzle(1), 905);
 }

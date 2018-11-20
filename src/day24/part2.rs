@@ -104,8 +104,7 @@ impl FromStr for Part {
 #[test]
 fn test_correct_answer() {
     let input = get_input();
-    puzzle(input);
-    // assert_eq!(puzzle(input), 42);
+    assert_eq!(puzzle(input), 1824);
 }
 
 #[test]
