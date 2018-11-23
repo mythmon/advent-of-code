@@ -1,9 +1,5 @@
-#![feature(test)]
 #![feature(slice_patterns)]
 #![feature(range_contains)]
-
-extern crate test;
-extern crate rand;
 
 use std::cmp;
 
@@ -45,9 +41,6 @@ pub fn evens() -> impl Iterator<Item = u32> {
 
 #[cfg(test)]
 mod tests {
-    use rand::{Rng, thread_rng};
-    use test::{Bencher, black_box};
-
     use super::*;
 
     #[test]
@@ -56,18 +49,6 @@ mod tests {
         assert_eq!(extremes(empty), None);
         assert_eq!(extremes(vec![1]), Some((1, 1)));
         assert_eq!(extremes(vec![0, 3, 1]), Some((0, 3)));
-    }
-
-    #[bench]
-    fn bench_extremes(b: &mut Bencher) {
-        let mut rng = thread_rng();
-        let inp: Vec<u8> = rng.gen_iter().take(1000).collect();
-        let min = inp.iter().min().unwrap();
-        let max = inp.iter().max().unwrap();
-
-        assert_eq!(Some((min, max)), extremes(&inp));
-
-        b.iter(|| { black_box(extremes(&inp)); });
     }
 
     #[test]

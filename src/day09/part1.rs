@@ -9,7 +9,7 @@ fn get_input() -> &'static str {
 }
 
 fn puzzle(input: &str) -> u32 {
-    use ParseState::*;
+    use crate::ParseState::*;
 
     let mut total_score = 0;
     let mut state_stack = vec![];

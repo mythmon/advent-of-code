@@ -166,7 +166,7 @@ impl FromStr for Grid {
 }
 
 impl fmt::Display for Grid {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         for row in self.cells.iter() {
             for cell in row.iter() {
                 if *cell {

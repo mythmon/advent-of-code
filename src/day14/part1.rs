@@ -1,5 +1,3 @@
-extern crate advent;
-
 use advent::day10::KnotHash;
 
 fn main() {

@@ -1,5 +1,3 @@
-extern crate advent;
-
 use advent::day09::ParseState;
 
 fn main() {
@@ -13,7 +11,7 @@ fn get_input() -> &'static str {
 }
 
 fn puzzle(input: &str) -> u32 {
-    use ParseState::*;
+    use crate::ParseState::*;
 
     let mut garbage_count = 0;
     let mut state_stack = vec![];

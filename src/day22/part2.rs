@@ -32,7 +32,7 @@ enum NodeState {
 }
 
 impl fmt::Display for NodeState {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             NodeState::Clean => write!(formatter, ".")?,
             NodeState::Weakened => write!(formatter, "W")?,
@@ -109,7 +109,7 @@ impl FromStr for Sporifica {
 }
 
 impl fmt::Display for Sporifica {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut min_x = None;
         let mut max_x = None;
         let mut min_y = None;

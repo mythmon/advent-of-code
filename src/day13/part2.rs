@@ -1,8 +1,3 @@
-#![feature(test)]
-#![feature(iterator_step_by)]
-
-extern crate test;
-
 use std::collections::HashSet;
 use std::str::FromStr;
 
@@ -98,8 +93,6 @@ impl FromStr for Scanner {
 
 #[cfg(test)]
 mod tests {
-    use test::{Bencher, black_box};
-
     use super::*;
 
     #[test]
@@ -112,11 +105,5 @@ mod tests {
     fn test_correct_answer() {
         let input = get_input();
         assert_eq!(puzzle(input), 3876272);
-    }
-
-    #[bench]
-    fn bench_puzzle(b: &mut Bencher) {
-        let input = "0: 3\n1: 2\n4: 4\n6: 4\n";
-        b.iter(|| black_box(puzzle(input)));
     }
 }

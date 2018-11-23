@@ -28,7 +28,7 @@ fn puzzle(mut input: Vec<usize>) -> usize {
             }
         }
 
-        let mut remaining = max;
+        let remaining = max;
         input[max_idx] = 0;
         for idx in (max_idx + 1)..(max_idx + remaining + 1) {
             let wrapped_idx = idx % input.len();

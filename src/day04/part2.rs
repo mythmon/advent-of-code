@@ -35,7 +35,7 @@ fn is_anagram(a: &str, b: &str) -> bool {
 fn letter_counts(s: &str) -> HashMap<char, usize> {
     let mut counts = HashMap::new();
     for c in s.chars() {
-        let mut entry = counts.entry(c).or_insert(0);
+        let entry = counts.entry(c).or_insert(0);
         *entry += 1;
     }
     counts

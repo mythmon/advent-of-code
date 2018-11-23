@@ -101,7 +101,7 @@ impl Node {
         let mut map = HashMap::new();
 
         for child in self.holding.iter() {
-            let mut entry = map.entry(child.upgrade().unwrap().total_weight())
+            let entry = map.entry(child.upgrade().unwrap().total_weight())
                 .or_insert(vec![]);
             entry.push(child);
         }
@@ -139,7 +139,7 @@ fn puzzle(input: Vec<NodeDesc>) -> u32 {
 
     for node in input.iter() {
         for held in node.holding.iter() {
-            let mut entry = held_by.entry(held).or_insert(vec![]);
+            let entry = held_by.entry(held).or_insert(vec![]);
             entry.push(node.name.clone());
         }
     }

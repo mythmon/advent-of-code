@@ -1,5 +1,3 @@
-extern crate advent;
-
 use advent::extremes;
 
 fn main() {

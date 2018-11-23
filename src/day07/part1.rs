@@ -61,7 +61,7 @@ fn puzzle(input: Vec<NodeDesc>) -> String {
 
     for node in input.iter() {
         for blocked in node.blocks.iter() {
-            let mut entry = blocked_by.entry(blocked).or_insert(vec![]);
+            let entry = blocked_by.entry(blocked).or_insert(vec![]);
             entry.push(node.name.clone());
         }
     }

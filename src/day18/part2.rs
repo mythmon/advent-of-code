@@ -1,7 +1,5 @@
 #![feature(slice_patterns)]
 
-extern crate advent;
-
 use advent::day18::{Machine, Instr};
 use std::collections::VecDeque;
 

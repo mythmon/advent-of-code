@@ -1,7 +1,4 @@
 #![feature(slice_patterns)]
-#![feature(iterator_step_by)]
-
-extern crate advent;
 
 fn main() {
     println!("{}", puzzle(1));

@@ -1,7 +1,5 @@
 #![feature(range_contains)]
 
-extern crate advent;
-
 use std::collections::HashSet;
 use std::fmt;
 
@@ -81,7 +79,7 @@ impl KnotGrid {
 }
 
 impl fmt::Display for KnotGrid {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         for row in self.hash_rows.iter() {
             for cell in row.iter() {
                 write!(formatter, "{:08b}", cell)?;

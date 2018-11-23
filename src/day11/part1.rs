@@ -1,5 +1,3 @@
-extern crate advent;
-
 use advent::day11::{HexDir, HexVec};
 
 fn main() {

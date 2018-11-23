@@ -1,5 +1,3 @@
-#![feature(inclusive_range_syntax)]
-
 use std::collections::HashMap;
 use std::fmt;
 
@@ -70,7 +68,7 @@ impl TuringMachine {
 }
 
 impl fmt::Display for TuringMachine {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let min_pos = *self.tape.keys().min().unwrap_or(&0);
         let max_pos = *self.tape.keys().max().unwrap_or(&min_pos);
 

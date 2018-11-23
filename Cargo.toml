@@ -2,6 +2,7 @@
 name = "advent"
 version = "0.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
+edition = "2018"
 
 [dependencies]
 rand = "*"

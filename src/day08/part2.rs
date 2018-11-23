@@ -1,5 +1,3 @@
-extern crate advent;
-
 use advent::day08::{Instruction, Operation};
 use std::cmp;
 use std::collections::HashMap;
