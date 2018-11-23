@@ -3,3 +3,6 @@ actions:
     run: cargo fmt -- --check {files}
     fix: cargo fmt -- {files}
     include: "*.rs"
+  clippy:
+    run: cargo clippy
+    include: "*.rs"

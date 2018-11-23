@@ -36,12 +36,12 @@ fn puzzle(input: &str) -> usize {
         match c {
             '|' | '-' => (),
             '+' => {
-                let right = dir.clone().rotate90();
-                let left = right.clone().rotate90().rotate90();
+                let right = dir.rotate90();
+                let left = right.rotate90().rotate90();
 
                 let mut found = false;
 
-                for new_dir in [left, right].into_iter() {
+                for new_dir in [left, right].iter() {
                     let new_pos = pos + *new_dir;
                     if new_pos.x >= 0
                         && new_pos.x < max_width as i32
@@ -78,7 +78,7 @@ struct Pos {
 
 impl Pos {
     fn new(x: i32, y: i32) -> Self {
-        Self { x: x, y: y }
+        Self { x, y }
     }
 }
 
@@ -111,7 +111,7 @@ impl Dir {
         if x < -1 || x > 1 || y < -1 || y > 1 || (x == 0 && y == 0) {
             panic!(format!("Invalid direction ({}, {})", x, y));
         }
-        Self { x: x, y: y }
+        Self { x, y }
     }
 
     fn rotate90(self) -> Self {
