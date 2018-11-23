@@ -1,8 +1,49 @@
+use crate::{PuzzleCase, PuzzlePart};
 use std::iter::Iterator;
 
-fn main() {
-    let input: &'static str = include_str!("input");
-    println!("{}", puzzle(input));
+pub struct Day01Part1;
+
+impl PuzzlePart for Day01Part1 {
+    type Input = &'static str;
+    type Output = u32;
+
+    fn name(&self) -> &'static str {
+        "2017-D01-P1"
+    }
+
+    fn cases(&self) -> Vec<PuzzleCase<Self::Input, Self::Output>> {
+        vec![
+            PuzzleCase {
+                name: "Example 1",
+                input: "1122",
+                output: 3,
+            },
+            PuzzleCase {
+                name: "Example 2",
+                input: "1111",
+                output: 4,
+            },
+            PuzzleCase {
+                name: "Example 3",
+                input: "1234",
+                output: 0,
+            },
+            PuzzleCase {
+                name: "Example 4",
+                input: "91212129",
+                output: 9,
+            },
+            PuzzleCase {
+                name: "Solution",
+                input: include_str!("input"),
+                output: 1141,
+            },
+        ]
+    }
+
+    fn puzzle(&self, input: &Self::Input) -> Self::Output {
+        puzzle(input)
+    }
 }
 
 fn puzzle(input: &str) -> u32 {

@@ -1,12 +1,57 @@
+use crate::{PuzzleCase, PuzzlePart};
 use std::iter::Iterator;
 
-fn main() {
-    let input: &'static str = include_str!("input");
-    println!("{}", puzzle(input));
+pub struct Day01Part2;
+
+impl PuzzlePart for Day01Part2 {
+    type Input = &'static str;
+    type Output = u32;
+
+    fn name(&self) -> &'static str {
+        "2017-D01-P2"
+    }
+
+    fn cases(&self) -> Vec<PuzzleCase<Self::Input, Self::Output>> {
+        vec![
+            PuzzleCase {
+                name: "Example 1",
+                input: "1212",
+                output: 6,
+            },
+            PuzzleCase {
+                name: "Example 2",
+                input: "1221",
+                output: 0,
+            },
+            PuzzleCase {
+                name: "Example 3",
+                input: "123425",
+                output: 4,
+            },
+            PuzzleCase {
+                name: "Example 4",
+                input: "123123",
+                output: 12,
+            },
+            PuzzleCase {
+                name: "Example 5",
+                input: "12131415",
+                output: 4,
+            },
+            PuzzleCase {
+                name: "Solution",
+                input: include_str!("input"),
+                output: 950,
+            },
+        ]
+    }
+
+    fn puzzle(&self, input: &Self::Input) -> Self::Output {
+        puzzle(input)
+    }
 }
 
 fn puzzle(input: &str) -> u32 {
-    println!("test case {}", input);
     let input: Vec<u32> = input
         .chars()
         .filter(|c| c.is_digit(10))

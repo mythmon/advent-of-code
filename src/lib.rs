@@ -1,8 +1,8 @@
-#![feature(slice_patterns)]
-#![feature(range_contains)]
+#![feature(slice_patterns, range_contains, associated_type_defaults)]
 
 use std::cmp;
 
+pub mod day01;
 pub mod day08;
 pub mod day09;
 pub mod day10;
@@ -61,5 +61,23 @@ mod tests {
     fn test_evens() {
         let xs: Vec<u32> = evens().take(5).collect();
         assert_eq!(xs, vec![0, 2, 4, 6, 8]);
+    }
+}
+
+pub struct PuzzleCase<I, O> {
+    pub name: &'static str,
+    pub input: I,
+    pub output: O,
+}
+
+pub trait PuzzlePart {
+    type Input: 'static;
+    type Output: 'static;
+    fn name(&self) -> &'static str;
+    fn cases(&self) -> Vec<PuzzleCase<Self::Input, Self::Output>>;
+    fn puzzle(&self, input: &Self::Input) -> Self::Output;
+
+    fn run(&self, case: &PuzzleCase<Self::Input, Self::Output>) -> Self::Output {
+        self.puzzle(&case.input)
     }
 }

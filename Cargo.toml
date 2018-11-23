@@ -1,25 +1,25 @@
+cargo-features = ["default-run"]
+
 [package]
 name = "advent"
-version = "0.1.0"
+version = "2017.25.1"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
+default-run = "advent"
 
 [dependencies]
-rand = "*"
-regex = "*"
-lazy_static = "*"
+rand = "^0.3.18"
+regex = "^0.2.3"
+lazy_static = "^1.0.0"
+colored = "^1.6.1"
 
 [lib]
 name = "advent"
 path = "src/lib.rs"
 
 [[bin]]
-name = "day01_part1"
-path = "src/day01/part1.rs"
-
-[[bin]]
-name = "day01_part2"
-path = "src/day01/part2.rs"
+name = "advent"
+path = "src/bin.rs"
 
 [[bin]]
 name = "day02_part1"
