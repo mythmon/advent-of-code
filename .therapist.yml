@@ -1,0 +1,5 @@
+actions:
+  rustfmt:
+    run: cargo fmt -- --check {files}
+    fix: cargo fmt -- {files}
+    include: "*.rs"
