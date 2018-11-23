@@ -15,7 +15,7 @@ fn puzzle(a: u32) -> u32 {
         max = min + 17_000;
     }
 
-    for n in (min ..= max + 1).step_by(17) {
+    for n in (min..=max + 1).step_by(17) {
         // let max = ((n + 1) as f32).sqrt().ceil() as u32;
         for d in 2..n {
             if n % d == 0 {

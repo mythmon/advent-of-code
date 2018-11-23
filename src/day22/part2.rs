@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 use std::str::FromStr;
-use std::{fmt, cmp};
+use std::{cmp, fmt};
 
 fn main() {
     let input = get_input();
@@ -65,19 +65,19 @@ impl Sporifica {
             NodeState::Clean => {
                 self.dir = self.dir.rotate_left();
                 self.cells.insert(self.pos, NodeState::Weakened);
-            },
+            }
             NodeState::Weakened => {
                 self.infections += 1;
                 self.cells.insert(self.pos, NodeState::Infected);
-            },
+            }
             NodeState::Infected => {
                 self.dir = self.dir.rotate_right();
                 self.cells.insert(self.pos, NodeState::Flagged);
-            },
+            }
             NodeState::Flagged => {
                 self.dir = self.dir.reverse();
                 self.cells.insert(self.pos, NodeState::Clean);
-            },
+            }
         }
 
         self.pos += self.dir;
@@ -209,7 +209,6 @@ impl Dir {
         }
     }
 }
-
 
 #[test]
 fn test_example() {

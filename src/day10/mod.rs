@@ -33,7 +33,9 @@ impl KnotHash {
             }
         }
 
-        Self { hash_parts: hash_parts }
+        Self {
+            hash_parts: hash_parts,
+        }
     }
 
     pub fn dense(&self) -> Vec<usize> {

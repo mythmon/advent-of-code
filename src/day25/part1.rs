@@ -72,7 +72,7 @@ impl fmt::Display for TuringMachine {
         let min_pos = *self.tape.keys().min().unwrap_or(&0);
         let max_pos = *self.tape.keys().max().unwrap_or(&min_pos);
 
-        for pos in min_pos ..= max_pos {
+        for pos in min_pos..=max_pos {
             let v = self.tape.get(&pos).unwrap_or(&'0');
             if pos == self.pos {
                 write!(f, "[{}]", v)?;

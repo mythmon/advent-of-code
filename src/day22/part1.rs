@@ -135,7 +135,6 @@ impl Dir {
     }
 }
 
-
 #[test]
 fn test_example() {
     let input = "..#\n#..\n...";

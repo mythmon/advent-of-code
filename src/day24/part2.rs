@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use std::collections::VecDeque;
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();

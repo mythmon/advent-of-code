@@ -1,6 +1,6 @@
 #![feature(slice_patterns)]
 
-use advent::day18::{Machine, Instr};
+use advent::day18::{Instr, Machine};
 
 fn main() {
     let input = "
@@ -14,7 +14,8 @@ fn main() {
         sub c -17000
     ";
 
-    let instructions: Vec<Instr> = input.trim()
+    let instructions: Vec<Instr> = input
+        .trim()
         .lines()
         .map(|l| l.trim().parse().unwrap())
         .collect();

@@ -42,7 +42,11 @@ fn puzzle(input: &str) -> String {
 
                 for new_dir in [left, right].into_iter() {
                     let new_pos = pos + *new_dir;
-                    if new_pos.x >= 0 && new_pos.x < max_width as i32 && new_pos.y >= 0 && new_pos.y < grid.len() as i32 {
+                    if new_pos.x >= 0
+                        && new_pos.x < max_width as i32
+                        && new_pos.y >= 0
+                        && new_pos.y < grid.len() as i32
+                    {
                         let c = grid[new_pos.y as usize][new_pos.x as usize];
                         if c != ' ' {
                             dir = *new_dir;
@@ -56,7 +60,7 @@ fn puzzle(input: &str) -> String {
                     panic!("couldn't find anywhere to go");
                 }
             }
-            c if ('A' ..= 'Z').contains(&c) => journey.push(c),
+            c if ('A'..='Z').contains(&c) => journey.push(c),
             ' ' => break,
             c => panic!(format!("unexpected character '{}'", c)),
         }
@@ -116,7 +120,6 @@ impl Dir {
         }
     }
 }
-
 
 #[test]
 fn test_example() {

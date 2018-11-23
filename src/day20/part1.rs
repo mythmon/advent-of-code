@@ -11,7 +11,8 @@ fn get_input() -> &'static str {
 }
 
 fn puzzle(input: &str) -> usize {
-    input.lines()
+    input
+        .lines()
         .map(|l| l.parse::<Particle>().unwrap())
         .enumerate()
         .min_by_key(|&(_, p)| p.position_at_time(1_000_000).manhattan())
@@ -52,17 +53,20 @@ impl FromStr for Particle {
                 parts[0][3..].trim().parse()?,
                 parts[1].trim().parse()?,
                 parts[2][..(parts[2].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
             v: (
                 parts[3][4..].trim().parse()?,
                 parts[4].trim().parse()?,
                 parts[5][..(parts[5].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
             a: (
                 parts[6][4..].trim().parse()?,
                 parts[7].trim().parse()?,
                 parts[8][..(parts[8].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
         })
     }
 }

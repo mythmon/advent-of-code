@@ -41,7 +41,6 @@ fn letter_counts(s: &str) -> HashMap<char, usize> {
     counts
 }
 
-
 #[test]
 fn test_correct_answer() {
     let input: &'static str = include_str!("input");

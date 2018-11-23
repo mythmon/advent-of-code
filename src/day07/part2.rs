@@ -101,7 +101,8 @@ impl Node {
         let mut map = HashMap::new();
 
         for child in self.holding.iter() {
-            let entry = map.entry(child.upgrade().unwrap().total_weight())
+            let entry = map
+                .entry(child.upgrade().unwrap().total_weight())
                 .or_insert(vec![]);
             entry.push(child);
         }
@@ -117,10 +118,10 @@ impl Node {
                 normal_weight = Some(k);
             }
         }
-        odd_one_out.unwrap()[0].upgrade().unwrap().make_equal_to(
-            *normal_weight
-                .unwrap(),
-        )
+        odd_one_out.unwrap()[0]
+            .upgrade()
+            .unwrap()
+            .make_equal_to(*normal_weight.unwrap())
     }
 
     fn make_equal_to(&self, target: u32) -> u32 {
@@ -183,9 +184,7 @@ fn puzzle(input: Vec<NodeDesc>) -> u32 {
                 holding: node_desc
                     .holding
                     .iter()
-                    .map(|held_name| {
-                        Rc::downgrade(named_nodes.get(held_name).unwrap())
-                    })
+                    .map(|held_name| Rc::downgrade(named_nodes.get(held_name).unwrap()))
                     .collect(),
             };
             named_nodes.insert(node.name.clone(), Rc::new(node));

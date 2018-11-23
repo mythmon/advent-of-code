@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use std::str::FromStr;
 use std::fmt;
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();
@@ -50,7 +50,10 @@ impl Grid {
             let gy = idx / num_subgrids_wide;
             for x in 0..subgrid_size {
                 for y in 0..subgrid_size {
-                    rv.set((x + gx * subgrid_size, y + gy * subgrid_size), subgrid.get((x, y)));
+                    rv.set(
+                        (x + gx * subgrid_size, y + gy * subgrid_size),
+                        subgrid.get((x, y)),
+                    );
                 }
             }
         }
@@ -71,7 +74,9 @@ impl Grid {
     }
 
     fn flip(&self) -> Self {
-        let new_cells = self.cells.iter()
+        let new_cells = self
+            .cells
+            .iter()
             .map(|row| row.iter().rev().map(|c| *c).collect())
             .collect();
         Self { cells: new_cells }
@@ -106,7 +111,12 @@ impl Grid {
         } else if l % 3 == 0 {
             3
         } else {
-            panic!(format!("Can't split grid of size {} (l % 2 == {}, l % 3 == {})", l, l % 2, l % 3));
+            panic!(format!(
+                "Can't split grid of size {} (l % 2 == {}, l % 3 == {})",
+                l,
+                l % 2,
+                l % 3
+            ));
         };
         let s = l / m;
 
@@ -126,7 +136,8 @@ impl Grid {
     }
 
     fn count(&self) -> usize {
-        self.cells.iter()
+        self.cells
+            .iter()
             .map(|row| row.iter().filter(|c| **c).count())
             .sum()
     }
@@ -148,15 +159,15 @@ impl FromStr for Grid {
     type Err = ();
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let cells: Vec<Vec<bool>> = input.split("/")
+        let cells: Vec<Vec<bool>> = input
+            .split("/")
             .map(|row_string| {
-                row_string.chars()
-                    .map(|c| {
-                        match c {
-                            '#' => true,
-                            '.' => false,
-                            _ => panic!(format!("unexpected char in input: '{}'", c)),
-                        }
+                row_string
+                    .chars()
+                    .map(|c| match c {
+                        '#' => true,
+                        '.' => false,
+                        _ => panic!(format!("unexpected char in input: '{}'", c)),
                     })
                     .collect()
             })
@@ -188,7 +199,9 @@ struct PatternSet {
 
 impl PatternSet {
     fn new() -> Self {
-        Self { patterns: HashMap::new() }
+        Self {
+            patterns: HashMap::new(),
+        }
     }
 
     fn add_rule(&mut self, from: Grid, to: Grid) {
@@ -209,9 +222,7 @@ impl FromStr for PatternSet {
         let mut rv = Self::new();
 
         for line in input.lines() {
-            let mut parts: Vec<Grid> = line.split(" => ")
-                .map(|p| p.parse().unwrap())
-                .collect();
+            let mut parts: Vec<Grid> = line.split(" => ").map(|p| p.parse().unwrap()).collect();
             assert_eq!(parts.len(), 2);
             let to = parts.pop().unwrap();
             let from = parts.pop().unwrap();

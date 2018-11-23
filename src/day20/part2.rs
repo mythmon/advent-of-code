@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::ops::AddAssign;
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();
@@ -23,14 +23,20 @@ fn puzzle(input: &str) -> usize {
             let entry = positions.entry(p.p).or_insert(vec![]);
             entry.push(*p);
         }
-        let collided: HashSet<Particle> = positions.values().filter(|entries| entries.len() > 1).flat_map(|es| es.clone()).collect();
+        let collided: HashSet<Particle> = positions
+            .values()
+            .filter(|entries| entries.len() > 1)
+            .flat_map(|es| es.clone())
+            .collect();
         particles.retain(|p| !collided.contains(p));
 
         for p in particles.iter_mut() {
             p.tick();
         }
 
-        let (keep, escaped) = particles.into_iter().partition(|p| p.p.manhattan() < escape_distance);
+        let (keep, escaped) = particles
+            .into_iter()
+            .partition(|p| p.p.manhattan() < escape_distance);
         particles = keep;
         num_escaped += escaped.len();
     }
@@ -66,17 +72,20 @@ impl FromStr for Particle {
                 parts[0][3..].trim().parse()?,
                 parts[1].trim().parse()?,
                 parts[2][..(parts[2].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
             v: (
                 parts[3][4..].trim().parse()?,
                 parts[4].trim().parse()?,
                 parts[5][..(parts[5].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
             a: (
                 parts[6][4..].trim().parse()?,
                 parts[7].trim().parse()?,
                 parts[8][..(parts[8].len() - 1)].trim().parse()?,
-            ).into(),
+            )
+                .into(),
         })
     }
 }
@@ -114,7 +123,8 @@ impl AddAssign for Vec3 {
 
 #[test]
 fn test_example() {
-    let input = "p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\np=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>\np=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\np=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>";
+    let input = "p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\np=<-4,0,0>, v=< 2,0,0>, a=< \
+                 0,0,0>\np=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\np=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>";
     assert_eq!(puzzle(input), 1);
 }
 

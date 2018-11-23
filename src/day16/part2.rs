@@ -1,7 +1,8 @@
-#[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate lazy_static;
 
-use std::str::FromStr;
 use regex::Regex;
+use std::str::FromStr;
 
 fn main() {
     let input = get_input();
@@ -14,7 +15,7 @@ fn get_input() -> &'static str {
 }
 
 fn puzzle(num_dancers: usize, input: &str) -> String {
-    let mut dancers: Vec<u8> = (b'a' ..= b'z').take(num_dancers).collect();
+    let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
     let original_dancers = dancers.clone();
     let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
 
@@ -59,15 +60,15 @@ impl Instruction {
         match self {
             &Instruction::Spin(x) => {
                 dancers.rotate_left(l - x);
-            },
+            }
             &Instruction::Exchange(a_idx, b_idx) => {
                 dancers.swap(a_idx, b_idx);
-            },
+            }
             &Instruction::Partner(a, b) => {
                 let a_idx = dancers.iter().position(|&d| d == a).unwrap();
                 let b_idx = dancers.iter().position(|&d| d == b).unwrap();
                 dancers.swap(a_idx, b_idx);
-            },
+            }
         }
     }
 }
@@ -85,9 +86,15 @@ impl FromStr for Instruction {
         if let Some(captures) = SPIN_RE.captures(input) {
             Ok(Instruction::Spin(captures[1].parse().unwrap()))
         } else if let Some(captures) = EXCHANGE_RE.captures(input) {
-            Ok(Instruction::Exchange(captures[1].parse().unwrap(), captures[2].parse().unwrap()))
+            Ok(Instruction::Exchange(
+                captures[1].parse().unwrap(),
+                captures[2].parse().unwrap(),
+            ))
         } else if let Some(captures) = PARTNER_RE.captures(input) {
-            Ok(Instruction::Partner(captures[1].as_bytes()[0], captures[2].as_bytes()[0]))
+            Ok(Instruction::Partner(
+                captures[1].as_bytes()[0],
+                captures[2].as_bytes()[0],
+            ))
         } else {
             Err(format!("no regexes matched {:?}", input))
         }

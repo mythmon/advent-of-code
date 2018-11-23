@@ -54,7 +54,6 @@ fn puzzle(input: &str) -> u32 {
     garbage_count
 }
 
-
 #[test]
 fn test_example_1() {
     let input = "<>";

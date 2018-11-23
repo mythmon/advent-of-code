@@ -27,26 +27,59 @@ impl Machine {
         let mut rv = (false, None);
         let instr = self.instructions[self.program_counter];
         match instr {
-            Instr { itype: InstrType::Snd, arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Snd,
+                arg1: Some(a),
+                ..
+            } => {
                 rv.1 = Some(self.value(&a));
             }
-            Instr { itype: InstrType::Set, register: Some(r), arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Set,
+                register: Some(r),
+                arg1: Some(a),
+                ..
+            } => {
                 let v = self.value(&a);
                 self.registers.insert(r, v);
             }
-            Instr { itype: InstrType::Add, register: Some(r), arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Add,
+                register: Some(r),
+                arg1: Some(a),
+                ..
+            } => {
                 *(self.registers.entry(r).or_insert(0)) += self.value(&a);
             }
-            Instr { itype: InstrType::Sub, register: Some(r), arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Sub,
+                register: Some(r),
+                arg1: Some(a),
+                ..
+            } => {
                 *(self.registers.entry(r).or_insert(0)) -= self.value(&a);
             }
-            Instr { itype: InstrType::Mul, register: Some(r), arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Mul,
+                register: Some(r),
+                arg1: Some(a),
+                ..
+            } => {
                 *(self.registers.entry(r).or_insert(0)) *= self.value(&a);
             }
-            Instr { itype: InstrType::Mod, register: Some(r), arg1: Some(a), .. } => {
+            Instr {
+                itype: InstrType::Mod,
+                register: Some(r),
+                arg1: Some(a),
+                ..
+            } => {
                 *(self.registers.entry(r).or_insert(0)) %= self.value(&a);
             }
-            Instr { itype: InstrType::Rcv, register: Some(r) , .. } => {
+            Instr {
+                itype: InstrType::Rcv,
+                register: Some(r),
+                ..
+            } => {
                 if let Some(v) = input.pop_front() {
                     self.registers.insert(r, v);
                 } else {
@@ -56,14 +89,24 @@ impl Machine {
                     self.program_counter -= 1;
                 }
             }
-            Instr { itype: InstrType::Jgz, arg1: Some(a1), arg2: Some(a2), .. } => {
+            Instr {
+                itype: InstrType::Jgz,
+                arg1: Some(a1),
+                arg2: Some(a2),
+                ..
+            } => {
                 if self.value(&a1) > 0 {
                     // subtract 1 since 1 will be added at the end of the loop
                     self.program_counter =
                         ((self.program_counter as i64) + self.value(&a2) - 1) as usize;
                 }
             }
-            Instr { itype: InstrType::Jnz, arg1: Some(a1), arg2: Some(a2), .. } => {
+            Instr {
+                itype: InstrType::Jnz,
+                arg1: Some(a1),
+                arg2: Some(a2),
+                ..
+            } => {
                 if self.value(&a1) != 0 {
                     // subtract 1 since 1 will be added at the end of the loop
                     self.program_counter =
@@ -79,7 +122,7 @@ impl Machine {
     }
 
     pub fn run(&mut self) {
-        let l =self.instructions.len();
+        let l = self.instructions.len();
         let mut input = VecDeque::new();
         while (0..l).contains(&self.program_counter) {
             let (blocked, _) = self.step(&mut input);
@@ -143,7 +186,7 @@ impl FromStr for Instr {
                 itype: InstrType::Snd,
                 register: None,
                 arg1: Some(x.parse()?),
-                arg2: None
+                arg2: None,
             }),
             ["set", x, y] => Ok(Instr {
                 itype: InstrType::Set,
@@ -166,7 +209,7 @@ impl FromStr for Instr {
             ["mul", x, y] => Ok(Instr {
                 itype: InstrType::Mul,
                 register: Some(x.parse().unwrap()),
-                arg1 : Some(y.parse().unwrap()),
+                arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
             ["mod", x, y] => Ok(Instr {
@@ -179,7 +222,7 @@ impl FromStr for Instr {
                 itype: InstrType::Rcv,
                 register: Some(x.parse().unwrap()),
                 arg1: None,
-                arg2: None
+                arg2: None,
             }),
             ["jgz", x, y] => Ok(Instr {
                 itype: InstrType::Jgz,

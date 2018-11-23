@@ -9,9 +9,7 @@ fn puzzle(input: &str) -> u32 {
     let lines: Vec<&str> = input.lines().collect();
     let rows: Vec<Vec<u32>> = lines
         .iter()
-        .map(|l| {
-            l.split_whitespace().map(|s| s.parse().unwrap()).collect()
-        })
+        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
         .collect();
 
     let mut sum = 0;

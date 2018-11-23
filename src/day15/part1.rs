@@ -68,7 +68,6 @@ fn test_example_a() {
     );
 }
 
-
 #[test]
 fn test_example_b() {
     let g = Generator::new(8921, 48271);
