@@ -1,45 +1,48 @@
-fn main() {
-    let input: &'static str = include_str!("input");
-    println!("{}", puzzle(input));
-}
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
-fn puzzle(input: &str) -> u32 {
-    let lines: Vec<&str> = input.lines().collect();
-    let rows: Vec<Vec<u32>> = lines
-        .iter()
-        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
-        .collect();
+pub struct Day02Part2;
 
-    let mut sum = 0;
+impl PuzzleRunner for Day02Part2 {
+    type Input = &'static str;
+    type Output = u32;
 
-    'row: for row in rows {
-        for (i, first) in row.iter().enumerate() {
-            for second in row[(i + 1)..].iter() {
-                let (small, big) = if first < second {
-                    (first, second)
-                } else {
-                    (second, first)
-                };
-                if big % small == 0 {
-                    sum += big / small;
-                    continue 'row;
-                }
-            }
-        }
-        panic!(format!("Could not find divisible pair in {:?}", row));
+    fn name(&self) -> String {
+        "2017-D02-P2".to_owned()
     }
 
-    sum
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, &'static str, u32>::build_set()
+            .case("Example", "5 9 2 8\n9 4 7 3\n3 8 6 5\n", 9)
+            .case("Solution", include_str!("input"), 214)
+            .collect()
+    }
 
-#[test]
-fn test_examples() {
-    let input = "5 9 2 8\n9 4 7 3\n3 8 6 5";
-    assert_eq!(puzzle(input), 9);
-}
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let lines: Vec<&str> = input.lines().collect();
+        let rows: Vec<Vec<u32>> = lines
+            .iter()
+            .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
+            .collect();
 
-#[test]
-fn test_correct_answer() {
-    let input: &'static str = include_str!("input");
-    assert_eq!(puzzle(input), 214);
+        let mut sum = 0;
+
+        'row: for row in rows {
+            for (i, first) in row.iter().enumerate() {
+                for second in row[(i + 1)..].iter() {
+                    let (small, big) = if first < second {
+                        (first, second)
+                    } else {
+                        (second, first)
+                    };
+                    if big % small == 0 {
+                        sum += big / small;
+                        continue 'row;
+                    }
+                }
+            }
+            panic!(format!("Could not find divisible pair in {:?}", row));
+        }
+
+        sum
+    }
 }

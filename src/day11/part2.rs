@@ -1,29 +1,31 @@
-use advent::day11::{HexDir, HexVec};
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::day11::{HexDir, HexVec};
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day11Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day11Part2 {
+    type Input = &'static str;
+    type Output = u32;
 
-fn puzzle(input: &str) -> u32 {
-    input
-        .split(",")
-        .filter_map(|p| p.trim().parse().ok())
-        .scan(HexVec::zero(), |a, b: HexDir| {
-            *a += b;
-            Some(a.size())
-        })
-        .max()
-        .unwrap() as u32
-}
+    fn name(&self) -> String {
+        "2017-D11-P2".to_owned()
+    }
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 1603);
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Solution", include_str!("input"), 1_603)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        input
+            .split(",")
+            .filter_map(|p| p.trim().parse().ok())
+            .scan(HexVec::zero(), |a, b: HexDir| {
+                *a += b;
+                Some(a.size())
+            })
+            .max()
+            .unwrap() as u32
+    }
 }

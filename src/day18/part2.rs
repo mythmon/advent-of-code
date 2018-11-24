@@ -1,6 +1,6 @@
 #![feature(slice_patterns)]
 
-use advent::day18::{Instr, Machine};
+use crate::day18::{Instr, Machine};
 use std::collections::VecDeque;
 
 fn main() {

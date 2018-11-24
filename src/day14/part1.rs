@@ -1,4 +1,4 @@
-use advent::day10::KnotHash;
+use crate::day10::KnotHash;
 
 fn main() {
     let input = get_input();

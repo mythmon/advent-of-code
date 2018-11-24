@@ -1,43 +1,47 @@
-use advent::day08::{Instruction, Operation};
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::day08::{Instruction, Operation};
+use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day08Part1;
 
-fn get_input() -> Vec<Instruction> {
-    let input: &'static str = include_str!("input");
-    parse_input(input)
-}
+impl PuzzleRunner for Day08Part1 {
+    type Input = Vec<Instruction>;
+    type Output = isize;
 
-fn parse_input(input: &str) -> Vec<Instruction> {
-    input.lines().map(|l| l.parse().unwrap()).collect()
-}
+    fn name(&self) -> String {
+        "2017-D08-P1".to_owned()
+    }
 
-fn puzzle(input: Vec<Instruction>) -> isize {
-    let mut registers = HashMap::new();
-    for instr in input {
-        let condition_target = *registers.get(&instr.condition.register).unwrap_or(&0);
-        if instr.condition.matches(condition_target) {
-            match instr.op {
-                Operation::Inc => *registers.entry(instr.register).or_insert(0) += instr.amount,
-                Operation::Dec => *registers.entry(instr.register).or_insert(0) -= instr.amount,
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
+            .transformed_case(
+                "Example",
+                indoc!(
+                    "
+                    b inc 5 if a > 1
+                    a inc 1 if b < 5
+                    c dec -10 if a >= 1
+                    c inc -20 if c == 10"
+                ),
+                1,
+            )
+            .transformed_case("Solution", include_str!("input"), 5_221)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut registers = HashMap::new();
+        for instr in input {
+            let condition_target = *registers.get(&instr.condition.register).unwrap_or(&0);
+            if instr.condition.matches(condition_target) {
+                match instr.op {
+                    Operation::Inc => *registers.entry(instr.register).or_insert(0) += instr.amount,
+                    Operation::Dec => *registers.entry(instr.register).or_insert(0) -= instr.amount,
+                }
             }
         }
+        *registers.values().max().unwrap()
     }
-    *registers.values().max().unwrap()
-}
-
-#[test]
-fn test_example() {
-    let input = "b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10";
-    let input = parse_input(input);
-    assert_eq!(puzzle(input), 1);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 5221);
 }

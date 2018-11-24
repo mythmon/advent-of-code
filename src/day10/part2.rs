@@ -1,45 +1,47 @@
-use advent::day10::KnotHash;
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::day10::KnotHash;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day10Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input.trim()
-}
+impl PuzzleRunner for Day10Part2 {
+    type Input = &'static str;
+    type Output = String;
 
-fn puzzle(input: &str) -> String {
-    KnotHash::new(input).hex()
-}
+    fn name(&self) -> String {
+        "2017-D10-P2".to_owned()
+    }
 
-#[test]
-fn test_example_1() {
-    let input = "";
-    assert_eq!(puzzle(input), "a2582a3a0e66e6e86e3812dcb672a272");
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example 1",
+                "",
+                "a2582a3a0e66e6e86e3812dcb672a272".to_owned(),
+            )
+            .case(
+                "Example 2",
+                "AoC 2017",
+                "33efeb34ea91902bb2f59c9920caa6cd".to_owned(),
+            )
+            .case(
+                "Example 3",
+                "1,2,3",
+                "3efbe78a8d82f29979031a4aa0b16a9d".to_owned(),
+            )
+            .case(
+                "Example 4",
+                "1,2,4",
+                "63960835bcdc130f0b66d7ff4f6a5a8e".to_owned(),
+            )
+            .case(
+                "Solution",
+                include_str!("input").trim(),
+                "70b856a24d586194331398c7fcfa0aaf".to_owned(),
+            )
+            .collect()
+    }
 
-#[test]
-fn test_example_2() {
-    let input = "AoC 2017";
-    assert_eq!(puzzle(input), "33efeb34ea91902bb2f59c9920caa6cd");
-}
-
-#[test]
-fn test_example_3() {
-    let input = "1,2,3";
-    assert_eq!(puzzle(input), "3efbe78a8d82f29979031a4aa0b16a9d");
-}
-
-#[test]
-fn test_example_4() {
-    let input = "1,2,4";
-    assert_eq!(puzzle(input), "63960835bcdc130f0b66d7ff4f6a5a8e");
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), "70b856a24d586194331398c7fcfa0aaf");
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        KnotHash::new(input).hex()
+    }
 }

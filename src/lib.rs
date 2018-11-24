@@ -1,13 +1,34 @@
-#![feature(slice_patterns, range_contains, associated_type_defaults)]
+#![feature(slice_patterns, range_contains, associated_type_defaults, inner_deref)]
 
 use std::cmp;
 
+pub mod cases;
+
 pub mod day01;
+pub mod day02;
+pub mod day03;
+pub mod day04;
+pub mod day05;
+pub mod day06;
+pub mod day07;
 pub mod day08;
 pub mod day09;
 pub mod day10;
 pub mod day11;
+// pub mod day12;
+// pub mod day13;
+// pub mod day14;
+// pub mod day15;
+// pub mod day16;
+// pub mod day17;
 pub mod day18;
+// pub mod day19;
+// pub mod day20;
+// pub mod day21;
+// pub mod day22;
+// pub mod day23;
+// pub mod day24;
+// pub mod day25;
 
 /// Find the lowest and highest value in `items`.
 pub fn extremes<T>(items: T) -> Option<(T::Item, T::Item)>
@@ -61,23 +82,5 @@ mod tests {
     fn test_evens() {
         let xs: Vec<u32> = evens().take(5).collect();
         assert_eq!(xs, vec![0, 2, 4, 6, 8]);
-    }
-}
-
-pub struct PuzzleCase<I, O> {
-    pub name: &'static str,
-    pub input: I,
-    pub output: O,
-}
-
-pub trait PuzzlePart {
-    type Input: 'static;
-    type Output: 'static;
-    fn name(&self) -> &'static str;
-    fn cases(&self) -> Vec<PuzzleCase<Self::Input, Self::Output>>;
-    fn puzzle(&self, input: &Self::Input) -> Self::Output;
-
-    fn run(&self, case: &PuzzleCase<Self::Input, Self::Output>) -> Self::Output {
-        self.puzzle(&case.input)
     }
 }

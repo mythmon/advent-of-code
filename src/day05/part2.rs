@@ -1,39 +1,40 @@
-#![feature(range_contains)]
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
-fn main() {
-    let input: &'static str = include_str!("input");
-    let input: Vec<i32> = input.lines().map(|l| l.parse().unwrap()).collect();
-    println!("{}", puzzle(input));
-}
+pub struct Day05Part2;
 
-fn puzzle(mut input: Vec<i32>) -> u32 {
-    let mut steps: u32 = 0;
-    let mut pc: i32 = 0;
+impl PuzzleRunner for Day05Part2 {
+    type Input = Vec<i32>;
+    type Output = u32;
 
-    let bounds = 0..(input.len() as i32);
-
-    while bounds.contains(&pc) {
-        steps += 1;
-        let next = pc + input[pc as usize];
-        if input[pc as usize] >= 3 {
-            input[pc as usize] -= 1;
-        } else {
-            input[pc as usize] += 1;
-        }
-        pc = next;
+    fn name(&self) -> String {
+        "2017-D05-P2".to_owned()
     }
 
-    steps
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
+            .case("Example", vec![0, 3, 0, 1, -3], 10)
+            .transformed_case("Solution", include_str!("input"), 27_763_113)
+            .collect()
+    }
 
-#[test]
-fn test_example() {
-    assert_eq!(puzzle(vec![0, 3, 0, 1, -3]), 10);
-}
+    fn run_puzzle(mut input: Self::Input) -> Self::Output {
+        let mut steps: u32 = 0;
+        let mut pc: i32 = 0;
 
-#[test]
-fn test_correct_answer() {
-    let input: &'static str = include_str!("input");
-    let input: Vec<i32> = input.lines().map(|l| l.parse().unwrap()).collect();
-    assert_eq!(puzzle(input), 27763113);
+        let bounds = 0..(input.len() as i32);
+
+        while bounds.contains(&pc) {
+            steps += 1;
+            let next = pc + input[pc as usize];
+            if input[pc as usize] >= 3 {
+                input[pc as usize] -= 1;
+            } else {
+                input[pc as usize] += 1;
+            }
+            pc = next;
+        }
+
+        steps
+    }
 }

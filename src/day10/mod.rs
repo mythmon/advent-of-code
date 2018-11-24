@@ -1,3 +1,6 @@
+pub mod part1;
+pub mod part2;
+
 pub struct KnotHash {
     hash_parts: Vec<usize>,
 }

@@ -1,103 +1,69 @@
-use advent::day09::ParseState;
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day09Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day09Part2 {
+    type Input = &'static str;
+    type Output = u32;
 
-fn puzzle(input: &str) -> u32 {
-    use crate::ParseState::*;
-
-    let mut garbage_count = 0;
-    let mut state_stack = vec![];
-
-    for c in input.trim().chars() {
-        let state = state_stack.last().map(|s| *s);
-        match (state, c) {
-            (Some(s), '!') if s != Cancel => {
-                state_stack.push(Cancel);
-            }
-            (Some(Cancel), _) => {
-                state_stack.pop();
-            }
-            (None, '{') => {
-                state_stack.push(InGroup(1));
-            }
-            (Some(InGroup(v)), '{') => {
-                state_stack.push(InGroup(v + 1));
-            }
-            (Some(InGroup(_)), '}') => {
-                state_stack.pop();
-            }
-            (Some(InGroup(_)), ',') => (),
-            (Some(Garbage), '>') => {
-                state_stack.pop();
-            }
-            (Some(Garbage), _) => {
-                garbage_count += 1;
-            }
-            (_, '<') => {
-                state_stack.push(Garbage);
-            }
-
-            _ => panic!("unexpected input '{}' in {:?}", c, state),
-        }
+    fn name(&self) -> String {
+        "2017-D09-P2".to_owned()
     }
 
-    assert_eq!(state_stack.len(), 0);
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example 1", "<>", 0)
+            .case("Example 2", "<random characters>", 17)
+            .case("Example 3", "<<<<>", 3)
+            .case("Example 4", "<{!>}>", 2)
+            .case("Example 5", "<!!>", 0)
+            .case("Example 6", "<!!!>>", 0)
+            .case("Example 7", "<{o\"i!a,<{i<a>", 10)
+            .case("Solution", include_str!("input"), 7_825)
+            .collect()
+    }
 
-    garbage_count
-}
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        use crate::day09::ParseState::*;
 
-#[test]
-fn test_example_1() {
-    let input = "<>";
-    assert_eq!(puzzle(input), 0);
-}
+        let mut garbage_count = 0;
+        let mut state_stack = vec![];
 
-#[test]
-fn test_example_2() {
-    let input = "<random characters>";
-    assert_eq!(puzzle(input), 17);
-}
+        for c in input.trim().chars() {
+            let state = state_stack.last().map(|s| *s);
+            match (state, c) {
+                (Some(s), '!') if s != Cancel => {
+                    state_stack.push(Cancel);
+                }
+                (Some(Cancel), _) => {
+                    state_stack.pop();
+                }
+                (None, '{') => {
+                    state_stack.push(InGroup(1));
+                }
+                (Some(InGroup(v)), '{') => {
+                    state_stack.push(InGroup(v + 1));
+                }
+                (Some(InGroup(_)), '}') => {
+                    state_stack.pop();
+                }
+                (Some(InGroup(_)), ',') => (),
+                (Some(Garbage), '>') => {
+                    state_stack.pop();
+                }
+                (Some(Garbage), _) => {
+                    garbage_count += 1;
+                }
+                (_, '<') => {
+                    state_stack.push(Garbage);
+                }
 
-#[test]
-fn test_example_3() {
-    let input = "<<<<>";
-    assert_eq!(puzzle(input), 3);
-}
+                _ => panic!("unexpected input '{}' in {:?}", c, state),
+            }
+        }
 
-#[test]
-fn test_example_4() {
-    let input = "<{!>}>";
-    assert_eq!(puzzle(input), 2);
-}
+        assert_eq!(state_stack.len(), 0);
 
-#[test]
-fn test_example_5() {
-    let input = "<!!>";
-    assert_eq!(puzzle(input), 0);
-}
-
-#[test]
-fn test_example_6() {
-    let input = "<!!!>>";
-    assert_eq!(puzzle(input), 0)
-}
-
-#[test]
-fn test_example_7() {
-    let input = "<{o\"i!a,<{i<a>";
-    assert_eq!(puzzle(input), 10);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 7825);
+        garbage_count
+    }
 }

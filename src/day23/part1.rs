@@ -1,6 +1,6 @@
 #![feature(slice_patterns)]
 
-use advent::day18::{Instr, InstrType, Machine};
+use crate::day18::{Instr, InstrType, Machine};
 
 fn main() {
     let input = get_input();

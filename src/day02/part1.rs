@@ -1,35 +1,39 @@
-use advent::extremes;
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    extremes,
+};
 
-fn main() {
-    let input: &'static str = include_str!("input");
-    println!("{}", puzzle(input));
-}
+pub struct Day02Part1;
 
-fn puzzle(input: &str) -> u32 {
-    let lines: Vec<&str> = input.lines().collect();
-    let rows: Vec<Vec<u32>> = lines
-        .iter()
-        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
-        .collect();
+impl PuzzleRunner for Day02Part1 {
+    type Input = &'static str;
+    type Output = u32;
 
-    let mut sum = 0;
-
-    for row in rows {
-        let (min, max): (u32, u32) = extremes(row).unwrap();
-        sum += max - min;
+    fn name(&self) -> String {
+        "2017-D02-P1".to_owned()
     }
 
-    sum
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, &'static str, u32>::build_set()
+            .case("Example", "5 1 9 5\n7 5 3\n2 4 6 8\n", 18)
+            .case("Solution", include_str!("input"), 34_581)
+            .collect()
+    }
 
-#[test]
-fn test_examples() {
-    let input = "5 1 9 5\n7 5 3\n2 4 6 8\n";
-    assert_eq!(puzzle(input), 18);
-}
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let lines: Vec<&str> = input.lines().collect();
+        let rows: Vec<Vec<u32>> = lines
+            .iter()
+            .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
+            .collect();
 
-#[test]
-fn test_correct_answer() {
-    let input: &'static str = include_str!("input");
-    assert_eq!(puzzle(input), 34_581);
+        let mut sum = 0;
+
+        for row in rows {
+            let (min, max): (u32, u32) = extremes(row).unwrap();
+            sum += max - min;
+        }
+
+        sum
+    }
 }

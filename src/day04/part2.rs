@@ -1,12 +1,31 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::{HashMap, HashSet};
 
-fn main() {
-    let input: &'static str = include_str!("input");
-    println!("{}", puzzle(input));
-}
+pub struct Day04Part2;
 
-fn puzzle(input: &str) -> usize {
-    input.lines().filter(|p| is_valid(p)).count()
+impl PuzzleRunner for Day04Part2 {
+    type Input = &'static str;
+    type Output = usize;
+
+    fn name(&self) -> String {
+        "2017-D04-P2".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi \
+                 oooo\noiii ioii iioi iiio",
+                3,
+            )
+            .case("Solution", include_str!("input"), 251)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        input.lines().filter(|p| is_valid(p)).count()
+    }
 }
 
 fn is_valid(passphrase: &str) -> bool {
@@ -42,12 +61,6 @@ fn letter_counts(s: &str) -> HashMap<char, usize> {
 }
 
 #[test]
-fn test_correct_answer() {
-    let input: &'static str = include_str!("input");
-    assert_eq!(puzzle(input), 251);
-}
-
-#[test]
 fn test_valid_example_1() {
     assert!(is_valid("abcde fghij"));
 }
@@ -73,8 +86,4 @@ fn test_valid_example_5() {
 }
 
 #[test]
-fn test_puzzle_example() {
-    let input = "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi \
-                 oooo\noiii ioii iioi iiio";
-    assert_eq!(puzzle(input), 3);
-}
+fn test_puzzle_example() {}

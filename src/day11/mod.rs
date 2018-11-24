@@ -2,6 +2,9 @@ use std::cmp;
 use std::ops::{Add, AddAssign};
 use std::str::FromStr;
 
+pub mod part1;
+pub mod part2;
+
 #[derive(Debug)]
 pub struct HexVec {
     pub x: i32,

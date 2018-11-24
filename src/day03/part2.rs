@@ -1,17 +1,29 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 
-const INPUT: u32 = 289326;
+pub struct Day03Part2;
 
-fn main() {
-    println!("{}", puzzle(INPUT));
-}
+impl PuzzleRunner for Day03Part2 {
+    type Input = u32;
+    type Output = u32;
 
-fn puzzle(input: u32) -> u32 {
-    GridStressValues::new()
-        .skip_while(|v| v <= &input)
-        .next()
-        .unwrap()
+    fn name(&self) -> String {
+        "2017-D03-P1".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Solution", 289_325, 295_229)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        GridStressValues::new()
+            .skip_while(|v| v <= &input)
+            .next()
+            .unwrap()
+    }
 }
 
 struct GridStressValues {
@@ -160,11 +172,6 @@ impl Direction {
 }
 
 #[test]
-fn test_correct_answer() {
-    assert_eq!(puzzle(INPUT), 295229);
-}
-
-#[test]
 fn test_grid_stress_values() {
     let expected = vec![
         1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747,
@@ -176,34 +183,12 @@ fn test_grid_stress_values() {
 
 #[test]
 fn test_spiral_coords() {
+    #[rustfmt::skip]
     let expected = vec![
-        (0, 0),
-        (1, 0),
-        (1, 1),
-        (0, 1),
-        (-1, 1),
-        (-1, 0),
-        (-1, -1),
-        (0, -1),
-        (1, -1),
-        (2, -1),
-        (2, 0),
-        (2, 1),
-        (2, 2),
-        (1, 2),
-        (0, 2),
-        (-1, 2),
-        (-2, 2),
-        (-2, 1),
-        (-2, 0),
-        (-2, -1),
-        (-2, -2),
-        (-1, -2),
-        (0, -2),
-        (1, -2),
-        (2, -2),
-        (3, -2),
-        (3, -1),
+        (0, 0), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1),
+        (1, -1), (2, -1), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (-1, 2),
+        (-2, 2), (-2, 1), (-2, 0), (-2, -1), (-2, -2), (-1, -2), (0, -2),
+        (1, -2), (2, -2), (3, -2), (3, -1),
     ];
 
     let expected: Vec<GridCoord> = expected.iter().map(|c| GridCoord::new(c.0, c.1)).collect();

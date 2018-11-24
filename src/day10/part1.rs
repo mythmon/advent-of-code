@@ -1,22 +1,39 @@
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(256, &input));
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+
+pub struct Day10Part1;
+
+impl PuzzleRunner for Day10Part1 {
+    type Input = (usize, Vec<usize>);
+    type Output = usize;
+
+    fn name(&self) -> String {
+        "2017-D10-P1".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", (5, vec![3, 4, 1, 5]), 12)
+            .case(
+                "Solution",
+                (
+                    256,
+                    include_str!("input")
+                        .split(",")
+                        .map(|p| p.trim().parse().unwrap())
+                        .collect(),
+                ),
+                37_230,
+            )
+            .collect()
+    }
+
+    fn run_puzzle((length, instructions): Self::Input) -> Self::Output {
+        let k = knot(length, instructions);
+        k[0] * k[1]
+    }
 }
 
-fn get_input() -> Vec<usize> {
-    let input: &'static str = include_str!("input");
-    input
-        .split(",")
-        .filter_map(|p| p.trim().parse().ok())
-        .collect()
-}
-
-fn puzzle(length: usize, instructions: &Vec<usize>) -> usize {
-    let k = knot(length, instructions);
-    k[0] * k[1]
-}
-
-fn knot(length: usize, instructions: &Vec<usize>) -> Vec<usize> {
+fn knot(length: usize, instructions: Vec<usize>) -> Vec<usize> {
     let mut items: Vec<usize> = (0..length).collect();
     let mut position = 0;
     let mut skip_size = 0;
@@ -47,12 +64,6 @@ fn knot(length: usize, instructions: &Vec<usize>) -> Vec<usize> {
 fn test_knot_example() {
     let instructions = vec![3, 4, 1, 5];
     assert_eq!(knot(5, &instructions), vec![3, 4, 2, 1, 0]);
-}
-
-#[test]
-fn test_puzzle_example() {
-    let instructions = vec![3, 4, 1, 5];
-    assert_eq!(puzzle(5, &instructions), 12);
 }
 
 #[test]
