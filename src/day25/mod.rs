@@ -1,10 +1,28 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::fmt;
 
-fn main() {
-    let mut machine = puzzle_machine();
-    machine.run(12523873);
-    println!("{}", machine.diagnostics());
+pub struct Day25;
+
+impl PuzzleRunner for Day25 {
+    type Input = usize;
+    type Output = usize;
+
+    fn name(&self) -> String {
+        "2017-D25".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Solution", 12_523_873, 4_225)
+            .collect()
+    }
+
+    fn run_puzzle(_input: Self::Input) -> Self::Output {
+        let mut machine = puzzle_machine();
+        machine.run(12523873);
+        machine.diagnostics()
+    }
 }
 
 fn puzzle_machine() -> TuringMachine {
@@ -104,18 +122,9 @@ fn test_example() {
         machine.tape.insert(pos, '0');
     }
 
-    println!("{}", machine);
     for _ in 0..6 {
         machine.tick();
-        println!("{}", machine);
     }
 
     assert_eq!(machine.diagnostics(), 3);
-}
-
-#[test]
-fn test_right_answer() {
-    let mut machine = puzzle_machine();
-    machine.run(12523873);
-    assert_eq!(machine.diagnostics(), 4225);
 }

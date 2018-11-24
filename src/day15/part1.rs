@@ -1,35 +1,59 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input, 40_000_000));
-}
+pub struct Day15Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day15Part1 {
+    type Input = (&'static str, usize);
+    type Output = usize;
 
-fn puzzle(input: &str, iterations: usize) -> usize {
-    let initial_values: Vec<u64> = input
-        .lines()
-        .filter_map(|l| {
-            let parts: Vec<&str> = l.split_whitespace().collect();
-            assert_eq!(parts.len(), 5);
-            parts[4].parse().ok()
-        })
-        .collect();
+    fn name(&self) -> String {
+        "2017-D15-P1".to_owned()
+    }
 
-    assert_eq!(initial_values.len(), 2);
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example short",
+                (
+                    "Generator A starts with 65\nGenerator B starts with 8921\n",
+                    5,
+                ),
+                1,
+            )
+            .case(
+                "Example long",
+                (
+                    "Generator A starts with 65\nGenerator B starts with 8921\n",
+                    40_000_000,
+                ),
+                588,
+            )
+            .case("Solution", (include_str!("input"), 40_000_000), 650)
+            .collect()
+    }
 
-    let generator_a = Generator::new(initial_values[0], 16807);
-    let generator_b = Generator::new(initial_values[1], 48271);
+    fn run_puzzle((input, iterations): Self::Input) -> Self::Output {
+        let initial_values: Vec<u64> = input
+            .lines()
+            .filter_map(|l| {
+                let parts: Vec<&str> = l.split_whitespace().collect();
+                assert_eq!(parts.len(), 5);
+                parts[4].parse().ok()
+            })
+            .collect();
 
-    generator_a
-        .zip(generator_b)
-        .take(iterations)
-        .filter(|&(a, b)| (a & 0xFFFF) == (b & 0xFFFF))
-        .count()
+        assert_eq!(initial_values.len(), 2);
+
+        let generator_a = Generator::new(initial_values[0], 16807);
+        let generator_b = Generator::new(initial_values[1], 48271);
+
+        generator_a
+            .zip(generator_b)
+            .take(iterations)
+            .filter(|&(a, b)| (a & 0xFFFF) == (b & 0xFFFF))
+            .count()
+    }
 }
 
 struct Generator {
@@ -76,22 +100,4 @@ fn test_example_b() {
         vals,
         vec![430625591, 1233683848, 1431495498, 137874439, 285222916]
     );
-}
-
-#[test]
-fn test_example_short() {
-    let input = "Generator A starts with 65\nGenerator B starts with 8921\n";
-    assert_eq!(puzzle(input, 5), 1);
-}
-
-#[test]
-fn test_example_long() {
-    let input = "Generator A starts with 65\nGenerator B starts with 8921\n";
-    assert_eq!(puzzle(input, 40_000_000), 588);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input, 40_000_000), 650);
 }

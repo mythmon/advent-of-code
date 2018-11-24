@@ -1,35 +1,38 @@
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
-fn get_input() -> usize {
-    let input: &'static str = include_str!("input");
-    input.trim().parse().unwrap()
-}
+pub struct Day17Part2;
 
-fn puzzle(step: usize) -> u32 {
-    let max = 50_000_000;
+impl PuzzleRunner for Day17Part2 {
+    type Input = usize;
+    type Output = u32;
 
-    let mut val_after_0 = None;
-    let mut pos = 0;
-    let mut current_length = 1;
-
-    for i in 1..max {
-        pos = (pos + step) % current_length;
-        if pos == 0 {
-            val_after_0 = Some(i);
-        }
-        current_length += 1;
-        pos += 1;
+    fn name(&self) -> String {
+        "2017-D17-P2".to_owned()
     }
 
-    val_after_0.unwrap()
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_transform(|s| s.trim().parse().unwrap())
+            .transformed_case("Solution", include_str!("input"), 11_162_912)
+            .collect()
+    }
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    puzzle(input);
-    assert_eq!(puzzle(input), 11162912);
+    fn run_puzzle(step: Self::Input) -> Self::Output {
+        let max = 50_000_000;
+
+        let mut val_after_0 = None;
+        let mut pos = 0;
+        let mut current_length = 1;
+
+        for i in 1..max {
+            pos = (pos + step) % current_length;
+            if pos == 0 {
+                val_after_0 = Some(i);
+            }
+            current_length += 1;
+            pos += 1;
+        }
+
+        val_after_0.unwrap()
+    }
 }

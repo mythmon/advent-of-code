@@ -1,56 +1,65 @@
-#![feature(slice_patterns)]
-
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day18::{Instr, Machine};
+use indoc::{indoc, indoc_impl};
 use std::collections::VecDeque;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day18Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day18Part2 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-    let mut m0 = Machine::new(0, instructions.clone());
-    let mut m1 = Machine::new(1, instructions);
-
-    let mut io = VecDeque::new();
-    let mut to_m0_queue = m1.run_until_blocked(&mut io);
-    let mut m1_send_count = to_m0_queue.len();
-    let mut to_m1_queue = m0.run_until_blocked(&mut io);
-
-    loop {
-        io = m1.run_until_blocked(&mut to_m1_queue);
-        if io.len() == 0 {
-            // m0 is blocked on RCV, but m1 didn't SND anything.
-            break;
-        }
-        m1_send_count += io.len();
-        to_m0_queue.append(&mut io);
-
-        io = m0.run_until_blocked(&mut to_m0_queue);
-        if io.len() == 0 {
-            // m1 is blocked on RCV, but m0 didn't SND anything.
-            break;
-        }
-        to_m1_queue.append(&mut io);
+    fn name(&self) -> String {
+        "2017-D18-P2".to_owned()
     }
 
-    m1_send_count
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                indoc!(
+                    "
+                    snd 1
+                    snd 2
+                    snd p
+                    rcv a
+                    rcv b
+                    rcv c
+                    rcv d"
+                ),
+                3,
+            )
+            .case("Solution", include_str!("input"), 5_969)
+            .collect()
+    }
 
-#[test]
-fn test_example() {
-    let input = "snd 1\nsnd 2\nsnd p\nrcv a\nrcv b\nrcv c\nrcv d";
-    assert_eq!(puzzle(input), 3);
-}
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
+        let mut m0 = Machine::new(0, instructions.clone());
+        let mut m1 = Machine::new(1, instructions);
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 5_969);
+        let mut io = VecDeque::new();
+        let mut to_m0_queue = m1.run_until_blocked(&mut io);
+        let mut m1_send_count = to_m0_queue.len();
+        let mut to_m1_queue = m0.run_until_blocked(&mut io);
+
+        loop {
+            io = m1.run_until_blocked(&mut to_m1_queue);
+            if io.len() == 0 {
+                // m0 is blocked on RCV, but m1 didn't SND anything.
+                break;
+            }
+            m1_send_count += io.len();
+            to_m0_queue.append(&mut io);
+
+            io = m0.run_until_blocked(&mut to_m0_queue);
+            if io.len() == 0 {
+                // m1 is blocked on RCV, but m0 didn't SND anything.
+                break;
+            }
+            to_m1_queue.append(&mut io);
+        }
+
+        m1_send_count
+    }
 }

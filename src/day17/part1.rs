@@ -1,38 +1,36 @@
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
-fn get_input() -> usize {
-    let input: &'static str = include_str!("input");
-    input.trim().parse().unwrap()
-}
+pub struct Day17Part1;
 
-fn puzzle(step: usize) -> u32 {
-    let mut buffer = Vec::with_capacity(2018);
-    buffer.push(0);
-    let mut pos = 0;
+impl PuzzleRunner for Day17Part1 {
+    type Input = usize;
+    type Output = u32;
 
-    let max = 2018;
-
-    for i in 1..max {
-        pos = (pos + step) % buffer.len();
-        buffer.insert(pos + 1, i);
-        pos += 1;
+    fn name(&self) -> String {
+        "2017-D17-P1".to_owned()
     }
 
-    buffer[(pos + 1) % buffer.len()]
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_transform(|s| s.trim().parse().unwrap())
+            .case("Example", 3, 638)
+            .transformed_case("Solution", include_str!("input"), 1_244)
+            .collect()
+    }
 
-#[test]
-fn test_example() {
-    let input = 3;
-    assert_eq!(puzzle(input), 638);
-}
+    fn run_puzzle(step: Self::Input) -> Self::Output {
+        let mut buffer = Vec::with_capacity(2018);
+        buffer.push(0);
+        let mut pos = 0;
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    puzzle(input);
-    assert_eq!(puzzle(input), 1244);
+        let max = 2018;
+
+        for i in 1..max {
+            pos = (pos + step) % buffer.len();
+            buffer.insert(pos + 1, i);
+            pos += 1;
+        }
+
+        buffer[(pos + 1) % buffer.len()]
+    }
 }

@@ -63,11 +63,5 @@ fn knot(length: usize, instructions: Vec<usize>) -> Vec<usize> {
 #[test]
 fn test_knot_example() {
     let instructions = vec![3, 4, 1, 5];
-    assert_eq!(knot(5, &instructions), vec![3, 4, 2, 1, 0]);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(256, &input), 37230);
+    assert_eq!(knot(5, instructions), vec![3, 4, 2, 1, 0]);
 }

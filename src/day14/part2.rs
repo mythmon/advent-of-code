@@ -1,54 +1,60 @@
-#![feature(range_contains)]
-
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::day10::KnotHash;
 use std::collections::HashSet;
 use std::fmt;
 
-use crate::day10::KnotHash;
+pub struct Day14Part2;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+impl PuzzleRunner for Day14Part2 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input.trim()
-}
-
-fn puzzle(input: &str) -> usize {
-    let size = 128;
-    let grid = KnotGrid::from(input);
-    let mut groups_found = 0;
-    let mut todo = Vec::with_capacity(size * size);
-    let mut done = HashSet::with_capacity(size * size);
-
-    for x in 0..size {
-        for y in 0..size {
-            todo.push((x, y));
-        }
+    fn name(&self) -> String {
+        "2017-D14-P2".to_owned()
     }
 
-    for pos in todo.into_iter() {
-        if done.insert(pos) && grid.get(pos) {
-            groups_found += 1;
-            let mut group_todo = Vec::from(pos.neighbors(size));
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", "flqrgnkx", 1_242)
+            .case("Solution", include_str!("input").trim(), 1_180)
+            .collect()
+    }
 
-            while group_todo.len() > 0 {
-                let group_pos = group_todo.pop().unwrap();
-                done.insert(group_pos);
-                if grid.get(group_pos) {
-                    let mut ns: Vec<(usize, usize)> = group_pos
-                        .neighbors(size)
-                        .into_iter()
-                        .filter(|n| !done.contains(n))
-                        .collect();
-                    group_todo.append(&mut ns);
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let size = 128;
+        let grid = KnotGrid::from(input);
+        let mut groups_found = 0;
+        let mut todo = Vec::with_capacity(size * size);
+        let mut done = HashSet::with_capacity(size * size);
+
+        for x in 0..size {
+            for y in 0..size {
+                todo.push((x, y));
+            }
+        }
+
+        for pos in todo.into_iter() {
+            if done.insert(pos) && grid.get(pos) {
+                groups_found += 1;
+                let mut group_todo = Vec::from(pos.neighbors(size));
+
+                while group_todo.len() > 0 {
+                    let group_pos = group_todo.pop().unwrap();
+                    done.insert(group_pos);
+                    if grid.get(group_pos) {
+                        let mut ns: Vec<(usize, usize)> = group_pos
+                            .neighbors(size)
+                            .into_iter()
+                            .filter(|n| !done.contains(n))
+                            .collect();
+                        group_todo.append(&mut ns);
+                    }
                 }
             }
         }
-    }
 
-    groups_found
+        groups_found
+    }
 }
 
 struct KnotGrid {
@@ -115,18 +121,6 @@ impl Pos for (usize, usize) {
 
         rv
     }
-}
-
-#[test]
-fn test_example() {
-    let input = "flqrgnkx";
-    assert_eq!(puzzle(input), 1242);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 1180);
 }
 
 #[test]

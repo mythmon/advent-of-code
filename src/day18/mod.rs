@@ -1,6 +1,9 @@
 use std::collections::{HashMap, VecDeque};
 use std::str::FromStr;
 
+pub mod part1;
+pub mod part2;
+
 #[derive(Debug)]
 pub struct Machine {
     instructions: Vec<Instr>,

@@ -1,27 +1,49 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 use std::fmt;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input, 5));
-}
+pub struct Day21Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day21Part1 {
+    type Input = (&'static str, usize);
+    type Output = usize;
 
-fn puzzle(input: &str, iterations: usize) -> usize {
-    let rules: PatternSet = input.parse().unwrap();
-    let mut art = Grid::default();
-
-    for _ in 0..iterations {
-        let parts: Vec<Grid> = art.split().iter().map(|g| rules.apply_to(g)).collect();
-        art = Grid::assemble_from(parts);
+    fn name(&self) -> String {
+        "2017-D21-P1".to_owned()
     }
 
-    art.count()
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                (
+                    indoc!(
+                        "
+                ../.# => ##./#../...
+                .#./..#/### => #..#/..../..../#..#
+                "
+                    ),
+                    2,
+                ),
+                12,
+            )
+            .case("Solution", (include_str!("input"), 5), 117)
+            .collect()
+    }
+
+    fn run_puzzle((input, iterations): Self::Input) -> Self::Output {
+        let rules: PatternSet = input.parse().unwrap();
+        let mut art = Grid::default();
+
+        for _ in 0..iterations {
+            let parts: Vec<Grid> = art.split().iter().map(|g| rules.apply_to(g)).collect();
+            art = Grid::assemble_from(parts);
+        }
+
+        art.count()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -231,18 +253,6 @@ impl FromStr for PatternSet {
 
         Ok(rv)
     }
-}
-
-#[test]
-fn test_example() {
-    let input = "../.# => ##./#../...\n.#./..#/### => #..#/..../..../#..#";
-    assert_eq!(puzzle(input, 2), 12);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input, 5), 117);
 }
 
 #[test]

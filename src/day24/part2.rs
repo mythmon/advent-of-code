@@ -1,22 +1,30 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::VecDeque;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day24Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input.trim()
-}
+impl PuzzleRunner for Day24Part2 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let mut parts: VecDeque<Part> = input.lines().map(|l| l.parse().unwrap()).collect();
-    let mut bridges = vec![];
-    make_bridges(&mut bridges, &mut parts, Bridge(vec![]));
-    let bridge = bridges.iter().max_by_key(|b| (b.0.len(), b.strength()));
-    bridge.unwrap().strength()
+    fn name(&self) -> String {
+        "2017-D24-P2".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Solution", include_str!("input").trim(), 1_824)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut parts: VecDeque<Part> = input.lines().map(|l| l.parse().unwrap()).collect();
+        let mut bridges = vec![];
+        make_bridges(&mut bridges, &mut parts, Bridge(vec![]));
+        let bridge = bridges.iter().max_by_key(|b| (b.0.len(), b.strength()));
+        bridge.unwrap().strength()
+    }
 }
 
 fn make_bridges(bridges: &mut Vec<Bridge>, left: &mut VecDeque<Part>, partial_bridge: Bridge) {
@@ -99,12 +107,6 @@ impl FromStr for Part {
         assert_eq!(parts.len(), 2);
         Ok(Part(parts[0], parts[1]))
     }
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 1824);
 }
 
 #[test]

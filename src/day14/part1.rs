@@ -1,31 +1,28 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day10::KnotHash;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day14Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day14Part1 {
+    type Input = &'static str;
+    type Output = u32;
 
-fn puzzle(input: &str) -> u32 {
-    (0..128)
-        .map(|row| format!("{}-{}", input.trim(), row))
-        .flat_map(|row_input| KnotHash::new(&row_input).dense())
-        .map(|hash_part| hash_part.count_ones())
-        .sum()
-}
+    fn name(&self) -> String {
+        "2017-D14-P1".to_owned()
+    }
 
-#[test]
-fn test_example() {
-    let input = "flqrgnkx";
-    assert_eq!(puzzle(input), 8108);
-}
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", "flqrgnkx", 8108)
+            .case("Solution", include_str!("input"), 8148)
+            .collect()
+    }
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 8148);
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        (0..128)
+            .map(|row| format!("{}-{}", input.trim(), row))
+            .flat_map(|row_input| KnotHash::new(&row_input).dense())
+            .map(|hash_part| hash_part.count_ones())
+            .sum()
+    }
 }

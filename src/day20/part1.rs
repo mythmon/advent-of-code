@@ -1,23 +1,36 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day20Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day20Part1 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    input
-        .lines()
-        .map(|l| l.parse::<Particle>().unwrap())
-        .enumerate()
-        .min_by_key(|&(_, p)| p.position_at_time(1_000_000).manhattan())
-        .unwrap()
-        .0
+    fn name(&self) -> String {
+        "2017-D20-P1".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                "p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>\np=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>",
+                0,
+            )
+            .case("Solution", include_str!("input"), 308)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        input
+            .lines()
+            .map(|l| l.parse::<Particle>().unwrap())
+            .enumerate()
+            .min_by_key(|&(_, p)| p.position_at_time(1_000_000).manhattan())
+            .unwrap()
+            .0
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -92,18 +105,6 @@ impl From<(i64, i64, i64)> for Vec3 {
             z: t.2,
         }
     }
-}
-
-#[test]
-fn test_example() {
-    let input = "p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>\np=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>";
-    assert_eq!(puzzle(input), 0);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 308);
 }
 
 #[test]

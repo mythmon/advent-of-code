@@ -1,42 +1,51 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashSet;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day13Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day13Part2 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let scanners: Vec<Scanner> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-    let search_len = scanners.iter().fold(scanners[0].range, |acc, scanner| {
-        lcm(acc, scanner.cycle_length())
-    });
-    let mut search: Vec<bool> = Vec::with_capacity(search_len);
-    search.resize(search_len, true);
-
-    let sieve_values: HashSet<Scanner> = scanners.into_iter().collect();
-
-    for scanner in sieve_values {
-        let skip = {
-            let cycle = scanner.cycle_length() as i64;
-            let depth = scanner.depth as i64;
-            let mut skip = cycle - depth;
-            while skip < 0 {
-                skip += cycle;
-            }
-            skip as usize
-        };
-        for slot in search.iter_mut().skip(skip).step_by(scanner.cycle_length()) {
-            *slot = false;
-        }
+    fn name(&self) -> String {
+        "2017-D13-P2".to_owned()
     }
 
-    search.iter().enumerate().filter(|v| *v.1).next().unwrap().0
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", "0: 3\n1: 2\n4: 4\n6: 4\n", 10)
+            .case("Solution", include_str!("input"), 3876272)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let scanners: Vec<Scanner> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
+        let search_len = scanners.iter().fold(scanners[0].range, |acc, scanner| {
+            lcm(acc, scanner.cycle_length())
+        });
+        let mut search: Vec<bool> = Vec::with_capacity(search_len);
+        search.resize(search_len, true);
+
+        let sieve_values: HashSet<Scanner> = scanners.into_iter().collect();
+
+        for scanner in sieve_values {
+            let skip = {
+                let cycle = scanner.cycle_length() as i64;
+                let depth = scanner.depth as i64;
+                let mut skip = cycle - depth;
+                while skip < 0 {
+                    skip += cycle;
+                }
+                skip as usize
+            };
+            for slot in search.iter_mut().skip(skip).step_by(scanner.cycle_length()) {
+                *slot = false;
+            }
+        }
+
+        search.iter().enumerate().filter(|v| *v.1).next().unwrap().0
+    }
 }
 
 fn gcd(mut a: usize, mut b: usize) -> usize {
@@ -88,22 +97,5 @@ impl FromStr for Scanner {
         } else {
             Ok(Self::new(parts[0], parts[1]))
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_example() {
-        let input = "0: 3\n1: 2\n4: 4\n6: 4\n";
-        assert_eq!(puzzle(input), 10);
-    }
-
-    #[test]
-    fn test_correct_answer() {
-        let input = get_input();
-        assert_eq!(puzzle(input), 3876272);
     }
 }

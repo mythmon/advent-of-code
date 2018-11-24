@@ -1,26 +1,39 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use lazy_static::{__lazy_static_create, __lazy_static_internal, lazy_static};
 use regex::Regex;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(16, input));
-}
+pub struct Day16Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input.trim()
-}
+impl PuzzleRunner for Day16Part1 {
+    type Input = (usize, &'static str);
+    type Output = String;
 
-fn puzzle(num_dancers: usize, input: &str) -> String {
-    let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
-    let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
-
-    for instr in instructions {
-        instr.exec(&mut dancers);
+    fn name(&self) -> String {
+        "2017-D16-P1".to_owned()
     }
 
-    String::from_utf8(dancers).unwrap()
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", (5, "s1,x3/4,pe/b"), "baedc".to_owned())
+            .case(
+                "Solution",
+                (16, include_str!("input").trim()),
+                "kgdchlfniambejop".to_owned(),
+            )
+            .collect()
+    }
+
+    fn run_puzzle((num_dancers, input): Self::Input) -> Self::Output {
+        let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
+        let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
+
+        for instr in instructions {
+            instr.exec(&mut dancers);
+        }
+
+        String::from_utf8(dancers).unwrap()
+    }
 }
 
 enum Instruction {
@@ -85,16 +98,4 @@ fn test_example_series() {
     assert_eq!(dancers, "eabdc".bytes().collect::<Vec<u8>>());
     Instruction::Partner(b'e', b'b').exec(&mut dancers);
     assert_eq!(dancers, "baedc".bytes().collect::<Vec<u8>>());
-}
-
-#[test]
-fn test_example() {
-    let input = "s1,x3/4,pe/b";
-    assert_eq!(puzzle(5, input), "baedc");
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(16, input), "kgdchlfniambejop");
 }

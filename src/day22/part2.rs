@@ -1,26 +1,34 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 use std::str::FromStr;
 use std::{cmp, fmt};
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input, 10_000_000));
-}
+pub struct Day22Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day22Part2 {
+    type Input = (&'static str, usize);
+    type Output = usize;
 
-fn puzzle(input: &str, iterations: usize) -> usize {
-    let mut spores: Sporifica = input.parse().unwrap();
-
-    for _ in 0..iterations {
-        spores.tick();
+    fn name(&self) -> String {
+        "2017-D22-P2".to_owned()
     }
 
-    spores.infections
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example 1", ("..#\n#..\n...", 100), 26)
+            .case("Example 2", ("..#\n#..\n...", 10_000_000), 2_511_944)
+            .case("Solution", (include_str!("input"), 10_000_000), 2_511_722)
+            .collect()
+    }
+
+    fn run_puzzle((input, iterations): Self::Input) -> Self::Output {
+        let mut spores: Sporifica = input.parse().unwrap();
+        for _ in 0..iterations {
+            spores.tick();
+        }
+        spores.infections
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -211,13 +219,6 @@ impl Dir {
 }
 
 #[test]
-fn test_example() {
-    let input = "..#\n#..\n...";
-    assert_eq!(puzzle(input, 100), 26);
-    assert_eq!(puzzle(input, 10_000_000), 2_511_944);
-}
-
-#[test]
 fn test_graphical() {
     let input = "..#\n#..\n...";
     let mut spores: Sporifica = input.parse().unwrap();
@@ -230,10 +231,4 @@ fn test_graphical() {
     }
 
     assert_eq!(spores.infections, 1);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input, 10_000_000), 2_511_722);
 }

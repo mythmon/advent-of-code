@@ -1,33 +1,33 @@
-#![feature(slice_patterns)]
-
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day18::{Instr, InstrType, Machine};
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day23Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day23Part1 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-    let mut machine = Machine::new(0, instructions.clone());
-    machine.run();
-    *machine.debug_counts.get(&InstrType::Mul).unwrap()
-}
+    fn name(&self) -> String {
+        "2017-D23-P1".to_owned()
+    }
 
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 4225);
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Solution", include_str!("input"), 4_225)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
+        let mut machine = Machine::new(0, instructions.clone());
+        machine.run();
+        *machine.debug_counts.get(&InstrType::Mul).unwrap()
+    }
 }
 
 #[test]
 fn test_h() {
-    let input = get_input();
+    let input = include_str!("input");
     let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
     let mut machine = Machine::new(0, instructions.clone());
     machine.run();

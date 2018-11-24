@@ -1,48 +1,60 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use lazy_static::{__lazy_static_create, __lazy_static_internal, lazy_static};
 use regex::Regex;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(16, input));
-}
+pub struct Day16Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input.trim()
-}
+impl PuzzleRunner for Day16Part2 {
+    type Input = (usize, &'static str);
+    type Output = String;
 
-fn puzzle(num_dancers: usize, input: &str) -> String {
-    let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
-    let original_dancers = dancers.clone();
-    let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
-
-    let mut cycle_at = None;
-
-    for instr in instructions.iter() {
-        instr.exec(&mut dancers);
+    fn name(&self) -> String {
+        "2017-D16-P2".to_owned()
     }
 
-    for i in 1..1_000_000_000 {
-        if dancers == original_dancers {
-            cycle_at = Some(i);
-            break;
-        }
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Solution",
+                (16, include_str!("input").trim()),
+                "fjpmholcibdgeakn".to_owned(),
+            )
+            .collect()
+    }
+
+    fn run_puzzle((num_dancers, input): Self::Input) -> Self::Output {
+        let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
+        let original_dancers = dancers.clone();
+        let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
+
+        let mut cycle_at = None;
+
         for instr in instructions.iter() {
             instr.exec(&mut dancers);
         }
-    }
 
-    if let Some(cycle_at) = cycle_at {
-        dancers = original_dancers.clone();
-        for _ in 0..(1_000_000_000 % cycle_at) {
+        for i in 1..1_000_000_000 {
+            if dancers == original_dancers {
+                cycle_at = Some(i);
+                break;
+            }
             for instr in instructions.iter() {
                 instr.exec(&mut dancers);
             }
         }
-    }
 
-    String::from_utf8(dancers).unwrap()
+        if let Some(cycle_at) = cycle_at {
+            dancers = original_dancers.clone();
+            for _ in 0..(1_000_000_000 % cycle_at) {
+                for instr in instructions.iter() {
+                    instr.exec(&mut dancers);
+                }
+            }
+        }
+
+        String::from_utf8(dancers).unwrap()
+    }
 }
 
 #[derive(Debug)]
@@ -111,8 +123,4 @@ fn test_example_series() {
 }
 
 #[test]
-fn test_correct_answer() {
-    let input = get_input();
-    puzzle(16, input);
-    assert_eq!(puzzle(16, input), "fjpmholcibdgeakn");
-}
+fn test_correct_answer() {}

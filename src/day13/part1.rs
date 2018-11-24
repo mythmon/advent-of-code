@@ -1,40 +1,49 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::cmp;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day13Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day13Part1 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let mut scanners: HashMap<usize, Scanner> = HashMap::new();
-    let mut max_depth = 0;
-    for line in input.trim().lines() {
-        let scanner: Scanner = line.parse().unwrap();
-        max_depth = cmp::max(scanner.depth, max_depth);
-        scanners.insert(scanner.depth, scanner);
+    fn name(&self) -> String {
+        "2017-D13-P1".to_owned()
     }
 
-    let mut severity = 0;
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", "0: 3\n1: 2\n4: 4\n6: 4\n", 24)
+            .case("Solution", include_str!("input"), 2_688)
+            .collect()
+    }
 
-    for packet_position in 0..max_depth + 1 {
-        if let Some(scanner) = scanners.get(&packet_position) {
-            if scanner.position == 0 {
-                severity += scanner.severity();
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut scanners: HashMap<usize, Scanner> = HashMap::new();
+        let mut max_depth = 0;
+        for line in input.trim().lines() {
+            let scanner: Scanner = line.parse().unwrap();
+            max_depth = cmp::max(scanner.depth, max_depth);
+            scanners.insert(scanner.depth, scanner);
+        }
+
+        let mut severity = 0;
+
+        for packet_position in 0..max_depth + 1 {
+            if let Some(scanner) = scanners.get(&packet_position) {
+                if scanner.position == 0 {
+                    severity += scanner.severity();
+                }
+            }
+            for scanner in scanners.values_mut() {
+                scanner.tick();
             }
         }
-        for scanner in scanners.values_mut() {
-            scanner.tick();
-        }
-    }
 
-    severity
+        severity
+    }
 }
 
 #[derive(Debug)]
@@ -85,16 +94,4 @@ impl FromStr for Scanner {
             Ok(Self::new(parts[0], parts[1]))
         }
     }
-}
-
-#[test]
-fn test_example() {
-    let input = "0: 3\n1: 2\n4: 4\n6: 4\n";
-    assert_eq!(puzzle(input), 24);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 2688);
 }

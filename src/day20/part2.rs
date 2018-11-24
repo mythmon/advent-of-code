@@ -1,47 +1,61 @@
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::{HashMap, HashSet};
 use std::ops::AddAssign;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day20Part2;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day20Part2 {
+    type Input = &'static str;
+    type Output = usize;
 
-fn puzzle(input: &str) -> usize {
-    let mut particles: Vec<Particle> = input.lines().map(|l| l.parse().unwrap()).collect();
-
-    let escape_distance = 1_000_000;
-    let mut num_escaped = 0;
-    while particles.len() > 1 {
-        let mut positions: HashMap<Vec3, Vec<Particle>> = HashMap::new();
-        for p in particles.iter() {
-            let entry = positions.entry(p.p).or_insert(vec![]);
-            entry.push(*p);
-        }
-        let collided: HashSet<Particle> = positions
-            .values()
-            .filter(|entries| entries.len() > 1)
-            .flat_map(|es| es.clone())
-            .collect();
-        particles.retain(|p| !collided.contains(p));
-
-        for p in particles.iter_mut() {
-            p.tick();
-        }
-
-        let (keep, escaped) = particles
-            .into_iter()
-            .partition(|p| p.p.manhattan() < escape_distance);
-        particles = keep;
-        num_escaped += escaped.len();
+    fn name(&self) -> String {
+        "2017-D20-P2".to_owned()
     }
 
-    num_escaped + particles.len()
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                "p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\np=<-4,0,0>, v=< 2,0,0>, a=< \
+                 0,0,0>\np=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\np=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>",
+                1,
+            )
+            .case("Solution", include_str!("input"), 504)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut particles: Vec<Particle> = input.lines().map(|l| l.parse().unwrap()).collect();
+
+        let escape_distance = 1_000_000;
+        let mut num_escaped = 0;
+        while particles.len() > 1 {
+            let mut positions: HashMap<Vec3, Vec<Particle>> = HashMap::new();
+            for p in particles.iter() {
+                let entry = positions.entry(p.p).or_insert(vec![]);
+                entry.push(*p);
+            }
+            let collided: HashSet<Particle> = positions
+                .values()
+                .filter(|entries| entries.len() > 1)
+                .flat_map(|es| es.clone())
+                .collect();
+            particles.retain(|p| !collided.contains(p));
+
+            for p in particles.iter_mut() {
+                p.tick();
+            }
+
+            let (keep, escaped) = particles
+                .into_iter()
+                .partition(|p| p.p.manhattan() < escape_distance);
+            particles = keep;
+            num_escaped += escaped.len();
+        }
+
+        num_escaped + particles.len()
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
@@ -119,19 +133,6 @@ impl AddAssign for Vec3 {
         self.y += other.y;
         self.z += other.z;
     }
-}
-
-#[test]
-fn test_example() {
-    let input = "p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\np=<-4,0,0>, v=< 2,0,0>, a=< \
-                 0,0,0>\np=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\np=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>";
-    assert_eq!(puzzle(input), 1);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 504);
 }
 
 #[test]

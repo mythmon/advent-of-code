@@ -1,21 +1,45 @@
-#![feature(slice_patterns)]
-
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 use std::str::FromStr;
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day18Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day18Part1 {
+    type Input = &'static str;
+    type Output = i64;
 
-fn puzzle(input: &str) -> i64 {
-    let mut machine: Machine = input.parse().unwrap();
-    machine.run_until_recover()
+    fn name(&self) -> String {
+        "2017-D18-P1".to_owned()
+    }
+
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case(
+                "Example",
+                indoc!(
+                    "
+                    set a 1
+                    add a 2
+                    mul a a
+                    mod a 5
+                    snd a
+                    set a 0
+                    rcv a
+                    jgz a -1
+                    set a 1
+                    jgz a -2"
+                ),
+                4,
+            )
+            .case("Solution", include_str!("input"), 1_187)
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut machine: Machine = input.parse().unwrap();
+        machine.run_until_recover()
+    }
 }
 
 #[derive(Debug)]
@@ -140,17 +164,4 @@ impl FromStr for Arg {
             }
         }
     }
-}
-
-#[test]
-fn test_example() {
-    let input =
-        "set a 1\nadd a 2\nmul a a\nmod a 5\nsnd a\nset a 0\nrcv a\njgz a -1\nset a 1\njgz a -2";
-    assert_eq!(puzzle(input), 4);
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), 1187);
 }

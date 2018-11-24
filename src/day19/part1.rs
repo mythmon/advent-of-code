@@ -1,72 +1,80 @@
-#![feature(range_contains)]
+use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::ops::{Add, AddAssign};
 
-fn main() {
-    let input = get_input();
-    println!("{}", puzzle(input));
-}
+pub struct Day19Part1;
 
-fn get_input() -> &'static str {
-    let input: &'static str = include_str!("input");
-    input
-}
+impl PuzzleRunner for Day19Part1 {
+    type Input = &'static str;
+    type Output = String;
 
-fn puzzle(input: &str) -> String {
-    let mut grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-    let max_width = grid.iter().map(|row| row.len()).max().unwrap();
-    for row in grid.iter_mut() {
-        row.resize(max_width, ' ');
+    fn name(&self) -> String {
+        "2017-D19-P1".to_owned()
     }
 
-    let mut pos = None;
-    for (idx, cell) in grid[0].iter().enumerate() {
-        if *cell == '|' {
-            pos = Some(Pos::new(idx as i32, 0));
-            break;
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .case("Example", include_str!("example"), "ABCDEF".to_owned())
+            .case("Solution", include_str!("input"), "NDWHOYRUEA".to_owned())
+            .collect()
+    }
+
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let mut grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
+        let max_width = grid.iter().map(|row| row.len()).max().unwrap();
+        for row in grid.iter_mut() {
+            row.resize(max_width, ' ');
         }
-    }
-    let mut pos = pos.unwrap();
-    let mut dir = Dir::new(0, 1);
 
-    let mut journey = String::new();
-    loop {
-        pos += dir;
-        let c = grid[pos.y as usize][pos.x as usize];
-        match c {
-            '|' | '-' => (),
-            '+' => {
-                let right = dir.rotate90();
-                let left = right.rotate90().rotate90();
+        let mut pos = None;
+        for (idx, cell) in grid[0].iter().enumerate() {
+            if *cell == '|' {
+                pos = Some(Pos::new(idx as i32, 0));
+                break;
+            }
+        }
+        let mut pos = pos.unwrap();
+        let mut dir = Dir::new(0, 1);
 
-                let mut found = false;
+        let mut journey = String::new();
+        loop {
+            pos += dir;
+            let c = grid[pos.y as usize][pos.x as usize];
+            match c {
+                '|' | '-' => (),
+                '+' => {
+                    let right = dir.rotate90();
+                    let left = right.rotate90().rotate90();
 
-                for new_dir in [left, right].iter() {
-                    let new_pos = pos + *new_dir;
-                    if new_pos.x >= 0
-                        && new_pos.x < max_width as i32
-                        && new_pos.y >= 0
-                        && new_pos.y < grid.len() as i32
-                    {
-                        let c = grid[new_pos.y as usize][new_pos.x as usize];
-                        if c != ' ' {
-                            dir = *new_dir;
-                            found = true;
-                            break;
+                    let mut found = false;
+
+                    for new_dir in [left, right].iter() {
+                        let new_pos = pos + *new_dir;
+                        if new_pos.x >= 0
+                            && new_pos.x < max_width as i32
+                            && new_pos.y >= 0
+                            && new_pos.y < grid.len() as i32
+                        {
+                            let c = grid[new_pos.y as usize][new_pos.x as usize];
+                            if c != ' ' {
+                                dir = *new_dir;
+                                found = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if !found {
-                    panic!("couldn't find anywhere to go");
+                    if !found {
+                        panic!("couldn't find anywhere to go");
+                    }
                 }
+                c if ('A'..='Z').contains(&c) => journey.push(c),
+                ' ' => break,
+                c => panic!(format!("unexpected character '{}'", c)),
             }
-            c if ('A'..='Z').contains(&c) => journey.push(c),
-            ' ' => break,
-            c => panic!(format!("unexpected character '{}'", c)),
         }
-    }
 
-    journey
+        journey
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -119,16 +127,4 @@ impl Dir {
             y: self.x,
         }
     }
-}
-
-#[test]
-fn test_example() {
-    let input: &'static str = include_str!("example");
-    assert_eq!(puzzle(input), "ABCDEF");
-}
-
-#[test]
-fn test_correct_answer() {
-    let input = get_input();
-    assert_eq!(puzzle(input), "NDWHOYRUEA");
 }
