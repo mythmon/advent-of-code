@@ -42,13 +42,10 @@ struct Particle {
 }
 
 impl Particle {
-    fn position_at_time(&self, t: i64) -> Vec3 {
-        let p = self.p;
-        let v = self.v;
-        let a = self.a;
-        let x = p.x + v.x * t + a.x * t.pow(2) / 2;
-        let y = p.y + v.y * t + a.y * t.pow(2) / 2;
-        let z = p.z + v.z * t + a.z * t.pow(2) / 2;
+    fn position_at_time(&self, time: i64) -> Vec3 {
+        let x = self.p.x + self.v.x * time + self.a.x * time.pow(2) / 2;
+        let y = self.p.y + self.v.y * time + self.a.y * time.pow(2) / 2;
+        let z = self.p.z + self.v.z * time + self.a.z * time.pow(2) / 2;
         (x, y, z).into()
     }
 }
@@ -59,7 +56,7 @@ impl FromStr for Particle {
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         // p=<-4897,3080,2133>, v=<-58,-15,-78>, a=<17,-7,0>
         // -0------|-1--|-2---|-3-----|-4-|-5--|-6----|7-|8-
-        let parts: Vec<&str> = input.split(",").collect();
+        let parts: Vec<&str> = input.split(',').collect();
         assert_eq!(parts.len(), 9);
 
         Ok(Self {

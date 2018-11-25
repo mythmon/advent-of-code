@@ -16,6 +16,7 @@ impl PuzzleRunner for Day07Part2 {
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        // spell-checker: disable
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
             .transformed_case(
@@ -41,6 +42,7 @@ impl PuzzleRunner for Day07Part2 {
             )
             .transformed_case("Solution", include_str!("input"), 1_526)
             .collect()
+        // spell-checker: enable
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -48,7 +50,7 @@ impl PuzzleRunner for Day07Part2 {
 
         for node in input.iter() {
             for held in node.holding.iter() {
-                let entry = held_by.entry(held).or_insert(vec![]);
+                let entry = held_by.entry(held).or_insert_with(Vec::new);
                 entry.push(node.name.clone());
             }
         }
@@ -60,7 +62,7 @@ impl PuzzleRunner for Day07Part2 {
             }
         }
 
-        if founds.len() == 0 {
+        if founds.is_empty() {
             panic!("didn't find a bottom");
         } else if founds.len() > 1 {
             panic!("found {} bottoms! {:?}", founds.len(), founds);
@@ -74,7 +76,7 @@ impl PuzzleRunner for Day07Part2 {
 
         let mut node_descriptions = input.clone();
 
-        while node_descriptions.len() > 0 {
+        while !node_descriptions.is_empty() {
             let node_desc = node_descriptions.pop().unwrap();
             let mut ready = true;
             for held_name in node_desc.holding.iter() {
@@ -92,14 +94,14 @@ impl PuzzleRunner for Day07Part2 {
                     holding: node_desc
                         .holding
                         .iter()
-                        .map(|held_name| Rc::downgrade(named_nodes.get(held_name).unwrap()))
+                        .map(|held_name| Rc::downgrade(&named_nodes[held_name]))
                         .collect(),
                 };
                 named_nodes.insert(node.name.clone(), Rc::new(node));
             }
         }
 
-        let root_node = named_nodes.get(&root_name).unwrap();
+        let root_node: &Rc<Node> = &named_nodes[&root_name];
         root_node.find_unbalance()
     }
 }
@@ -115,33 +117,33 @@ impl FromStr for NodeDesc {
     type Err = ();
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let parts: Vec<String> = input.split_whitespace().map(|s| String::from(s)).collect();
+        let parts: Vec<String> = input.split_whitespace().map(String::from).collect();
 
         if parts.len() == 2 {
             let weight = parts[1]
-                .trim_left_matches("(")
-                .trim_right_matches(")")
+                .trim_left_matches('(')
+                .trim_right_matches(')')
                 .parse()
                 .unwrap();
             Ok(NodeDesc {
                 name: parts[0].clone(),
                 holding: vec![],
-                weight: weight,
+                weight,
             })
         } else if parts.len() >= 4 {
             let holding: Vec<String> = parts[3..]
                 .iter()
-                .map(|s| String::from(s.trim_right_matches(",")))
+                .map(|s| String::from(s.trim_right_matches(',')))
                 .collect();
             let weight = parts[1]
-                .trim_left_matches("(")
-                .trim_right_matches(")")
+                .trim_left_matches('(')
+                .trim_right_matches(')')
                 .parse()
                 .unwrap();
             Ok(NodeDesc {
                 name: parts[0].clone(),
-                holding: holding,
-                weight: weight,
+                holding,
+                weight,
             })
         } else {
             panic!(format!(
@@ -174,7 +176,7 @@ impl Node {
     }
 
     fn is_balanced(&self) -> bool {
-        if self.holding.len() == 0 {
+        if self.holding.is_empty() {
             true
         } else {
             let subweights = self.subweights();
@@ -189,13 +191,13 @@ impl Node {
     }
 
     fn find_unbalance(&self) -> u32 {
-        assert!(self.holding.len() > 0);
+        assert!(!self.holding.is_empty());
         let mut map = HashMap::new();
 
         for child in self.holding.iter() {
             let entry = map
                 .entry(child.upgrade().unwrap().total_weight())
-                .or_insert(vec![]);
+                .or_insert_with(Vec::new);
             entry.push(child);
         }
 

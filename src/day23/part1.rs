@@ -22,7 +22,7 @@ impl PuzzleRunner for Day23Part1 {
         let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
         let mut machine = Machine::new(0, instructions.clone());
         machine.run();
-        *machine.debug_counts.get(&InstrType::Mul).unwrap()
+        machine.debug_counts[&InstrType::Mul]
     }
 }
 

@@ -66,8 +66,8 @@ struct Generator {
 impl Generator {
     fn new(initial_value: u64, factor: u64) -> Self {
         Self {
-            factor: factor,
-            divisor: 2147483647,
+            factor,
+            divisor: 2_147_483_647,
             last_value: initial_value,
         }
     }
@@ -89,7 +89,13 @@ fn test_example_a() {
     let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
         values,
-        vec![1092455, 1181022009, 245556042, 1744312007, 1352636452]
+        vec![
+            1_092_455,
+            1_181_022_009,
+            245_556_042,
+            1_744_312_007,
+            1_352_636_452
+        ]
     );
 }
 
@@ -99,6 +105,12 @@ fn test_example_b() {
     let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
         values,
-        vec![430625591, 1233683848, 1431495498, 137874439, 285222916]
+        vec![
+            430_625_591,
+            1_233_683_848,
+            1_431_495_498,
+            137_874_439,
+            285_222_916
+        ]
     );
 }

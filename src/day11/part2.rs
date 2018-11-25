@@ -20,7 +20,7 @@ impl PuzzleRunner for Day11Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         input
-            .split(",")
+            .split(',')
             .filter_map(|p| p.trim().parse().ok())
             .scan(HexVec::zero(), |a, b: HexDir| {
                 *a += b;

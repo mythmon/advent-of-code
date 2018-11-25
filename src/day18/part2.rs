@@ -46,7 +46,7 @@ impl PuzzleRunner for Day18Part2 {
 
         loop {
             io = m1.run_until_blocked(&mut to_m1_queue);
-            if io.len() == 0 {
+            if io.is_empty() {
                 // m0 is blocked on RCV, but m1 didn't SND anything.
                 break;
             }
@@ -54,7 +54,7 @@ impl PuzzleRunner for Day18Part2 {
             to_m0_queue.append(&mut io);
 
             io = m0.run_until_blocked(&mut to_m0_queue);
-            if io.len() == 0 {
+            if io.is_empty() {
                 // m1 is blocked on RCV, but m0 didn't SND anything.
                 break;
             }

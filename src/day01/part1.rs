@@ -28,8 +28,7 @@ impl PuzzleRunner for Day01Part1 {
             .map(|c| c.to_digit(10).unwrap())
             .collect();
 
-        let first = input.first().unwrap().clone();
-        input.push(first);
+        input.push(*input.first().unwrap());
 
         let mut sum = 0;
         for (&a, &b) in input.iter().zip(&input[1..]) {

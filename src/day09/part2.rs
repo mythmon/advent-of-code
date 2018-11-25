@@ -31,9 +31,9 @@ impl PuzzleRunner for Day09Part2 {
         let mut state_stack = vec![];
 
         for c in input.trim().chars() {
-            let state = state_stack.last().map(|s| *s);
+            let state = state_stack.last();
             match (state, c) {
-                (Some(s), '!') if s != Cancel => {
+                (Some(&s), '!') if s != Cancel => {
                     state_stack.push(Cancel);
                 }
                 (Some(Cancel), _) => {

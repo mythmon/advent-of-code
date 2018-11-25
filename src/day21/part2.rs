@@ -40,7 +40,7 @@ impl PuzzleRunner for Day21Part2 {
 
         for _ in 0..iterations {
             let parts: Vec<Grid> = art.split().iter().map(|g| rules.apply_to(g)).collect();
-            art = Grid::assemble_from(parts);
+            art = Grid::assemble_from(&parts);
         }
 
         art.count()
@@ -58,10 +58,10 @@ impl Grid {
         row.resize(size, false);
         let mut cells = Vec::with_capacity(size);
         cells.resize(size, row);
-        Self { cells: cells }
+        Self { cells }
     }
 
-    fn assemble_from(parts: Vec<Grid>) -> Grid {
+    fn assemble_from(parts: &[Grid]) -> Grid {
         let num_subgrids_wide = (parts.len() as f64).sqrt() as usize;
         assert_eq!(num_subgrids_wide * num_subgrids_wide, parts.len());
         let subgrid_size = parts[0].size();
@@ -99,8 +99,9 @@ impl Grid {
     fn flip(&self) -> Self {
         let new_cells = self
             .cells
-            .iter()
-            .map(|row| row.iter().rev().map(|c| *c).collect())
+            .clone()
+            .into_iter()
+            .map(|row| row.into_iter().rev().collect())
             .collect();
         Self { cells: new_cells }
     }
@@ -183,7 +184,7 @@ impl FromStr for Grid {
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let cells: Vec<Vec<bool>> = input
-            .split("/")
+            .split('/')
             .map(|row_string| {
                 row_string
                     .chars()
@@ -195,7 +196,7 @@ impl FromStr for Grid {
                     .collect()
             })
             .collect();
-        Ok(Self { cells: cells })
+        Ok(Self { cells })
     }
 }
 
@@ -209,7 +210,7 @@ impl fmt::Display for Grid {
                     write!(formatter, ".")?;
                 }
             }
-            write!(formatter, "\n")?;
+            writeln!(formatter)?;
         }
         Ok(())
     }
@@ -227,7 +228,7 @@ impl PatternSet {
         }
     }
 
-    fn add_rule(&mut self, from: Grid, to: Grid) {
+    fn add_rule(&mut self, from: &Grid, to: &Grid) {
         for variant in from.variants() {
             self.patterns.insert(variant, to.clone());
         }
@@ -249,7 +250,7 @@ impl FromStr for PatternSet {
             assert_eq!(parts.len(), 2);
             let to = parts.pop().unwrap();
             let from = parts.pop().unwrap();
-            rv.add_rule(from, to);
+            rv.add_rule(&from, &to);
         }
 
         Ok(rv)

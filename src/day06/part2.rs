@@ -21,7 +21,7 @@ impl PuzzleRunner for Day06Part2 {
     }
 
     fn run_puzzle(mut input: Self::Input) -> Self::Output {
-        if input.len() == 0 {
+        if input.is_empty() {
             return 0;
         }
 
@@ -41,13 +41,13 @@ impl PuzzleRunner for Day06Part2 {
 
             let remaining = max;
             input[max_idx] = 0;
-            for idx in (max_idx + 1)..(max_idx + remaining + 1) {
+            for idx in (max_idx + 1)..=(max_idx + remaining) {
                 let wrapped_idx = idx % input.len();
                 input[wrapped_idx] += 1;
             }
 
             if seen_at.contains_key(&input) {
-                return count - seen_at.get(&input).unwrap();
+                return count - seen_at[&input];
             }
             seen_at.insert(input.clone(), count);
         }

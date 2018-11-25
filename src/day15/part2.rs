@@ -67,10 +67,10 @@ struct Generator {
 impl Generator {
     fn with_multiple_of(initial_value: u64, factor: u64, multiple_of: u64) -> Self {
         Self {
-            factor: factor,
-            divisor: 2147483647,
+            factor,
+            divisor: 2_147_483_647,
             last_value: initial_value,
-            multiple_of: multiple_of,
+            multiple_of,
         }
     }
 }
@@ -92,19 +92,31 @@ impl Iterator for Generator {
 #[test]
 fn test_example_a() {
     let g = Generator::with_multiple_of(65, 16807, 4);
-    let vals: Vec<u64> = g.take(5).collect();
+    let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
-        vals,
-        vec![1352636452, 1992081072, 530830436, 1980017072, 740335192]
+        values,
+        vec![
+            1_352_636_452,
+            1_992_081_072,
+            530_830_436,
+            1_980_017_072,
+            740_335_192
+        ]
     );
 }
 
 #[test]
 fn test_example_b() {
     let g = Generator::with_multiple_of(8921, 48271, 8);
-    let vals: Vec<u64> = g.take(5).collect();
+    let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
-        vals,
-        vec![1233683848, 862516352, 1159784568, 1616057672, 412269392]
+        values,
+        vec![
+            1_233_683_848,
+            862_516_352,
+            1_159_784_568,
+            1_616_057_672,
+            412_269_392
+        ]
     );
 }

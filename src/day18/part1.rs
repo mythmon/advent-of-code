@@ -75,8 +75,6 @@ impl Machine {
                 Instr::Rcv(a) => {
                     if self.value(&a) != 0 {
                         break;
-                    } else {
-                        ()
                     }
                 }
                 Instr::Jgz(a1, a2) => {

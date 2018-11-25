@@ -19,7 +19,7 @@ impl PuzzleRunner for Day16Part2 {
             .case(
                 "Solution",
                 (16, include_str!("input").trim()),
-                "fjpmholcibdgeakn".to_owned(),
+                "fjpmholcibdgeakn".to_owned(), // spell-checker: disable-line
             )
             .collect()
     }
@@ -27,7 +27,7 @@ impl PuzzleRunner for Day16Part2 {
     fn run_puzzle((num_dancers, input): Self::Input) -> Self::Output {
         let mut dancers: Vec<u8> = (b'a'..=b'z').take(num_dancers).collect();
         let original_dancers = dancers.clone();
-        let instructions: Vec<Instruction> = input.split(",").map(|p| p.parse().unwrap()).collect();
+        let instructions: Vec<Instruction> = input.split(',').map(|p| p.parse().unwrap()).collect();
 
         let mut cycle_at = None;
 
@@ -68,14 +68,14 @@ enum Instruction {
 impl Instruction {
     fn exec(&self, dancers: &mut [u8]) {
         let l = dancers.len();
-        match self {
-            &Instruction::Spin(x) => {
+        match *self {
+            Instruction::Spin(x) => {
                 dancers.rotate_left(l - x);
             }
-            &Instruction::Exchange(a_idx, b_idx) => {
+            Instruction::Exchange(a_idx, b_idx) => {
                 dancers.swap(a_idx, b_idx);
             }
-            &Instruction::Partner(a, b) => {
+            Instruction::Partner(a, b) => {
                 let a_idx = dancers.iter().position(|&d| d == a).unwrap();
                 let b_idx = dancers.iter().position(|&d| d == b).unwrap();
                 dancers.swap(a_idx, b_idx);

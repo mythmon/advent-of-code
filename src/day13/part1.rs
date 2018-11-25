@@ -32,7 +32,7 @@ impl PuzzleRunner for Day13Part1 {
 
         let mut severity = 0;
 
-        for packet_position in 0..max_depth + 1 {
+        for packet_position in 0..=max_depth {
             if let Some(scanner) = scanners.get(&packet_position) {
                 if scanner.position == 0 {
                     severity += scanner.severity();
@@ -58,8 +58,8 @@ struct Scanner {
 impl Scanner {
     fn new(depth: usize, range: usize) -> Self {
         Self {
-            depth: depth,
-            range: range,
+            depth,
+            range,
             position: 0,
             going_up: true,
         }

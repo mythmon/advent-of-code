@@ -34,7 +34,7 @@ impl PuzzleRunner for Day20Part2 {
         while particles.len() > 1 {
             let mut positions: HashMap<Vec3, Vec<Particle>> = HashMap::new();
             for p in particles.iter() {
-                let entry = positions.entry(p.p).or_insert(vec![]);
+                let entry = positions.entry(p.p).or_insert_with(Vec::new);
                 entry.push(*p);
             }
             let collided: HashSet<Particle> = positions
@@ -77,9 +77,10 @@ impl FromStr for Particle {
     type Err = std::num::ParseIntError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        // p=<-4897,3080,2133>, v=<-58,-15,-78>, a=<17,-7,0>
-        // -0------|-1--|-2---|-3-----|-4-|-5--|-6----|7-|8-
-        let parts: Vec<&str> = input.split(",").collect();
+        // The groups after the comma split look like this
+        //    p=<-4897,3080,2133>, v=<-58,-15,-78>, a=<17,-7,0>
+        //    -0------|-1--|-2---|-3-----|-4-|-5--|-6----|7-|8-
+        let parts: Vec<&str> = input.split(',').collect();
         assert_eq!(parts.len(), 9);
 
         Ok(Self {

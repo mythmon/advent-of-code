@@ -21,7 +21,7 @@ impl PuzzleRunner for Day03Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         GridStressValues::new()
-            .skip_while(|v| v <= &input)
+            .skip_while(|v| *v <= input)
             .next()
             .unwrap()
     }
@@ -46,10 +46,13 @@ impl GridStressValues {
 impl Iterator for GridStressValues {
     type Item = u32;
 
+    // I can't figure out how to use the entry API since the value to be
+    // inserted depends on borrowing `self` again.
+    #[allow(clippy::map_entry)]
     fn next(&mut self) -> Option<Self::Item> {
         let p = self.coords.next().unwrap();
         if self.values.contains_key(&p) {
-            Some(*self.values.get(&p).unwrap())
+            Some(self.values[&p])
         } else {
             let s = p
                 .neighbors()
@@ -70,7 +73,7 @@ struct GridCoordinate {
 
 impl GridCoordinate {
     fn new(x: i32, y: i32) -> Self {
-        Self { x: x, y: y }
+        Self { x, y }
     }
 
     fn neighbors(self) -> Vec<Self> {
@@ -161,7 +164,7 @@ impl Direction {
         if x < -1 || x > 1 || y < -1 || y > 1 || (x == 0 && y == 0) {
             panic!(format!("Invalid direction ({}, {})", x, y));
         }
-        Self { x: x, y: y }
+        Self { x, y }
     }
 
     fn rotate90(self) -> Self {

@@ -146,7 +146,7 @@ impl fmt::Display for Sporifica {
                     write!(formatter, " {} ", state)?;
                 }
             }
-            write!(formatter, "\n")?;
+            writeln!(formatter)?;
         }
 
         Ok(())
@@ -161,7 +161,7 @@ struct Pos {
 
 impl Pos {
     fn new(x: i32, y: i32) -> Self {
-        Self { x: x, y: y }
+        Self { x, y }
     }
 }
 
@@ -194,7 +194,7 @@ impl Dir {
         if x < -1 || x > 1 || y < -1 || y > 1 || (x == 0 && y == 0) {
             panic!(format!("Invalid direction ({}, {})", x, y));
         }
-        Self { x: x, y: y }
+        Self { x, y }
     }
 
     fn rotate_left(self) -> Self {

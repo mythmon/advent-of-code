@@ -25,7 +25,7 @@ impl PuzzleRunner for Day11Part1 {
     fn run_puzzle(input: Self::Input) -> Self::Output {
         input
             .trim()
-            .split(",")
+            .split(',')
             .filter_map(|p| p.trim().parse().ok())
             .fold(HexVec::zero(), |a, b: HexDir| a + b)
             .size() as u32

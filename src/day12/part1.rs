@@ -30,7 +30,7 @@ impl PuzzleRunner for Day12Part1 {
                 let parts: Vec<&str> = l.split(" <-> ").collect();
                 assert_eq!(parts.len(), 2);
                 parts[1]
-                    .split(",")
+                    .split(',')
                     .map(|p| p.trim().parse().unwrap())
                     .collect()
             })

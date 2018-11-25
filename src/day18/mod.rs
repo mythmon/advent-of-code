@@ -15,11 +15,11 @@ pub struct Machine {
 
 impl Machine {
     pub fn new(id: i64, instructions: Vec<Instr>) -> Self {
-        let mut reg = HashMap::new();
-        reg.insert('p', id);
+        let mut registers = HashMap::new();
+        registers.insert('p', id);
         Self {
-            instructions: instructions,
-            registers: reg,
+            instructions,
+            registers,
             last_sound: None,
             program_counter: 0,
             debug_counts: HashMap::new(),

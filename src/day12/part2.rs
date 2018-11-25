@@ -30,7 +30,7 @@ impl PuzzleRunner for Day12Part2 {
                 let parts: Vec<&str> = l.split(" <-> ").collect();
                 assert_eq!(parts.len(), 2);
                 parts[1]
-                    .split(",")
+                    .split(',')
                     .map(|p| p.trim().parse().unwrap())
                     .collect()
             })
@@ -39,7 +39,7 @@ impl PuzzleRunner for Day12Part2 {
 
         let mut group_count = 0;
 
-        while connections.len() > 0 {
+        while !connections.is_empty() {
             let mut group = HashSet::new();
             group.insert(connections[0].0);
 

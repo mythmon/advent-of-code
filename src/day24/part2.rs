@@ -22,13 +22,13 @@ impl PuzzleRunner for Day24Part2 {
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut parts: VecDeque<Part> = input.lines().map(|l| l.parse().unwrap()).collect();
         let mut bridges = vec![];
-        make_bridges(&mut bridges, &mut parts, Bridge(vec![]));
+        make_bridges(&mut bridges, &mut parts, &mut Bridge(vec![]));
         let bridge = bridges.iter().max_by_key(|b| (b.0.len(), b.strength()));
         bridge.unwrap().strength()
     }
 }
 
-fn make_bridges(bridges: &mut Vec<Bridge>, left: &mut VecDeque<Part>, partial_bridge: Bridge) {
+fn make_bridges(bridges: &mut Vec<Bridge>, left: &mut VecDeque<Part>, partial_bridge: &mut Bridge) {
     // backtrack algorithm from wikipedia
     // procedure bt(c)
     //     if reject(P,c) then return
@@ -49,9 +49,9 @@ fn make_bridges(bridges: &mut Vec<Bridge>, left: &mut VecDeque<Part>, partial_br
     for _ in 0..left.len() {
         let part = left.pop_back().unwrap();
         let new_bridge = partial_bridge.add(part);
-        if let Some(new_bridge) = new_bridge {
+        if let Some(mut new_bridge) = new_bridge {
             bridges.push(new_bridge.clone());
-            make_bridges(bridges, left, new_bridge);
+            make_bridges(bridges, left, &mut new_bridge);
         }
         left.push_front(part);
     }
@@ -81,7 +81,7 @@ impl Bridge {
     }
 
     fn next_match(&self) -> usize {
-        if self.0.len() == 0 {
+        if self.0.is_empty() {
             0
         } else {
             self.0[self.0.len() - 1].1
@@ -94,9 +94,7 @@ struct Part(usize, usize);
 
 impl Part {
     fn flip(&mut self) {
-        let t = self.0;
-        self.0 = self.1;
-        self.1 = t;
+        std::mem::swap(&mut self.0, &mut self.1);
     }
 }
 
@@ -104,7 +102,7 @@ impl FromStr for Part {
     type Err = ();
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let parts: Vec<usize> = input.split("/").map(|p| p.parse().unwrap()).collect();
+        let parts: Vec<usize> = input.split('/').map(|p| p.parse().unwrap()).collect();
         assert_eq!(parts.len(), 2);
         Ok(Part(parts[0], parts[1]))
     }

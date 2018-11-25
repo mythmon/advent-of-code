@@ -16,7 +16,7 @@ impl PuzzleRunner for Day13Part2 {
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example", "0: 3\n1: 2\n4: 4\n6: 4\n", 10)
-            .case("Solution", include_str!("input"), 3876272)
+            .case("Solution", include_str!("input"), 3_876_272)
             .collect()
     }
 
@@ -45,7 +45,7 @@ impl PuzzleRunner for Day13Part2 {
             }
         }
 
-        search.iter().enumerate().filter(|v| *v.1).next().unwrap().0
+        search.iter().enumerate().find(|v| *v.1).unwrap().0
     }
 }
 
@@ -72,10 +72,7 @@ struct Scanner {
 impl Scanner {
     fn new(depth: usize, range: usize) -> Self {
         assert!(range >= 1);
-        Self {
-            depth: depth,
-            range: range,
-        }
+        Self { depth, range }
     }
 
     #[inline]

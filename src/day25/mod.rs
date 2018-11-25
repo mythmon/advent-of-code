@@ -21,7 +21,7 @@ impl PuzzleRunner for Day25 {
 
     fn run_puzzle(_input: Self::Input) -> Self::Output {
         let mut machine = puzzle_machine();
-        machine.run(12523873);
+        machine.run(12_523_873);
         machine.diagnostics()
     }
 }
@@ -76,7 +76,7 @@ impl TuringMachine {
 
     fn tick(&mut self) {
         let tape = *self.tape.get(&self.pos).unwrap_or(&'0');
-        let &(next_tape, dir, next_state) = self.rules.get(&(self.state, tape)).unwrap();
+        let (next_tape, dir, next_state) = self.rules[&(self.state, tape)];
         self.tape.insert(self.pos, next_tape);
         self.state = next_state;
         match dir {

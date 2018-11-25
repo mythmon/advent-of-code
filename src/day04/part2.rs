@@ -13,6 +13,7 @@ impl PuzzleRunner for Day04Part2 {
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        // spell-checker: disable
         GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Example",
@@ -22,6 +23,7 @@ impl PuzzleRunner for Day04Part2 {
             )
             .case("Solution", include_str!("input"), 251)
             .collect()
+        // spell-checker: enable
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -31,7 +33,7 @@ impl PuzzleRunner for Day04Part2 {
 
 fn is_valid(passphrase: &str) -> bool {
     let mut seen_words: HashSet<&str> = HashSet::new();
-    let words: Vec<&str> = passphrase.split(" ").collect();
+    let words: Vec<&str> = passphrase.split(' ').collect();
 
     for (idx, word1) in words.iter().enumerate() {
         if seen_words.contains(word1) {
@@ -63,7 +65,7 @@ fn letter_counts(s: &str) -> HashMap<char, usize> {
 
 #[test]
 fn test_valid_example_1() {
-    assert!(is_valid("abcde fghij"));
+    assert!(is_valid("abcde fghij")); // spell-checker: disable-line
 }
 
 #[test]
@@ -78,12 +80,12 @@ fn test_valid_example_3() {
 
 #[test]
 fn test_valid_example_4() {
-    assert!(is_valid("iiii oiii ooii oooi oooo"));
+    assert!(is_valid("iiii oiii ooii oooi oooo")); // spell-checker: disable-line
 }
 
 #[test]
 fn test_valid_example_5() {
-    assert!(!is_valid("oiii ioii iioi iiio"));
+    assert!(!is_valid("oiii ioii iioi iiio")); // spell-checker: disable-line
 }
 
 #[test]

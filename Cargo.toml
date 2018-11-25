@@ -15,13 +15,11 @@ colored = "^1.6.1"
 indoc = "^0.2"
 rayon = "^1.0.3"
 
+# Most of the running is in release mode, to make puzzles go fast. So turn on
+# some niceties that debug mode includes.
 [profile.release]
 incremental = true
 overflow-checks = true
-
-[lib]
-name = "advent"
-path = "src/lib.rs"
 
 [[bin]]
 name = "advent"

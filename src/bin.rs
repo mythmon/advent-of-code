@@ -1,3 +1,5 @@
+#![deny(clippy::all)]
+
 use colored::Colorize;
 use rayon::prelude::*;
 use std::collections::BTreeMap;

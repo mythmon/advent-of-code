@@ -30,7 +30,7 @@ impl PuzzleRunner for Day04Part1 {
 
 fn is_valid(passphrase: &str) -> bool {
     let mut seen_words = HashSet::new();
-    for word in passphrase.split(" ") {
+    for word in passphrase.split(' ') {
         if seen_words.contains(word) {
             return false;
         } else {
