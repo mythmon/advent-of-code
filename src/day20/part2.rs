@@ -3,6 +3,7 @@ use std::collections::{HashMap, HashSet};
 use std::ops::AddAssign;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day20Part2;
 
 impl PuzzleRunner for Day20Part2 {

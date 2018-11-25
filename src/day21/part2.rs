@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day21Part2;
 
 impl PuzzleRunner for Day21Part2 {

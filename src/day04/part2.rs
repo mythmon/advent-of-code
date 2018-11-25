@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::{HashMap, HashSet};
 
+#[derive(Debug)]
 pub struct Day04Part2;
 
 impl PuzzleRunner for Day04Part2 {

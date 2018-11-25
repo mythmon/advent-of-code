@@ -3,6 +3,7 @@ use crate::day08::{Instruction, Operation};
 use std::cmp;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub struct Day08Part2;
 
 impl PuzzleRunner for Day08Part2 {

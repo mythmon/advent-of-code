@@ -2,6 +2,7 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::VecDeque;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day24Part1;
 
 impl PuzzleRunner for Day24Part1 {

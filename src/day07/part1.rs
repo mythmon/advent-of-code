@@ -2,6 +2,7 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day07Part1;
 
 impl PuzzleRunner for Day07Part1 {
@@ -65,7 +66,7 @@ impl PuzzleRunner for Day07Part1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct NodeDesc {
     name: String,
     blocks: Vec<String>,

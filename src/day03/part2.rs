@@ -2,6 +2,7 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 
+#[derive(Debug)]
 pub struct Day03Part2;
 
 impl PuzzleRunner for Day03Part2 {
@@ -27,16 +28,16 @@ impl PuzzleRunner for Day03Part2 {
 }
 
 struct GridStressValues {
-    vals: HashMap<GridCoord, u32>,
+    values: HashMap<GridCoordinate, u32>,
     coords: SpiralCoords,
 }
 
 impl GridStressValues {
     fn new() -> Self {
-        let mut vals = HashMap::new();
-        vals.insert(GridCoord::new(0, 0), 1);
+        let mut values = HashMap::new();
+        values.insert(GridCoordinate::new(0, 0), 1);
         Self {
-            vals: vals,
+            values,
             coords: SpiralCoords::new(),
         }
     }
@@ -47,27 +48,27 @@ impl Iterator for GridStressValues {
 
     fn next(&mut self) -> Option<Self::Item> {
         let p = self.coords.next().unwrap();
-        if self.vals.contains_key(&p) {
-            Some(*self.vals.get(&p).unwrap())
+        if self.values.contains_key(&p) {
+            Some(*self.values.get(&p).unwrap())
         } else {
             let s = p
                 .neighbors()
                 .iter()
-                .map(|n| self.vals.get(&n).unwrap_or(&0))
+                .map(|n| self.values.get(&n).unwrap_or(&0))
                 .sum();
-            self.vals.insert(p, s);
+            self.values.insert(p, s);
             Some(s)
         }
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct GridCoord {
+struct GridCoordinate {
     x: i32,
     y: i32,
 }
 
-impl GridCoord {
+impl GridCoordinate {
     fn new(x: i32, y: i32) -> Self {
         Self { x: x, y: y }
     }
@@ -86,7 +87,7 @@ impl GridCoord {
     }
 }
 
-impl Add<Direction> for GridCoord {
+impl Add<Direction> for GridCoordinate {
     type Output = Self;
 
     fn add(self, dir: Direction) -> Self::Output {
@@ -97,7 +98,7 @@ impl Add<Direction> for GridCoord {
     }
 }
 
-impl AddAssign<Direction> for GridCoord {
+impl AddAssign<Direction> for GridCoordinate {
     fn add_assign(&mut self, other: Direction) {
         self.x += other.x;
         self.y += other.y;
@@ -107,7 +108,7 @@ impl AddAssign<Direction> for GridCoord {
 #[derive(Debug)]
 struct SpiralCoords {
     dir: Direction,
-    pos: GridCoord,
+    pos: GridCoordinate,
     stride: u32,
     idx: u32,
     parity: bool,
@@ -117,7 +118,7 @@ impl SpiralCoords {
     fn new() -> Self {
         Self {
             dir: Direction::new(1, 0),
-            pos: GridCoord::new(0, 0),
+            pos: GridCoordinate::new(0, 0),
             stride: 1,
             idx: 0,
             parity: false,
@@ -126,7 +127,7 @@ impl SpiralCoords {
 }
 
 impl Iterator for SpiralCoords {
-    type Item = GridCoord;
+    type Item = GridCoordinate;
 
     fn next(&mut self) -> Option<Self::Item> {
         let rv = self.pos;
@@ -191,7 +192,10 @@ fn test_spiral_coords() {
         (1, -2), (2, -2), (3, -2), (3, -1),
     ];
 
-    let expected: Vec<GridCoord> = expected.iter().map(|c| GridCoord::new(c.0, c.1)).collect();
-    let actual: Vec<GridCoord> = SpiralCoords::new().take(expected.len()).collect();
+    let expected: Vec<GridCoordinate> = expected
+        .iter()
+        .map(|c| GridCoordinate::new(c.0, c.1))
+        .collect();
+    let actual: Vec<GridCoordinate> = SpiralCoords::new().take(expected.len()).collect();
     assert_eq!(expected, actual);
 }

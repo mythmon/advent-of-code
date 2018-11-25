@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day11::{HexDir, HexVec};
 
+#[derive(Debug)]
 pub struct Day11Part2;
 
 impl PuzzleRunner for Day11Part2 {

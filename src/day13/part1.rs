@@ -3,6 +3,7 @@ use std::cmp;
 use std::collections::HashMap;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day13Part1;
 
 impl PuzzleRunner for Day13Part1 {

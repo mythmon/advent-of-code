@@ -3,6 +3,7 @@ use crate::{
     extremes,
 };
 
+#[derive(Debug)]
 pub struct Day02Part1;
 
 impl PuzzleRunner for Day02Part1 {

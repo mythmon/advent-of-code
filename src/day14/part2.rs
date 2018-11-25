@@ -3,6 +3,7 @@ use crate::day10::KnotHash;
 use std::collections::HashSet;
 use std::fmt;
 
+#[derive(Debug)]
 pub struct Day14Part2;
 
 impl PuzzleRunner for Day14Part2 {

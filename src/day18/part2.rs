@@ -3,6 +3,7 @@ use crate::day18::{Instr, Machine};
 use indoc::{indoc, indoc_impl};
 use std::collections::VecDeque;
 
+#[derive(Debug)]
 pub struct Day18Part2;
 
 impl PuzzleRunner for Day18Part2 {

@@ -3,6 +3,7 @@ use lazy_static::{__lazy_static_create, __lazy_static_internal, lazy_static};
 use regex::Regex;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day16Part1;
 
 impl PuzzleRunner for Day16Part1 {

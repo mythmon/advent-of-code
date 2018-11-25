@@ -4,6 +4,7 @@ use std::ops::{Add, AddAssign};
 use std::str::FromStr;
 use std::{cmp, fmt};
 
+#[derive(Debug)]
 pub struct Day22Part2;
 
 impl PuzzleRunner for Day22Part2 {

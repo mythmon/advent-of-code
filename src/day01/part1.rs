@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
+#[derive(Debug)]
 pub struct Day01Part1;
 
 impl PuzzleRunner for Day01Part1 {

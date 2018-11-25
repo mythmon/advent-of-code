@@ -3,6 +3,7 @@ use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day18Part1;
 
 impl PuzzleRunner for Day18Part1 {
@@ -104,9 +105,9 @@ impl FromStr for Machine {
     type Err = String;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let instrs: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
+        let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
         Ok(Self {
-            instructions: instrs,
+            instructions,
             registers: HashMap::new(),
             last_sound: None,
             program_counter: 0,

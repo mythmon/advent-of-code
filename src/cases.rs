@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// A puzzle case that can be executed, comparing expected output to actual
 /// output.
-pub trait PuzzleCase {
+pub trait PuzzleCase: std::fmt::Debug {
     fn name(&self) -> String;
     fn run(&self) -> Result<(), ()>;
 }
@@ -10,7 +10,7 @@ pub trait PuzzleCase {
 /// A set of puzzle cases and associated metadata
 ///
 /// Importantly, this does not depend on the types of the input or outputs.
-pub trait Puzzle {
+pub trait Puzzle: std::fmt::Debug {
     fn name(&self) -> String;
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>>;
 }
@@ -19,7 +19,7 @@ pub trait Puzzle {
 ///
 /// In contrast to `Puzzle`, this trait contains the specific types for the
 /// puzzle.
-pub trait PuzzleRunner {
+pub trait PuzzleRunner: std::fmt::Debug {
     type Input;
     type Output;
 
@@ -38,6 +38,7 @@ impl<T: PuzzleRunner> Puzzle for T {
     }
 }
 
+#[derive(Debug)]
 pub struct GenericPuzzleCase<'a, T, I, O> {
     pub name: String,
     pub input: I,
@@ -48,8 +49,8 @@ pub struct GenericPuzzleCase<'a, T, I, O> {
 impl<'a, T, I, O> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq,
-    I: Clone,
+    O: PartialEq + std::fmt::Debug,
+    I: Clone + std::fmt::Debug,
 {
     fn name(&self) -> String {
         self.name.clone()
@@ -67,8 +68,8 @@ where
 impl<'a, T, I, O> GenericPuzzleCase<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq + 'a,
-    I: Clone + 'a,
+    O: PartialEq + 'a + std::fmt::Debug,
+    I: Clone + 'a + std::fmt::Debug,
 {
     pub fn build_set() -> CaseSetBuilder<'a, T, I, O> {
         CaseSetBuilder::new()
@@ -84,8 +85,8 @@ pub struct CaseSetBuilder<'a, T, I, O> {
 impl<'a, T, I, O> CaseSetBuilder<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq + 'a,
-    I: Clone + 'a,
+    O: PartialEq + 'a + std::fmt::Debug,
+    I: Clone + 'a + std::fmt::Debug,
 {
     fn new() -> Self {
         Self {

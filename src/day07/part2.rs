@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::rc::{Rc, Weak};
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Day07Part2;
 
 impl PuzzleRunner for Day07Part2 {
@@ -71,10 +72,10 @@ impl PuzzleRunner for Day07Part2 {
 
         let mut named_nodes = HashMap::new();
 
-        let mut node_descs = input.clone();
+        let mut node_descriptions = input.clone();
 
-        while node_descs.len() > 0 {
-            let node_desc = node_descs.pop().unwrap();
+        while node_descriptions.len() > 0 {
+            let node_desc = node_descriptions.pop().unwrap();
             let mut ready = true;
             for held_name in node_desc.holding.iter() {
                 if !named_nodes.contains_key(held_name) {
@@ -83,7 +84,7 @@ impl PuzzleRunner for Day07Part2 {
             }
 
             if !ready {
-                node_descs.insert(0, node_desc);
+                node_descriptions.insert(0, node_desc);
             } else {
                 let node = Node {
                     name: node_desc.name.clone(),

@@ -3,7 +3,7 @@ use std::str::FromStr;
 pub mod part1;
 pub mod part2;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Instruction {
     pub register: String,
     pub op: Operation,
@@ -30,7 +30,7 @@ impl FromStr for Instruction {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Operation {
     Inc,
     Dec,
@@ -48,7 +48,7 @@ impl FromStr for Operation {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Condition {
     pub register: String,
     pub comparison: Comparison,
@@ -77,7 +77,7 @@ impl Condition {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Comparison {
     LessThan,
     LessThanEqual,

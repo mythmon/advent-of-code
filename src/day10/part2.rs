@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day10::KnotHash;
 
+#[derive(Debug)]
 pub struct Day10Part2;
 
 impl PuzzleRunner for Day10Part2 {

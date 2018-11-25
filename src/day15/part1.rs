@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
+#[derive(Debug)]
 pub struct Day15Part1;
 
 impl PuzzleRunner for Day15Part1 {
@@ -85,9 +86,9 @@ impl Iterator for Generator {
 #[test]
 fn test_example_a() {
     let g = Generator::new(65, 16807);
-    let vals: Vec<u64> = g.take(5).collect();
+    let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
-        vals,
+        values,
         vec![1092455, 1181022009, 245556042, 1744312007, 1352636452]
     );
 }
@@ -95,9 +96,9 @@ fn test_example_a() {
 #[test]
 fn test_example_b() {
     let g = Generator::new(8921, 48271);
-    let vals: Vec<u64> = g.take(5).collect();
+    let values: Vec<u64> = g.take(5).collect();
     assert_eq!(
-        vals,
+        values,
         vec![430625591, 1233683848, 1431495498, 137874439, 285222916]
     );
 }

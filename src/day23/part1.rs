@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day18::{Instr, InstrType, Machine};
 
+#[derive(Debug)]
 pub struct Day23Part1;
 
 impl PuzzleRunner for Day23Part1 {

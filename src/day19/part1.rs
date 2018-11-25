@@ -1,6 +1,7 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::ops::{Add, AddAssign};
 
+#[derive(Debug)]
 pub struct Day19Part1;
 
 impl PuzzleRunner for Day19Part1 {

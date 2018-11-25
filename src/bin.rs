@@ -1,4 +1,5 @@
 use colored::Colorize;
+use std::collections::BTreeMap;
 
 use advent::{
     cases::Puzzle,
@@ -106,24 +107,37 @@ fn main() {
         Box::new(Day25 {}),
     ];
 
-    for part in parts {
-        print!("{} ", part.name());
-        let mut failures = vec![];
-        for case in part.cases() {
-            if let Ok(_) = case.run() {
-                print!("{}", "✔".green());
-            } else {
-                print!("{}", "✗".red());
-                failures.push(case);
+    parts
+        .iter()
+        .flat_map(|part| {
+            part.cases()
+                .into_iter()
+                .map(|case| (part, case))
+                .collect::<Vec<_>>()
+        })
+        .map(|(part, case)| {
+            let result = case.run();
+            (part, case, result)
+        })
+        .fold(BTreeMap::new(), |mut map, (part, case, result)| {
+            map.entry(part.name())
+                .or_insert(vec![])
+                .push((case, result));
+            map
+        })
+        .iter()
+        .for_each(|(group_name, results)| {
+            print!("{} ", group_name);
+            for (_, result) in results {
+                if let Ok(_) = result {
+                    print!("{}", "✔".green());
+                } else {
+                    print!("{}", "✗".red());
+                }
             }
-        }
-
-        println!();
-
-        if failures.len() > 0 {
-            for failing_case in failures {
-                println!("  {:<30} FAIL", failing_case.name());
+            println!();
+            for (case, _) in results.iter().filter(|(_, result)| result.is_err()) {
+                println!("  FAIL {} - Expected <?> got <?>", case.name());
             }
-        }
-    }
+        });
 }
