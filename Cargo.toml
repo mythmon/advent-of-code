@@ -13,6 +13,7 @@ regex = "^0.2.3"
 lazy_static = "^1.0.0"
 colored = "^1.6.1"
 indoc = "^0.2"
+rayon = "^1.0.3"
 
 [profile.release]
 incremental = true

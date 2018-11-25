@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// A puzzle case that can be executed, comparing expected output to actual
 /// output.
-pub trait PuzzleCase: std::fmt::Debug {
+pub trait PuzzleCase: std::fmt::Debug + Sync + Send {
     fn name(&self) -> String;
     fn run(&self) -> Result<(), ()>;
 }
@@ -10,7 +10,7 @@ pub trait PuzzleCase: std::fmt::Debug {
 /// A set of puzzle cases and associated metadata
 ///
 /// Importantly, this does not depend on the types of the input or outputs.
-pub trait Puzzle: std::fmt::Debug {
+pub trait Puzzle: std::fmt::Debug + Sync + Send {
     fn name(&self) -> String;
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>>;
 }
@@ -19,7 +19,7 @@ pub trait Puzzle: std::fmt::Debug {
 ///
 /// In contrast to `Puzzle`, this trait contains the specific types for the
 /// puzzle.
-pub trait PuzzleRunner: std::fmt::Debug {
+pub trait PuzzleRunner: std::fmt::Debug + Sync + Send {
     type Input;
     type Output;
 
@@ -49,8 +49,8 @@ pub struct GenericPuzzleCase<'a, T, I, O> {
 impl<'a, T, I, O> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq + std::fmt::Debug,
-    I: Clone + std::fmt::Debug,
+    O: PartialEq + std::fmt::Debug + Sync + Send,
+    I: Clone + std::fmt::Debug + Sync + Send,
 {
     fn name(&self) -> String {
         self.name.clone()
@@ -68,8 +68,8 @@ where
 impl<'a, T, I, O> GenericPuzzleCase<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq + 'a + std::fmt::Debug,
-    I: Clone + 'a + std::fmt::Debug,
+    O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
+    I: Clone + 'a + std::fmt::Debug + Sync + Send,
 {
     pub fn build_set() -> CaseSetBuilder<'a, T, I, O> {
         CaseSetBuilder::new()
@@ -85,8 +85,8 @@ pub struct CaseSetBuilder<'a, T, I, O> {
 impl<'a, T, I, O> CaseSetBuilder<'a, T, I, O>
 where
     T: PuzzleRunner<Input = I, Output = O>,
-    O: PartialEq + 'a + std::fmt::Debug,
-    I: Clone + 'a + std::fmt::Debug,
+    O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
+    I: Clone + 'a + std::fmt::Debug + Sync + Send,
 {
     fn new() -> Self {
         Self {

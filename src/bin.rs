@@ -1,4 +1,5 @@
 use colored::Colorize;
+use rayon::prelude::*;
 use std::collections::BTreeMap;
 
 use advent::{
@@ -108,7 +109,7 @@ fn main() {
     ];
 
     parts
-        .iter()
+        .par_iter()
         .flat_map(|part| {
             part.cases()
                 .into_iter()
@@ -119,6 +120,8 @@ fn main() {
             let result = case.run();
             (part, case, result)
         })
+        .collect::<Vec<_>>()
+        .iter()
         .fold(BTreeMap::new(), |mut map, (part, case, result)| {
             map.entry(part.name())
                 .or_insert(vec![])
@@ -137,7 +140,7 @@ fn main() {
             }
             println!();
             for (case, _) in results.iter().filter(|(_, result)| result.is_err()) {
-                println!("  FAIL {} - Expected <?> got <?>", case.name());
+                println!("  fail {} - expected <?> got <?>", case.name());
             }
         });
 }
