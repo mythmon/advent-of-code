@@ -3,7 +3,7 @@
 use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
 use rayon::prelude::*;
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, fs, path::PathBuf};
 
 use advent::{cases::Puzzle, year2017};
 
@@ -37,11 +37,43 @@ fn main() {
                         .required(false),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("add-puzzle")
+                .about("Add's a puzzle, templating the code and fetching the input")
+                .setting(AppSettings::ColoredHelp)
+                .arg(
+                    Arg::with_name("day")
+                        .takes_value(true)
+                        .help("The day of the puzzle to add (1 through 25)")
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name("year")
+                        .short("y")
+                        .long("year")
+                        .default_value("2018")
+                        .takes_value(true)
+                        .help("The year of the puzzle to add defaults to 2018")
+                        .required(false),
+                )
+                .arg(
+                    Arg::with_name("advent_cookie")
+                        .long("advent-cookie")
+                        .env("ADVENT_COOKIE")
+                        .help("Session cookie from adventofcode.com")
+                        .required(true)
+                        .takes_value(true),
+                ),
+        )
         .get_matches();
 
     match matches.subcommand() {
         ("run", Some(opts)) => run(opts),
-        _ => unreachable!(),
+        ("add-puzzle", Some(opts)) => add_puzzle(opts).unwrap(),
+        _ => {
+            println!("Unknown command!");
+            std::process::exit(1);
+        }
     }
 }
 
@@ -125,4 +157,61 @@ where
                 }
             }
         });
+}
+
+struct AddDayOptions {
+    day: u8,
+    year: u16,
+    advent_cookie: String,
+}
+
+impl<'a> From<&clap::ArgMatches<'a>> for AddDayOptions {
+    fn from(matches: &clap::ArgMatches) -> Self {
+        Self {
+            day: matches.value_of("day").unwrap().parse().unwrap(),
+            year: matches.value_of("year").unwrap().parse().unwrap(),
+            advent_cookie: matches.value_of("advent_cookie").unwrap().to_owned(),
+        }
+    }
+}
+
+fn add_puzzle<O>(opts: O) -> Result<(), Box<dyn std::error::Error>>
+where
+    O: Into<AddDayOptions>,
+{
+    let opts = opts.into();
+
+    let puzzle_path = PathBuf::from(format!("./src/year{}/day{}", opts.year, opts.day));
+    fs::create_dir_all(&puzzle_path)?;
+
+    let mut mod_path = puzzle_path.clone();
+    mod_path.push("mod.rs");
+    if !mod_path.exists() {
+        let mut mod_template = String::from_utf8(fs::read("./template/mod.rs.tmpl")?)?
+            .replace("{{YEAR}}", &opts.year.to_string())
+            .replace("{{DAY_PADDED}}", &format!("{:0>2}", opts.day.to_string()));
+        fs::write(mod_path, mod_template)?;
+    }
+
+    let mut input_path = puzzle_path.clone();
+    input_path.push("input");
+    if !input_path.exists() {
+        let url = format!(
+            "https://adventofcode.com/{}/day/{}/input",
+            opts.year, opts.day
+        );
+        let client = reqwest::Client::new();
+        let input = client
+            .get(&url)
+            .header(
+                reqwest::header::COOKIE,
+                format!("session={}", opts.advent_cookie),
+            )
+            .send()?
+            .error_for_status()?
+            .text()?;
+        fs::write(input_path, input)?;
+    }
+
+    Ok(())
 }

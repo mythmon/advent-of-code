@@ -1,3 +1,0 @@
-[[bin]]
-name = "day{D}_part{P}"
-path = "src/day{D}/part{P}.rs"
