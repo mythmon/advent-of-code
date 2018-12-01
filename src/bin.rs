@@ -187,7 +187,7 @@ where
     let mut mod_path = puzzle_path.clone();
     mod_path.push("mod.rs");
     if !mod_path.exists() {
-        let mut mod_template = String::from_utf8(fs::read("./template/mod.rs.tmpl")?)?
+        let mod_template = String::from_utf8(fs::read("./template/mod.rs.tmpl")?)?
             .replace("{{YEAR}}", &opts.year.to_string())
             .replace("{{DAY_PADDED}}", &format!("{:0>2}", opts.day.to_string()));
         fs::write(mod_path, mod_template)?;
