@@ -1,5 +1,5 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day08::{Instruction, Operation};
+use crate::year2017::day08::{Instruction, Operation};
 use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 

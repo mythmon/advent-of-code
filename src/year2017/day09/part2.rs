@@ -1,34 +1,33 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
-pub struct Day09Part1;
+pub struct Day09Part2;
 
-impl PuzzleRunner for Day09Part1 {
+impl PuzzleRunner for Day09Part2 {
     type Input = &'static str;
     type Output = u32;
 
     fn name(&self) -> String {
-        "2017-D09-P1".to_owned()
+        "2017-D09-P2".to_owned()
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", "{}", 1)
-            .case("Example 2", "{{{}}}", 6)
-            .case("Example 3", "{{},{}}", 5)
-            .case("Example 4", "{{{},{},{{}}}}", 16)
-            .case("Example 5", "{<a>,<a>,<a>,<a>}", 1)
-            .case("Example 6", "{{<ab>},{<ab>},{<ab>},{<ab>}}", 9)
-            .case("Example 7", "{{<!!>},{<!!>},{<!!>},{<!!>}}", 9)
-            .case("Example 8", "{{<a!>},{<a!>},{<a!>},{<ab>}}", 3)
-            .case("Solution", include_str!("input"), 17_390)
+            .case("Example 1", "<>", 0)
+            .case("Example 2", "<random characters>", 17)
+            .case("Example 3", "<<<<>", 3)
+            .case("Example 4", "<{!>}>", 2)
+            .case("Example 5", "<!!>", 0)
+            .case("Example 6", "<!!!>>", 0)
+            .case("Example 7", "<{o\"i!a,<{i<a>", 10)
+            .case("Solution", include_str!("input"), 7_825)
             .collect()
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        use crate::day09::ParseState::*;
+        use crate::year2017::day09::ParseState::*;
 
-        let mut total_score = 0;
+        let mut garbage_count = 0;
         let mut state_stack = vec![];
 
         for c in input.trim().chars() {
@@ -46,18 +45,19 @@ impl PuzzleRunner for Day09Part1 {
                 (Some(InGroup(v)), '{') => {
                     state_stack.push(InGroup(v + 1));
                 }
-                (Some(&InGroup(v)), '}') => {
+                (Some(InGroup(_)), '}') => {
                     state_stack.pop();
-                    total_score += v;
                 }
                 (Some(InGroup(_)), ',') => (),
-                (Some(InGroup(_)), '<') => {
-                    state_stack.push(Garbage);
-                }
                 (Some(Garbage), '>') => {
                     state_stack.pop();
                 }
-                (Some(Garbage), _) => (),
+                (Some(Garbage), _) => {
+                    garbage_count += 1;
+                }
+                (_, '<') => {
+                    state_stack.push(Garbage);
+                }
 
                 _ => panic!("unexpected input '{}' in {:?}", c, state),
             }
@@ -65,6 +65,6 @@ impl PuzzleRunner for Day09Part1 {
 
         assert_eq!(state_stack.len(), 0);
 
-        total_score
+        garbage_count
     }
 }

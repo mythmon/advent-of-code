@@ -1,5 +1,7 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day18::{Instr, Machine};
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    year2017::day18::{Instr, Machine},
+};
 use indoc::{indoc, indoc_impl};
 use std::collections::VecDeque;
 

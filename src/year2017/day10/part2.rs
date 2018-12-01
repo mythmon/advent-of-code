@@ -1,5 +1,7 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day10::KnotHash;
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    year2017::day10::KnotHash,
+};
 
 #[derive(Debug)]
 pub struct Day10Part2;

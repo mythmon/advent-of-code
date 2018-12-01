@@ -1,7 +1,8 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day08::{Instruction, Operation};
-use std::cmp;
-use std::collections::HashMap;
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    year2017::day08::{Instruction, Operation},
+};
+use std::{cmp, collections::HashMap};
 
 #[derive(Debug)]
 pub struct Day08Part2;
@@ -42,7 +43,7 @@ impl PuzzleRunner for Day08Part2 {
 #[cfg(test)]
 mod tests {
     use super::Day08Part2;
-    use crate::{cases::PuzzleRunner, day08::Instruction};
+    use crate::{cases::PuzzleRunner, year2017::day08::Instruction};
 
     #[test]
     fn test_dec_can_affect_highest_ever() {

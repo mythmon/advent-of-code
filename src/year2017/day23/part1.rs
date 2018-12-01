@@ -1,5 +1,5 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day18::{Instr, InstrType, Machine};
+use crate::year2017::day18::{Instr, InstrType, Machine};
 
 #[derive(Debug)]
 pub struct Day23Part1;

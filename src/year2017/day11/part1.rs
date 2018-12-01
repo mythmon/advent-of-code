@@ -1,5 +1,7 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use crate::day11::{HexDir, HexVec};
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    year2017::day11::{HexDir, HexVec},
+};
 
 #[derive(Debug)]
 pub struct Day11Part1;
