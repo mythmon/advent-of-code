@@ -60,8 +60,6 @@ fn main() {
                 .arg(
                     Arg::with_name("filter")
                         .takes_value(true)
-                        .short("f")
-                        .long("filter")
                         .help("Only run tests whose name contains this string")
                         .required(false),
                 ),
