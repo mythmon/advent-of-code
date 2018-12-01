@@ -18,6 +18,7 @@ impl PuzzleRunner for Day01Part1 {
             .case("Example 2", "1111", 4)
             .case("Example 3", "1234", 0)
             .case("Example 4", "91212129", 9)
+            .case("Solution", include_str!("input"), 1141)
             .collect()
     }
 
