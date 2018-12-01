@@ -6,6 +6,7 @@ use std::cmp;
 pub mod cases;
 
 pub mod year2017;
+pub mod year2018;
 
 /// Find the lowest and highest value in `items`.
 pub fn extremes<T>(items: T) -> Option<(T::Item, T::Item)>

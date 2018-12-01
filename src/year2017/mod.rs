@@ -22,7 +22,7 @@ mod day19;
 mod day20;
 mod day21;
 mod day22;
-// mod day23;
+mod day23;
 mod day24;
 mod day25;
 
@@ -72,8 +72,8 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         Box::new(day21::part2::Day21Part2),
         Box::new(day22::part1::Day22Part1),
         Box::new(day22::part2::Day22Part2),
-        // Box::new(day23::part1::Day23Part1),
-        // Box::new(day23::part2::Day23Part2),
+        Box::new(day23::part1::Day23Part1),
+        Box::new(day23::part2::Day23Part2),
         Box::new(day24::part1::Day24Part1),
         Box::new(day24::part2::Day24Part2),
         Box::new(day25::Day25),

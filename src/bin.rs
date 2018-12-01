@@ -5,7 +5,7 @@ use colored::Colorize;
 use rayon::prelude::*;
 use std::{collections::BTreeMap, fs, path::PathBuf};
 
-use advent::{cases::Puzzle, year2017};
+use advent::{cases::Puzzle, /* year 2017, */ year2018};
 
 fn main() {
     let matches = App::new("Advent")
@@ -92,7 +92,8 @@ impl<'a> From<&clap::ArgMatches<'a>> for RunOptions {
 }
 
 fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    year2017::get_puzzles()
+    // year2017::get_puzzles()
+    year2018::get_puzzles()
 }
 
 fn run<O>(opts: O)
@@ -181,7 +182,9 @@ where
 {
     let opts = opts.into();
 
-    let puzzle_path = PathBuf::from(format!("./src/year{}/day{}", opts.year, opts.day));
+    let day_padded = format!("{:0>2}", opts.day.to_string());
+
+    let puzzle_path = PathBuf::from(format!("./src/year{}/day{}", opts.year, day_padded));
     fs::create_dir_all(&puzzle_path)?;
 
     let mut mod_path = puzzle_path.clone();
@@ -189,7 +192,7 @@ where
     if !mod_path.exists() {
         let mod_template = String::from_utf8(fs::read("./template/mod.rs.tmpl")?)?
             .replace("{{YEAR}}", &opts.year.to_string())
-            .replace("{{DAY_PADDED}}", &format!("{:0>2}", opts.day.to_string()));
+            .replace("{{DAY_PADDED}}", &day_padded);
         fs::write(mod_path, mod_template)?;
     }
 
@@ -198,7 +201,7 @@ where
     if !input_path.exists() {
         let url = format!(
             "https://adventofcode.com/{}/day/{}/input",
-            opts.year, opts.day
+            opts.year, day_padded
         );
         let client = reqwest::Client::new();
         let input = client
