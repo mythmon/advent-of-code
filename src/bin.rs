@@ -5,7 +5,7 @@ use colored::Colorize;
 use rayon::prelude::*;
 use std::{collections::BTreeMap, fs, path::PathBuf};
 
-use advent::{cases::Puzzle, /* year 2017, */ year2018};
+use advent::{cases::Puzzle, year2017, year2018};
 
 fn main() {
     let matches = App::new("Advent")
@@ -39,7 +39,7 @@ fn main() {
         )
         .subcommand(
             SubCommand::with_name("add-puzzle")
-                .about("Add's a puzzle, templating the code and fetching the input")
+                .about("Adds a puzzle, templating the code and fetching the input")
                 .setting(AppSettings::ColoredHelp)
                 .arg(
                     Arg::with_name("day")
@@ -92,8 +92,9 @@ impl<'a> From<&clap::ArgMatches<'a>> for RunOptions {
 }
 
 fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    // year2017::get_puzzles()
-    year2018::get_puzzles()
+    let mut puzzles = year2017::get_puzzles();
+    puzzles.extend(year2018::get_puzzles());
+    puzzles
 }
 
 fn run<O>(opts: O)
