@@ -1,4 +1,7 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    helpers::StringAdventExt,
+};
 use std::collections::HashSet;
 use std::iter::Iterator;
 
@@ -63,16 +66,14 @@ impl PuzzleRunner for Day01Part2 {
             }
             seen.insert(sum);
         }
-        unreachable!();
+        unreachable!("Loop only breaks with return");
     }
 }
 
 fn parse_input(input: &str) -> Vec<i32> {
     input
-        .lines()
-        .map(|l| l.trim())
-        .filter(|l| *l != "")
+        .trimmed_lines()
         .map(|l| l.trim_start_matches("+"))
-        .map(|l| l.parse::<i32>().unwrap())
+        .filter_map(|l| l.parse::<i32>().ok())
         .collect()
 }

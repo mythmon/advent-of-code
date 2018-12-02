@@ -2,7 +2,7 @@ cargo-features = ["default-run"]
 
 [package]
 name = "advent"
-version = "2018.2.0"
+version = "2018.2.1"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 default-run = "advent"
@@ -16,6 +16,7 @@ indoc = "^0.2"
 rayon = "^1.0.3"
 clap = "^2.32.0"
 reqwest = "^0.9.5"
+itertools = "^0.7.11"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.

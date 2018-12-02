@@ -14,7 +14,6 @@ impl PuzzleRunner for Day10Part1 {
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example", (5, vec![3, 4, 1, 5]), 12)
-            // TODO how can GenericPuzzleCase.add_transform handle this case?
             .case(
                 "Solution",
                 (

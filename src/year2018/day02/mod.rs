@@ -1,6 +1,9 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use std::collections::HashMap;
-use std::iter::Iterator;
+use crate::{
+    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    helpers::StringAdventExt,
+};
+use itertools::Itertools;
+use std::{collections::HashMap, iter::Iterator};
 
 #[derive(Debug)]
 pub struct Day02Part1;
@@ -21,30 +24,21 @@ impl PuzzleRunner for Day02Part1 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        let ids: Vec<_> = input.lines().filter(|l| *l != "").collect();
-
-        let has_double = ids
-            .iter()
-            .filter(|id| {
+        let (has_double, has_triple) = input
+            .trimmed_lines()
+            .map(|id| {
                 let mut counts = HashMap::new();
                 for c in id.chars() {
                     *counts.entry(c).or_insert(0) += 1;
                 }
-
-                counts.values().any(|count| *count == 2)
+                let has_double = counts.values().any(|count| *count == 2);
+                let has_triple = counts.values().any(|count| *count == 3);
+                (
+                    if has_double { 1 } else { 0 },
+                    if has_triple { 1 } else { 0 },
+                )
             })
-            .count();
-
-        let has_triple = ids
-            .iter()
-            .filter(|id| {
-                let mut counts = HashMap::new();
-                for c in id.chars() {
-                    *counts.entry(c).or_insert(0) += 1;
-                }
-                counts.values().any(|count| *count == 3)
-            })
-            .count();
+            .fold((0, 0), |a, b| (a.0 + b.0, a.1 + b.1));
 
         has_double * has_triple
     }
@@ -71,26 +65,21 @@ impl PuzzleRunner for Day02Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        let ids: Vec<_> = input.lines().filter(|l| *l != "").collect();
-
+        let ids = input.trimmed_lines();
         let mut found = None;
 
-        // todo this would panic if there was no answer
-        for (idx, id1) in ids.iter().enumerate() {
-            for id2 in &ids[idx + 1..] {
-                assert_eq!(id1.len(), id2.len());
-                let mut diff_count = 0;
-                for c_idx in 0..id1.len() {
-                    if id1[c_idx..=c_idx] != id2[c_idx..=c_idx] {
-                        diff_count += 1;
-                        if diff_count > 1 {
-                            break;
-                        }
+        for (id1, id2) in ids.clone().cartesian_product(ids) {
+            let mut diff_count = 0;
+            for (c1, c2) in id1.chars().zip_eq(id2.chars()) {
+                if c1 != c2 {
+                    diff_count += 1;
+                    if diff_count > 1 {
+                        break;
                     }
                 }
-                if diff_count == 1 {
-                    found = Some((id1, id2));
-                }
+            }
+            if diff_count == 1 {
+                found = Some((id1, id2));
             }
         }
 
@@ -99,7 +88,7 @@ impl PuzzleRunner for Day02Part2 {
         found
             .0
             .chars()
-            .zip(found.1.chars())
+            .zip_eq(found.1.chars())
             .filter(|(c1, c2)| c1 == c2)
             .map(|(c1, _)| c1)
             .collect()
