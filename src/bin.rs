@@ -202,7 +202,7 @@ where
     if !input_path.exists() {
         let url = format!(
             "https://adventofcode.com/{}/day/{}/input",
-            opts.year, day_padded
+            opts.year, opts.day,
         );
         let client = reqwest::Client::new();
         let input = client
