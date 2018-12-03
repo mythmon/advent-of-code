@@ -2,7 +2,7 @@ cargo-features = ["default-run"]
 
 [package]
 name = "advent"
-version = "2018.2.1"
+version = "2018.3.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 default-run = "advent"
