@@ -17,8 +17,8 @@ impl PuzzleRunner for Day14Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "flqrgnkx", 1_242)  // spell-checker: disable-line
-            .case("Solution", include_str!("input").trim(), 1_180)
+            .case("Example", "flqrgnkx", 1_242usize)  // spell-checker: disable-line
+            .case("Solution", include_str!("input").trim(), 1_180usize)
             .collect()
     }
 

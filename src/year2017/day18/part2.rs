@@ -30,9 +30,9 @@ impl PuzzleRunner for Day18Part2 {
                     rcv c
                     rcv d"
                 ),
-                3,
+                3usize,
             )
-            .case("Solution", include_str!("input"), 5_969)
+            .case("Solution", include_str!("input"), 5_969usize)
             .collect()
     }
 

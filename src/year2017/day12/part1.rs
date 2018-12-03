@@ -17,9 +17,9 @@ impl PuzzleRunner for Day12Part1 {
             .case(
                 "Example",
                 "0 <-> 2\n1 <-> 1\n2 <-> 0, 3, 4\n3 <-> 2, 4\n4 <-> 2, 3, 6\n5 <-> 6\n6 <-> 4, 5",
-                6,
+                6usize,
             )
-            .case("Solution", include_str!("input"), 288)
+            .case("Solution", include_str!("input"), 288usize)
             .collect()
     }
 

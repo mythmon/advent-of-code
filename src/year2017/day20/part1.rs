@@ -17,9 +17,9 @@ impl PuzzleRunner for Day20Part1 {
             .case(
                 "Example",
                 "p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>\np=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>",
-                0,
+                0usize,
             )
-            .case("Solution", include_str!("input"), 308)
+            .case("Solution", include_str!("input"), 308usize)
             .collect()
     }
 

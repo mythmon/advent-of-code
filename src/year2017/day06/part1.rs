@@ -20,8 +20,8 @@ impl PuzzleRunner for Day06Part1 {
                     .map(|s| s.parse().unwrap())
                     .collect()
             })
-            .case("Example", vec![0, 2, 7, 0], 5)
-            .transformed_case("Solution", include_str!("input"), 14_029)
+            .case("Example", vec![0, 2, 7, 0], 5usize)
+            .transformed_case("Solution", include_str!("input"), 14_029usize)
             .collect()
     }
 

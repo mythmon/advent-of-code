@@ -13,15 +13,15 @@ impl PuzzleRunner for Day09Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", "{}", 1)
-            .case("Example 2", "{{{}}}", 6)
-            .case("Example 3", "{{},{}}", 5)
-            .case("Example 4", "{{{},{},{{}}}}", 16)
-            .case("Example 5", "{<a>,<a>,<a>,<a>}", 1)
-            .case("Example 6", "{{<ab>},{<ab>},{<ab>},{<ab>}}", 9)
-            .case("Example 7", "{{<!!>},{<!!>},{<!!>},{<!!>}}", 9)
-            .case("Example 8", "{{<a!>},{<a!>},{<a!>},{<ab>}}", 3)
-            .case("Solution", include_str!("input"), 17_390)
+            .case("Example 1", "{}", 1u32)
+            .case("Example 2", "{{{}}}", 6u32)
+            .case("Example 3", "{{},{}}", 5u32)
+            .case("Example 4", "{{{},{},{{}}}}", 16u32)
+            .case("Example 5", "{<a>,<a>,<a>,<a>}", 1u32)
+            .case("Example 6", "{{<ab>},{<ab>},{<ab>},{<ab>}}", 9u32)
+            .case("Example 7", "{{<!!>},{<!!>},{<!!>},{<!!>}}", 9u32)
+            .case("Example 8", "{{<a!>},{<a!>},{<a!>},{<ab>}}", 3u32)
+            .case("Solution", include_str!("input"), 17_390u32)
             .collect()
     }
 

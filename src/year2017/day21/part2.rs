@@ -28,9 +28,9 @@ impl PuzzleRunner for Day21Part2 {
                     ),
                     2,
                 ),
-                12,
+                12usize,
             )
-            .case("Solution", (include_str!("input"), 18), 2_026_963)
+            .case("Solution", (include_str!("input"), 18), 2_026_963usize)
             .collect()
     }
 

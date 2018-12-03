@@ -19,9 +19,9 @@ impl PuzzleRunner for Day04Part2 {
                 "Example",
                 "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi \
                  oooo\noiii ioii iioi iiio",
-                3,
+                3usize,
             )
-            .case("Solution", include_str!("input"), 251)
+            .case("Solution", include_str!("input"), 251usize)
             .collect()
         // spell-checker: enable
     }

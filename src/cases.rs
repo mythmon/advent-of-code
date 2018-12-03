@@ -105,11 +105,16 @@ where
         self
     }
 
-    pub fn case<S: Into<String>>(mut self, name: S, input: I, expected: O) -> Self {
+    pub fn case<S, I_, O_>(mut self, name: S, input: I_, expected: O_) -> Self
+    where
+        S: Into<String>,
+        I_: Into<I>,
+        O_: Into<O>,
+    {
         self.cases.push(GenericPuzzleCase {
             name: name.into(),
-            input,
-            expected,
+            input: input.into(),
+            expected: expected.into(),
             phantom: self.phantom,
         });
         self

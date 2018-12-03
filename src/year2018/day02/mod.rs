@@ -18,8 +18,8 @@ impl PuzzleRunner for Day02Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "abcdef\nbababc\nabbcde\nabcccd\naabcdd\nabcdee\nababab", 12) // spell-checker: disable-line
-            .case("Solution", include_str!("input"), 5880)
+            .case("Example", "abcdef\nbababc\nabbcde\nabcccd\naabcdd\nabcdee\nababab", 12usize) // spell-checker: disable-line
+            .case("Solution", include_str!("input"), 5880usize)
             .collect()
     }
 

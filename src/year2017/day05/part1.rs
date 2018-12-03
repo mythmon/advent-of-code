@@ -14,8 +14,8 @@ impl PuzzleRunner for Day05Part1 {
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
-            .case("Example", vec![0, 3, 0, 1, -3], 5)
-            .transformed_case("Solution", include_str!("input"), 388_611)
+            .case("Example", vec![0, 3, 0, 1, -3], 5u32)
+            .transformed_case("Solution", include_str!("input"), 388_611u32)
             .collect()
     }
 
