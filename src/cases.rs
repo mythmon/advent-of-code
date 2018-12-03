@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 /// output.
 pub trait PuzzleCase: std::fmt::Debug + Sync + Send {
     fn name(&self) -> String;
-    fn run(&self) -> Result<(), ()>;
+    fn run(&self) -> PuzzleResult;
 }
 
 /// A set of puzzle cases and associated metadata
@@ -42,8 +42,14 @@ impl<T: PuzzleRunner> Puzzle for T {
 pub struct GenericPuzzleCase<'a, T, I, O> {
     pub name: String,
     pub input: I,
-    pub expected: O,
+    pub expected: Option<O>,
     pub phantom: PhantomData<&'a T>,
+}
+
+pub enum PuzzleResult {
+    Match,
+    Fail { description: String },
+    Unknown { description: String },
 }
 
 impl<'a, T, I, O> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
@@ -56,11 +62,20 @@ where
         self.name.clone()
     }
 
-    fn run(&self) -> Result<(), ()> {
-        if T::run_puzzle(self.input.clone()) == self.expected {
-            Ok(())
+    fn run(&self) -> PuzzleResult {
+        let actual = T::run_puzzle(self.input.clone());
+        if let Some(ref expected) = self.expected {
+            if actual == *expected {
+                PuzzleResult::Match
+            } else {
+                PuzzleResult::Fail {
+                    description: format!("expected {:?} got {:?}", expected, actual),
+                }
+            }
         } else {
-            Err(())
+            PuzzleResult::Unknown {
+                description: format!("{:?}", actual),
+            }
         }
     }
 }
@@ -109,7 +124,7 @@ where
     where
         S: Into<String>,
         I_: Into<I>,
-        O_: Into<O>,
+        O_: Into<Option<O>>,
     {
         self.cases.push(GenericPuzzleCase {
             name: name.into(),

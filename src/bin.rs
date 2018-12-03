@@ -5,7 +5,11 @@ use colored::Colorize;
 use rayon::prelude::*;
 use std::{collections::BTreeMap, fs, path::PathBuf};
 
-use advent::{cases::Puzzle, year2017, year2018};
+use advent::{
+    cases::{Puzzle, PuzzleResult},
+    year2017,
+    year2018,
+};
 
 fn main() {
     let matches = App::new("Advent")
@@ -138,24 +142,41 @@ where
             if opts.verbose {
                 println!();
                 for (case, result) in results {
-                    if result.is_ok() {
-                        print!("    {} ", "PASS".green());
-                    } else {
-                        print!("    {} ", "FAIL".red());
+                    match result {
+                        PuzzleResult::Match => print!("    {} ", "PASS".green()),
+                        PuzzleResult::Unknown { .. } => print!("    {} ", "UNKO".yellow()),
+                        PuzzleResult::Fail { .. } => print!("    {} ", "FAIL".red()),
                     }
-                    println!("{}", case.name());
+                    print!("{:<10}", case.name());
+                    match result {
+                        PuzzleResult::Unknown { description } => print!(" -> {}", description),
+                        PuzzleResult::Fail { description } => print!(" -> {}", description),
+                        _ => (),
+                    }
+                    println!();
                 }
             } else {
                 for (_, result) in results {
-                    if result.is_ok() {
-                        print!("{}", "✔".green());
-                    } else {
-                        print!("{}", "✗".red());
+                    match result {
+                        PuzzleResult::Match => print!("{}", "✔".green()),
+                        PuzzleResult::Unknown { .. } => print!("{}", "?".yellow()),
+                        PuzzleResult::Fail { .. } => print!("{}", "✗".red()),
                     }
                 }
                 println!();
-                for (case, _) in results.iter().filter(|(_, result)| result.is_err()) {
-                    println!("  FAIL {}", case.name());
+                for (case, result) in results {
+                    match result {
+                        PuzzleResult::Unknown { description } => println!(
+                            "   {} {:<10} -> {}",
+                            "UNKO".yellow(),
+                            case.name(),
+                            description
+                        ),
+                        PuzzleResult::Fail { description } => {
+                            println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), description)
+                        }
+                        _ => (),
+                    }
                 }
             }
         });
