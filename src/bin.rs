@@ -142,11 +142,14 @@ where
             if opts.verbose {
                 println!();
                 for (case, result) in results {
-                    match result {
-                        PuzzleResult::Match => print!("    {} ", "PASS".green()),
-                        PuzzleResult::Unknown { .. } => print!("    {} ", "UNKO".yellow()),
-                        PuzzleResult::Fail { .. } => print!("    {} ", "FAIL".red()),
-                    }
+                    print!(
+                        "    {} ",
+                        match result {
+                            PuzzleResult::Match => "PASS".green(),
+                            PuzzleResult::Unknown { .. } => "UNKO".yellow(),
+                            PuzzleResult::Fail { .. } => "FAIL".red(),
+                        }
+                    );
                     print!("{:<10}", case.name());
                     match result {
                         PuzzleResult::Unknown { description } => print!(" -> {}", description),

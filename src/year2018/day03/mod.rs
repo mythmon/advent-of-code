@@ -1,5 +1,3 @@
-#![allow(clippy::many_single_char_names)] // TODO use better names for claim fields
-
 use crate::{
     cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
     helpers::StringAdventExt,
@@ -121,13 +119,15 @@ impl FromStr for Claim {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<_> = s.split_whitespace().collect();
-        let id = parts[0].trim_start_matches('#').parse()?;
         let coords: Vec<_> = parts[2].trim_end_matches(':').split(',').collect();
-        let x = coords[0].parse()?;
-        let y = coords[1].parse()?;
         let span: Vec<_> = parts[3].split('x').collect();
-        let w = span[0].parse()?;
-        let h = span[1].parse()?;
-        Ok(Self { id, x, y, w, h })
+
+        Ok(Self {
+            id: parts[0].trim_start_matches('#').parse()?,
+            x: coords[0].parse()?,
+            y: coords[1].parse()?,
+            w: span[0].parse()?,
+            h: span[1].parse()?,
+        })
     }
 }
