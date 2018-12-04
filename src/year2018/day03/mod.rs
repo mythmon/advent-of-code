@@ -5,6 +5,8 @@ use crate::{
 use indoc::{indoc, indoc_impl};
 use std::{collections::HashMap, iter::Iterator, str::FromStr};
 
+mod parser;
+
 #[derive(Debug)]
 pub struct Day03Part1;
 
@@ -106,7 +108,7 @@ impl PuzzleRunner for Day03Part2 {
 }
 
 // TODO add area iterator
-struct Claim {
+pub struct Claim {
     id: u32,
     x: usize,
     y: usize,
@@ -115,19 +117,10 @@ struct Claim {
 }
 
 impl FromStr for Claim {
-    type Err = Box<dyn std::error::Error>;
+    // TODO better error handling
+    type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let parts: Vec<_> = s.split_whitespace().collect();
-        let coords: Vec<_> = parts[2].trim_end_matches(':').split(',').collect();
-        let span: Vec<_> = parts[3].split('x').collect();
-
-        Ok(Self {
-            id: parts[0].trim_start_matches('#').parse()?,
-            x: coords[0].parse()?,
-            y: coords[1].parse()?,
-            w: span[0].parse()?,
-            h: span[1].parse()?,
-        })
+        parser::ClaimParser::new().parse(s).map_err(|_| ())
     }
 }

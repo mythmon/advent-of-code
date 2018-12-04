@@ -6,6 +6,10 @@ version = "2018.3.1"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 default-run = "advent"
+build = "build.rs" # LALRPOP preprocessing
+
+[build-dependencies]
+lalrpop = "^0.16"
 
 [dependencies]
 rand = "^0.3.18"
@@ -17,6 +21,7 @@ rayon = "^1.0.3"
 clap = "^2.32.0"
 reqwest = "^0.9.5"
 itertools = "^0.7.11"
+lalrpop-util = "^0.16"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.

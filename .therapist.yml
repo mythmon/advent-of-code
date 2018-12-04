@@ -1,8 +1,10 @@
 actions:
   rustfmt:
-    run: cargo fmt -- --check {files}
-    fix: cargo fmt -- {files}
+    run: cargo fmt -- --unstable-features --check --skip-children {files}
+    fix: cargo fmt -- --unstable-features --skip-children {files}
     include: "*.rs"
+    exclude:
+      - "src/year2018/day3/parser.rs"
   clippy:
     run: cargo clippy --all-targets --all-features
     include: "*.rs"
