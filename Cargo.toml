@@ -9,7 +9,7 @@ default-run = "advent"
 
 [dependencies]
 rand = "^0.3.18"
-regex = "^0.2.3"
+regex = "^1"
 lazy_static = "^1.0.0"
 colored = "^1.6.1"
 indoc = "^0.2"
