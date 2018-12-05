@@ -1,0 +1,34 @@
+#![allow(clippy::all)]
+
+use crate::year2018::day04::{SleepLogLine, LogEvent, DateTime};
+
+grammar;
+
+// input looks like:
+//
+// [1518-11-01 00:00] Guard #10 begins shift
+// [1518-11-01 00:05] falls asleep
+// [1518-11-01 00:25] wakes up
+
+pub SleepLogLine: SleepLogLine = {
+    "[" <datetime: DateTime> "]" <event: LogEvent> => SleepLogLine { datetime, event, guard_id: None }
+}
+
+DateTime: DateTime = {
+    <year: u32> "-" <month: u8> "-" <day: u8> <hour: u8> ":" <minute: u8> => DateTime { year, month, day, hour, minute }
+}
+
+LogEvent: LogEvent = {
+    "Guard #" <id: u32> "begins shift" => LogEvent::BeginsShift { id },
+    "falls asleep" => LogEvent::FallsAsleep,
+    "wakes up" => LogEvent::WakesUp,
+}
+
+u32: u32 = {
+    <s:r"[0-9]+"> => s.parse::<u32>().unwrap()
+};
+
+u8: u8 = {
+    <s:r"[0-9]+"> => s.parse::<u8>().unwrap()
+};
+

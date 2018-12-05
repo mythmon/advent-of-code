@@ -6,7 +6,7 @@ pub struct Day{{DAY_PADDED}}Part1;
 
 impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
     type Input = &'static str;
-    type Output = u32;
+    type Output = i32;
 
     fn name(&self) -> String {
         "{{YEAR}}-D{{DAY_PADDED}}-P1".to_owned()
@@ -14,8 +14,8 @@ impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "example", 0)
-            .case("Solution", include_str!("input"), 0)
+            .case("Example", "example", None)
+            .case("Solution", include_str!("input"), None)
             .collect()
     }
 
@@ -24,25 +24,25 @@ impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
     }
 }
 
-#[derive(Debug)]
-pub struct Day{{DAY_PADDED}}Part2;
-
-impl PuzzleRunner for Day{{DAY_PADDED}}Part2 {
-    type Input = &'static str;
-    type Output = u32;
-
-    fn name(&self) -> String {
-        "{{YEAR}}-D{{DAY_PADDED}}-P2".to_owned()
-    }
-
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "example", 0)
-            .case("Solution", include_str!("input"), 0)
-            .collect()
-    }
-
-    fn run_puzzle(input: Self::Input) -> Self::Output {
-        unimplemented!();
-    }
-}
+// #[derive(Debug)]
+// pub struct Day{{DAY_PADDED}}Part2;
+//
+// impl PuzzleRunner for Day{{DAY_PADDED}}Part2 {
+//     type Input = &'static str;
+//     type Output = u32;
+// 
+//     fn name(&self) -> String {
+//         "{{YEAR}}-D{{DAY_PADDED}}-P2".to_owned()
+//     }
+// 
+//     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+//         GenericPuzzleCase::<Self, _, _>::build_set()
+//             .case("Example", "example", None)
+//             .case("Solution", include_str!("input"), None)
+//             .collect()
+//     }
+// 
+//     fn run_puzzle(input: Self::Input) -> Self::Output {
+//         unimplemented!();
+//     }
+// }
