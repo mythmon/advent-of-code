@@ -4,7 +4,10 @@ actions:
     fix: cargo fmt -- --unstable-features --skip-children {files}
     include: "*.rs"
     exclude:
-      - "src/year2018/day3/parser.rs"
+      - "parser.rs"
   clippy:
     run: cargo clippy --all-targets --all-features
-    include: "*.rs"
+    include:
+      - "*.rs"
+      - "Cargo.toml"
+      - "*.lalrpop"
