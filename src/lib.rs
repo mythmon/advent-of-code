@@ -1,5 +1,5 @@
 #![deny(clippy::all)]
-#![feature(slice_patterns, range_contains, associated_type_defaults, inner_deref)]
+#![feature(slice_patterns, range_contains, associated_type_defaults, inner_deref, vec_resize_default)]
 
 use std::cmp;
 

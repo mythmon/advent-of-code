@@ -4,6 +4,7 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![
@@ -15,5 +16,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         Box::new(day03::Day03Part2),
         Box::new(day04::Day04Part1),
         Box::new(day04::Day04Part2),
+        Box::new(day05::Day05Part1),
+        Box::new(day05::Day05Part2),
     ]
 }
