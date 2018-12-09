@@ -38,11 +38,41 @@ impl<T: PuzzleRunner> Puzzle for T {
     }
 }
 
+pub enum ExpectedValue<T> {
+    Exact(T),
+    None,
+    Predicate(fn(&T) -> bool),
+}
+
+impl<T: std::fmt::Debug> std::fmt::Debug for ExpectedValue<T> {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            ExpectedValue::Exact(v) => write!(fmt, "ExpectedValue::Exact({:?})", v)?,
+            ExpectedValue::None => write!(fmt, "ExpectedValue::None")?,
+            ExpectedValue::Predicate(_) => write!(fmt, "ExpectedValue::Predicate(<>)")?,
+        };
+        Ok(())
+    }
+}
+
+impl<T, U> From<U> for ExpectedValue<T>
+where
+    U: Into<Option<T>>,
+{
+    fn from(v: U) -> Self {
+        let opt: Option<T> = v.into();
+        match opt {
+            Some(v) => ExpectedValue::Exact(v),
+            None => ExpectedValue::None,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct GenericPuzzleCase<'a, T, I, O> {
     pub name: String,
     pub input: I,
-    pub expected: Option<O>,
+    pub expected: ExpectedValue<O>,
     pub phantom: PhantomData<&'a T>,
 }
 
@@ -64,18 +94,30 @@ where
 
     fn run(&self) -> PuzzleResult {
         let actual = T::run_puzzle(self.input.clone());
-        if let Some(ref expected) = self.expected {
-            if actual == *expected {
-                PuzzleResult::Match
-            } else {
-                PuzzleResult::Fail {
-                    description: format!("expected {:?} got {:?}", expected, actual),
+        match self.expected {
+            ExpectedValue::Exact(ref expected) => {
+                if actual == *expected {
+                    PuzzleResult::Match
+                } else {
+                    PuzzleResult::Fail {
+                        description: format!("expected {:?} got {:?}", expected, actual),
+                    }
                 }
             }
-        } else {
-            PuzzleResult::Unknown {
-                description: format!("{:?}", actual),
+            ExpectedValue::Predicate(predicate) => {
+                if predicate(&actual) {
+                    PuzzleResult::Unknown {
+                        description: format!("{:?} matches predicate", actual),
+                    }
+                } else {
+                    PuzzleResult::Fail {
+                        description: format!("{:?} does not match predicate", actual),
+                    }
+                }
             }
+            ExpectedValue::None => PuzzleResult::Unknown {
+                description: format!("{:?}", actual),
+            },
         }
     }
 }
@@ -124,7 +166,7 @@ where
     where
         S: Into<String>,
         I_: Into<I>,
-        O_: Into<Option<O>>,
+        O_: Into<ExpectedValue<O>>,
     {
         self.cases.push(GenericPuzzleCase {
             name: name.into(),
