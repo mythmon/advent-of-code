@@ -1,9 +1,10 @@
 #![deny(clippy::all)]
 #![feature(
-    slice_patterns,
-    range_contains,
     associated_type_defaults,
     inner_deref,
+    range_contains,
+    slice_patterns,
+    try_from,
     vec_resize_default
 )]
 
