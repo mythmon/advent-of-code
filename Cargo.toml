@@ -2,7 +2,7 @@ cargo-features = ["default-run"]
 
 [package]
 name = "advent"
-version = "2018.8.0"
+version = "2018.9.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 default-run = "advent"
@@ -23,6 +23,7 @@ reqwest = "^0.9.5"
 itertools = "^0.7.11"
 lalrpop-util = "^0.16"
 petgraph = "^0.4"
+
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.
