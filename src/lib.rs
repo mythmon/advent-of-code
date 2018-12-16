@@ -5,7 +5,8 @@
     range_contains,
     slice_patterns,
     try_from,
-    vec_resize_default
+    vec_resize_default,
+    vec_resize_with
 )]
 
 use std::cmp;

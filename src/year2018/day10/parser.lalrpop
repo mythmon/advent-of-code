@@ -1,0 +1,20 @@
+#![allow(clippy::all)]
+
+use crate::year2018::day10::Particle;
+
+grammar;
+
+// input looks like:
+//   position=< 7,  0> velocity=<-1,  0>
+
+pub Particle: Particle = {
+    "position" "=" <p: Point> "velocity" "=" <v: Point> => Particle::new(p, v)
+}
+
+Point: (i32, i32) = {
+    "<" <x: i32> "," <y: i32> ">" => (x, y)
+}
+
+i32: i32 = {
+    <s:r"-?[0-9]+"> => s.parse::<i32>().unwrap()
+};
