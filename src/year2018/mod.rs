@@ -11,6 +11,7 @@ mod day07;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![
@@ -28,6 +29,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         Box::new(day06::Day06Part2),
         Box::new(day07::Day07Part1),
         Box::new(day07::Day07Part2),
+        // TODO accidentally deleted day 8, recreate it
         // Box::new(day08::Day08Part1),
         // Box::new(day08::Day08Part2),
         Box::new(day09::Day09Part1),
@@ -36,5 +38,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         Box::new(day10::Day10Part2),
         Box::new(day11::Day11Part1),
         Box::new(day11::Day11Part2),
+        Box::new(day12::Day12Part1),
+        Box::new(day12::Day12Part2),
     ]
 }

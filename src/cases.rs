@@ -177,7 +177,11 @@ where
         self
     }
 
-    pub fn transformed_case<S: Into<String>>(self, name: S, raw_input: &str, expected: O) -> Self {
+    pub fn transformed_case<S, O_>(self, name: S, raw_input: &str, expected: O_) -> Self
+    where
+        S: Into<String>,
+        O_: Into<ExpectedValue<O>>,
+    {
         let transform = self
             .transform
             .deref()

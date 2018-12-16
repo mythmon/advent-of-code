@@ -5,6 +5,7 @@
     range_contains,
     slice_patterns,
     try_from,
+    try_trait,
     vec_resize_default,
     vec_resize_with
 )]
