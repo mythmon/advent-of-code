@@ -14,13 +14,13 @@ impl PuzzleRunner for Day05Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", "aA", 0usize)
-            .case("Example 2", "abBA", 0usize)
-            .case("Example 3", "abAB", 4usize)
-            .case("Example 4", "aabAAB", 6usize)
-            .case("Example 5", "dabAcCaCBAcCcaDA", 10usize)
-            .case("Test with newlines", "aADbBdcC\n", 0usize)
-            .case("Solution", include_str!("input"), 9_078usize)
+            .case("Example 1", "aA", 0_usize)
+            .case("Example 2", "abBA", 0_usize)
+            .case("Example 3", "abAB", 4_usize)
+            .case("Example 4", "aabAAB", 6_usize)
+            .case("Example 5", "dabAcCaCBAcCcaDA", 10_usize)
+            .case("Test with newlines", "aADbBdcC\n", 0_usize)
+            .case("Solution", include_str!("input"), 9_078_usize)
             .collect()
     }
 
@@ -78,8 +78,8 @@ impl PuzzleRunner for Day05Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "dabAcCaCBAcCcaDA", 4usize)
-            .case("Solution", include_str!("input"), 5_698usize)
+            .case("Example", "dabAcCaCBAcCcaDA", 4_usize)
+            .case("Solution", include_str!("input"), 5_698_usize)
             .collect()
     }
 
@@ -89,7 +89,9 @@ impl PuzzleRunner for Day05Part2 {
         unit_types
             .into_iter()
             .map(|unit| {
-                let candidate = input.replace(unit, "").replace(unit.to_ascii_uppercase(), "");
+                let candidate = input
+                    .replace(unit, "")
+                    .replace(unit.to_ascii_uppercase(), "");
                 let collapsed = collapse_polymer(&candidate);
                 collapsed.len()
             })

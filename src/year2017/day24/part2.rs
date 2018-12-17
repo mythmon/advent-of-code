@@ -15,7 +15,7 @@ impl PuzzleRunner for Day24Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Solution", include_str!("input").trim(), 1_824usize)
+            .case("Solution", include_str!("input").trim(), 1_824_usize)
             .collect()
     }
 
@@ -61,7 +61,7 @@ fn make_bridges(bridges: &mut Vec<Bridge>, left: &mut VecDeque<Part>, partial_br
 struct Bridge(Vec<Part>);
 
 impl Bridge {
-    fn add(&self, mut p: Part) -> Option<Bridge> {
+    fn add(&self, mut p: Part) -> Option<Self> {
         let mut new_bridge = self.clone();
         let m = self.next_match();
         if m == p.0 {

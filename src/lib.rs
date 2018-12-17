@@ -1,4 +1,16 @@
-#![deny(clippy::all)]
+#![deny(clippy::all, clippy::pedantic)]
+#![allow(
+    // TODO(lint) probably re-enable these
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
+    // TODO(lint) re-enable stutter and re-name lots of things
+    clippy::stutter,
+
+    // I just don't like this one
+    clippy::filter_map,
+)]
 #![feature(
     associated_type_defaults,
     inner_deref,

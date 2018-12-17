@@ -185,55 +185,55 @@ impl FromStr for Instr {
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = input.split_whitespace().collect();
         match &parts[..] {
-            ["snd", x] => Ok(Instr {
+            ["snd", x] => Ok(Self {
                 itype: InstrType::Snd,
                 register: None,
                 arg1: Some(x.parse()?),
                 arg2: None,
             }),
-            ["set", x, y] => Ok(Instr {
+            ["set", x, y] => Ok(Self {
                 itype: InstrType::Set,
                 register: Some(x.parse().unwrap()),
                 arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
-            ["add", x, y] => Ok(Instr {
+            ["add", x, y] => Ok(Self {
                 itype: InstrType::Add,
                 register: Some(x.parse().unwrap()),
                 arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
-            ["sub", x, y] => Ok(Instr {
+            ["sub", x, y] => Ok(Self {
                 itype: InstrType::Sub,
                 register: Some(x.parse().unwrap()),
                 arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
-            ["mul", x, y] => Ok(Instr {
+            ["mul", x, y] => Ok(Self {
                 itype: InstrType::Mul,
                 register: Some(x.parse().unwrap()),
                 arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
-            ["mod", x, y] => Ok(Instr {
+            ["mod", x, y] => Ok(Self {
                 itype: InstrType::Mod,
                 register: Some(x.parse().unwrap()),
                 arg1: Some(y.parse().unwrap()),
                 arg2: None,
             }),
-            ["rcv", x] => Ok(Instr {
+            ["rcv", x] => Ok(Self {
                 itype: InstrType::Rcv,
                 register: Some(x.parse().unwrap()),
                 arg1: None,
                 arg2: None,
             }),
-            ["jgz", x, y] => Ok(Instr {
+            ["jgz", x, y] => Ok(Self {
                 itype: InstrType::Jgz,
                 register: None,
                 arg1: Some(x.parse().unwrap()),
                 arg2: Some(y.parse().unwrap()),
             }),
-            ["jnz", x, y] => Ok(Instr {
+            ["jnz", x, y] => Ok(Self {
                 itype: InstrType::Jnz,
                 register: None,
                 arg1: Some(x.parse().unwrap()),

@@ -17,8 +17,8 @@ impl PuzzleRunner for Day14Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "flqrgnkx", 1_242usize)  // spell-checker: disable-line
-            .case("Solution", include_str!("input").trim(), 1_180usize)
+            .case("Example", "flqrgnkx", 1_242_usize)  // spell-checker: disable-line
+            .case("Solution", include_str!("input").trim(), 1_180_usize)
             .collect()
     }
 
@@ -35,7 +35,7 @@ impl PuzzleRunner for Day14Part2 {
             }
         }
 
-        for pos in todo.into_iter() {
+        for pos in todo {
             if done.insert(pos) && grid.get(pos) {
                 groups_found += 1;
                 let mut group_todo = pos.neighbors(size);
@@ -88,7 +88,7 @@ impl KnotGrid {
 
 impl fmt::Display for KnotGrid {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for row in self.hash_rows.iter() {
+        for row in &self.hash_rows {
             for cell in row.iter() {
                 write!(formatter, "{:08b}", cell)?;
             }

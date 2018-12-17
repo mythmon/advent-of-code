@@ -16,11 +16,11 @@ impl PuzzleRunner for Day11Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", "ne,ne,ne", 3u32)
-            .case("Example 2", "ne,ne,sw,sw", 0u32)
-            .case("Example 3", "ne,ne,s,s", 2u32)
-            .case("Example 4", "se,sw,se,sw,sw", 3u32)
-            .case("Correct answer", include_str!("input"), 812u32)
+            .case("Example 1", "ne,ne,ne", 3_u32)
+            .case("Example 2", "ne,ne,sw,sw", 0_u32)
+            .case("Example 3", "ne,ne,s,s", 2_u32)
+            .case("Example 4", "se,sw,se,sw,sw", 3_u32)
+            .case("Correct answer", include_str!("input"), 812_u32)
             .collect()
     }
 

@@ -13,14 +13,14 @@ impl PuzzleRunner for Day09Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", "<>", 0u32)
-            .case("Example 2", "<random characters>", 17u32)
-            .case("Example 3", "<<<<>", 3u32)
-            .case("Example 4", "<{!>}>", 2u32)
-            .case("Example 5", "<!!>", 0u32)
-            .case("Example 6", "<!!!>>", 0u32)
-            .case("Example 7", "<{o\"i!a,<{i<a>", 10u32)
-            .case("Solution", include_str!("input"), 7_825u32)
+            .case("Example 1", "<>", 0_u32)
+            .case("Example 2", "<random characters>", 17_u32)
+            .case("Example 3", "<<<<>", 3_u32)
+            .case("Example 4", "<{!>}>", 2_u32)
+            .case("Example 5", "<!!>", 0_u32)
+            .case("Example 6", "<!!!>>", 0_u32)
+            .case("Example 7", "<{o\"i!a,<{i<a>", 10_u32)
+            .case("Solution", include_str!("input"), 7_825_u32)
             .collect()
     }
 
@@ -36,7 +36,7 @@ impl PuzzleRunner for Day09Part2 {
                 (Some(&s), '!') if s != Cancel => {
                     state_stack.push(Cancel);
                 }
-                (Some(Cancel), _) => {
+                (Some(Cancel), _) | (Some(InGroup(_)), '}') | (Some(Garbage), '>') => {
                     state_stack.pop();
                 }
                 (None, '{') => {
@@ -45,13 +45,7 @@ impl PuzzleRunner for Day09Part2 {
                 (Some(InGroup(v)), '{') => {
                     state_stack.push(InGroup(v + 1));
                 }
-                (Some(InGroup(_)), '}') => {
-                    state_stack.pop();
-                }
                 (Some(InGroup(_)), ',') => (),
-                (Some(Garbage), '>') => {
-                    state_stack.pop();
-                }
                 (Some(Garbage), _) => {
                     garbage_count += 1;
                 }

@@ -16,10 +16,10 @@ impl PuzzleRunner for Day22Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example 1", ("..#\n#..\n...", 7), 5usize)
-            .case("Example 2", ("..#\n#..\n...", 70), 41usize)
-            .case("Example 3", ("..#\n#..\n...", 10_000), 5_587usize)
-            .case("Solution", (include_str!("input"), 10_000), 5_259usize)
+            .case("Example 1", ("..#\n#..\n...", 7), 5_usize)
+            .case("Example 2", ("..#\n#..\n...", 70), 41_usize)
+            .case("Example 3", ("..#\n#..\n...", 10_000), 5_587_usize)
+            .case("Solution", (include_str!("input"), 10_000), 5_259_usize)
             .collect()
     }
 
@@ -68,7 +68,7 @@ impl FromStr for Sporifica {
     type Err = ();
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let mut rv = Sporifica::new();
+        let mut rv = Self::new();
 
         for (y, line) in input.lines().enumerate() {
             let offset = (line.len() / 2) as i32;

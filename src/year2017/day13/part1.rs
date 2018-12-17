@@ -16,8 +16,8 @@ impl PuzzleRunner for Day13Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "0: 3\n1: 2\n4: 4\n6: 4\n", 24usize)
-            .case("Solution", include_str!("input"), 2_688usize)
+            .case("Example", "0: 3\n1: 2\n4: 4\n6: 4\n", 24_usize)
+            .case("Solution", include_str!("input"), 2_688_usize)
             .collect()
     }
 
@@ -89,7 +89,7 @@ impl FromStr for Scanner {
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<usize> = input.split(": ").filter_map(|p| p.parse().ok()).collect();
-        if parts.len() != 2 {
+        if parts.len() == 2 {
             Err(())
         } else {
             Ok(Self::new(parts[0], parts[1]))

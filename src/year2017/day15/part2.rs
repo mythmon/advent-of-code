@@ -20,7 +20,7 @@ impl PuzzleRunner for Day15Part2 {
                     "Generator A starts with 65\nGenerator B starts with 8921\n",
                     1056,
                 ),
-                1usize,
+                1_usize,
             )
             .case(
                 "Example long",
@@ -28,9 +28,9 @@ impl PuzzleRunner for Day15Part2 {
                     "Generator A starts with 65\nGenerator B starts with 8921\n",
                     5_000_000,
                 ),
-                309usize,
+                309_usize,
             )
-            .case("Solution", (include_str!("input"), 5_000_000), 336usize)
+            .case("Solution", (include_str!("input"), 5_000_000), 336_usize)
             .collect()
     }
 

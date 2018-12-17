@@ -176,8 +176,8 @@ pub struct Point {
 }
 
 impl Point {
-    pub fn manhattan_distance<'a, T: Into<&'a Point>>(&self, other: T) -> usize {
-        let other: &Point = other.into();
+    pub fn manhattan_distance<'a, T: Into<&'a Self>>(&self, other: T) -> usize {
+        let other: &Self = other.into();
         self.x.difference(&other.x) + self.y.difference(&other.y)
     }
 }
@@ -193,20 +193,20 @@ impl std::str::FromStr for Point {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<_> = s.split(',').map(|p| p.trim()).collect();
-        if parts.len() != 2 {
-            Err(From::from("Points must be 2d"))
-        } else {
+        if parts.len() == 2 {
             Ok(Self {
                 x: parts[0].parse()?,
                 y: parts[1].parse()?,
             })
+        } else {
+            Err(From::from("Points must be 2d"))
         }
     }
 }
 
 impl From<(usize, usize)> for Point {
     fn from((x, y): (usize, usize)) -> Self {
-        Point { x, y }
+        Self { x, y }
     }
 }
 
@@ -216,7 +216,7 @@ trait Difference {
 }
 
 impl Difference for usize {
-    type Out = usize;
+    type Out = Self;
     fn difference(&self, other: &Self) -> Self::Out {
         if self > other {
             self - other

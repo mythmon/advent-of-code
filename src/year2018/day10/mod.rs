@@ -66,14 +66,14 @@ pub struct ParticleSystem {
 
 impl ParticleSystem {
     fn step(&mut self) {
-        for mut particle in self.particles.iter_mut() {
+        for mut particle in &mut self.particles {
             particle.position.0 += particle.velocity.0;
             particle.position.1 += particle.velocity.1;
         }
     }
 
     fn step_reverse(&mut self) {
-        for mut particle in self.particles.iter_mut() {
+        for mut particle in &mut self.particles {
             particle.position.0 -= particle.velocity.0;
             particle.position.1 -= particle.velocity.1;
         }
@@ -134,7 +134,7 @@ impl std::fmt::Display for ParticleSystem {
 
         for Particle {
             position: (px, py), ..
-        } in self.particles.iter()
+        } in &self.particles
         {
             let x = (px - bounds.min_x) as usize;
             let y = (py - bounds.min_y) as usize;
@@ -187,8 +187,8 @@ impl PuzzleRunner for Day10Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "example", 3u32)
-            .case("Solution", include_str!("input"), 10_304u32)
+            .case("Example", include_str!("example"), 3_u32)
+            .case("Solution", include_str!("input"), 10_304_u32)
             .collect()
     }
 

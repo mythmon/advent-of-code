@@ -14,15 +14,15 @@ impl PuzzleRunner for Day19Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", include_str!("example"), 38usize)
-            .case("Solution", include_str!("input"), 17_540usize)
+            .case("Example", include_str!("example"), 38_usize)
+            .case("Solution", include_str!("input"), 17_540_usize)
             .collect()
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
         let max_width = grid.iter().map(|row| row.len()).max().unwrap();
-        for row in grid.iter_mut() {
+        for row in &mut grid {
             row.resize(max_width, ' ');
         }
 
@@ -49,7 +49,7 @@ impl PuzzleRunner for Day19Part2 {
 
                     let mut found = false;
 
-                    for new_dir in [left, right].iter() {
+                    for new_dir in &[left, right] {
                         let new_pos = pos + *new_dir;
                         if new_pos.x >= 0
                             && new_pos.x < max_width as i32

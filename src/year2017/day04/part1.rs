@@ -17,9 +17,9 @@ impl PuzzleRunner for Day04Part1 {
             .case(
                 "Example",
                 "aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa",
-                2usize,
+                2_usize,
             )
-            .case("Solution", include_str!("input"), 466usize)
+            .case("Solution", include_str!("input"), 466_usize)
             .collect()
     }
 

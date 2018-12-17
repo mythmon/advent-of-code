@@ -16,8 +16,8 @@ impl PuzzleRunner for Day02Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, &'static str, u32>::build_set()
-            .case("Example", "5 1 9 5\n7 5 3\n2 4 6 8\n", 18u32)
-            .case("Solution", include_str!("input"), 34_581u32)
+            .case("Example", "5 1 9 5\n7 5 3\n2 4 6 8\n", 18_u32)
+            .case("Solution", include_str!("input"), 34_581_u32)
             .collect()
     }
 

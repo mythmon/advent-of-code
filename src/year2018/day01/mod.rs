@@ -54,7 +54,7 @@ impl PuzzleRunner for Day01Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let numbers = parse_input(input);
-        let mut sum = 0i32;
+        let mut sum = 0_i32;
 
         let mut seen = HashSet::new();
         seen.insert(sum);

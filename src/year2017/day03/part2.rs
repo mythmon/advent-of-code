@@ -15,7 +15,7 @@ impl PuzzleRunner for Day03Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Solution", 289_325u32, 295_229u32)
+            .case("Solution", 289_325_u32, 295_229_u32)
             .collect()
     }
 

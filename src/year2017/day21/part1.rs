@@ -28,9 +28,9 @@ impl PuzzleRunner for Day21Part1 {
                     ),
                     2,
                 ),
-                12usize,
+                12_usize,
             )
-            .case("Solution", (include_str!("input"), 5), 117usize)
+            .case("Solution", (include_str!("input"), 5), 117_usize)
             .collect()
     }
 
@@ -61,12 +61,12 @@ impl Grid {
         Self { cells }
     }
 
-    fn assemble_from(parts: &[Grid]) -> Grid {
+    fn assemble_from(parts: &[Self]) -> Self {
         let num_subgrids_wide = (parts.len() as f64).sqrt() as usize;
         assert_eq!(num_subgrids_wide * num_subgrids_wide, parts.len());
         let subgrid_size = parts[0].size();
 
-        let mut rv = Grid::new(subgrid_size * num_subgrids_wide);
+        let mut rv = Self::new(subgrid_size * num_subgrids_wide);
 
         for (idx, subgrid) in parts.iter().enumerate() {
             let gx = idx % num_subgrids_wide;
@@ -117,7 +117,7 @@ impl Grid {
         rv
     }
 
-    fn variants(&self) -> Vec<Grid> {
+    fn variants(&self) -> Vec<Self> {
         let mut rv = Vec::with_capacity(8);
         rv.push(self.clone());
         rv.push(self.flip());
@@ -128,7 +128,7 @@ impl Grid {
         rv
     }
 
-    fn split(&self) -> Vec<Grid> {
+    fn split(&self) -> Vec<Self> {
         let l = self.size();
         let m = if l % 2 == 0 {
             2
@@ -146,7 +146,7 @@ impl Grid {
 
         (0..(s * s))
             .map(|grid_idx| {
-                let mut part = Grid::new(m);
+                let mut part = Self::new(m);
                 let gx = grid_idx % s;
                 let gy = grid_idx / s;
                 for x in 0..m {
@@ -202,7 +202,7 @@ impl FromStr for Grid {
 
 impl fmt::Display for Grid {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for row in self.cells.iter() {
+        for row in &self.cells {
             for cell in row.iter() {
                 if *cell {
                     write!(formatter, "#")?;

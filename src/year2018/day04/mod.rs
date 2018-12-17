@@ -20,7 +20,7 @@ impl PuzzleRunner for Day04Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Solution", include_str!("input"), 3_212u32)
+            .case("Solution", include_str!("input"), 3_212_u32)
             .collect()
     }
 
@@ -34,7 +34,7 @@ impl PuzzleRunner for Day04Part1 {
             LogEvent::BeginsShift { id } => id,
             _ => panic!("Input is invalid: did not start with a start of shift"),
         };
-        for mut line in log.iter_mut() {
+        for mut line in &mut log {
             line.guard_id = match line.event {
                 LogEvent::BeginsShift { id } => {
                     latest_guard_id = id;
@@ -85,7 +85,7 @@ impl PuzzleRunner for Day04Part1 {
                     }
             })
             .tuples();
-        let mut asleep_minutes = [0u32; 60];
+        let mut asleep_minutes = [0_u32; 60];
         for (asleep, awake) in guard_sleep_wake_cycles {
             for idx in asleep.datetime.minute..awake.datetime.minute {
                 asleep_minutes[idx as usize] += 1;
@@ -129,7 +129,7 @@ impl PuzzleRunner for Day04Part2 {
             LogEvent::BeginsShift { id } => id,
             _ => panic!("Input is invalid: did not start with a start of shift"),
         };
-        for mut line in log.iter_mut() {
+        for mut line in &mut log {
             line.guard_id = match line.event {
                 LogEvent::BeginsShift { id } => {
                     latest_guard_id = id;

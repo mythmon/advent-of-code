@@ -22,7 +22,7 @@ impl PuzzleRunner for Day06Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9\n", 17usize)
+            .case("Example", "1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9\n", 17_usize)
             .case("Solution", include_str!("input"), 4215)
             .case(
                 "Test from Reddit 1",
@@ -39,7 +39,7 @@ impl PuzzleRunner for Day06Part1 {
                     101, 101
                 "
                 ),
-                9usize,
+                9_usize,
             )
             .case(
                 "Test from Reddit 2",
@@ -79,7 +79,7 @@ impl PuzzleRunner for Day06Part1 {
                 .collect::<Vec<_>>();
             distances.sort_by_key(|(_idx, distance)| *distance);
             // ignore ties
-            assert!(distances.is_empty());
+            assert!(!distances.is_empty());
             let closest_id = if distances.len() == 1 || distances[0].1 != distances[1].1 {
                 Some(distances[0].0)
             } else {
@@ -140,10 +140,10 @@ impl PuzzleRunner for Day06Part2 {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Example",
-                ("1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9\n", 32usize),
-                16usize,
+                ("1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9\n", 32_usize),
+                16_usize,
             )
-            .case("Solution", (include_str!("input"), 10_000usize), 40_376)
+            .case("Solution", (include_str!("input"), 10_000_usize), 40_376)
             .collect()
     }
 

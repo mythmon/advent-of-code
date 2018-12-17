@@ -31,7 +31,7 @@ impl PuzzleRunner for Day16Part2 {
 
         let mut cycle_at = None;
 
-        for instr in instructions.iter() {
+        for instr in &instructions {
             instr.exec(&mut dancers);
         }
 
@@ -40,7 +40,7 @@ impl PuzzleRunner for Day16Part2 {
                 cycle_at = Some(i);
                 break;
             }
-            for instr in instructions.iter() {
+            for instr in &instructions {
                 instr.exec(&mut dancers);
             }
         }
@@ -48,7 +48,7 @@ impl PuzzleRunner for Day16Part2 {
         if let Some(cycle_at) = cycle_at {
             dancers = original_dancers.clone();
             for _ in 0..(1_000_000_000 % cycle_at) {
-                for instr in instructions.iter() {
+                for instr in &instructions {
                     instr.exec(&mut dancers);
                 }
             }

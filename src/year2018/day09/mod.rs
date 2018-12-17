@@ -18,34 +18,34 @@ impl PuzzleRunner for Day09Part1 {
             .case(
                 "Example 1",
                 "9 players; last marble is worth 25 points",
-                32u32,
+                32_u32,
             )
             .case(
                 "Example 2",
                 "10 players; last marble is worth 1618 points",
-                8_317u32,
+                8_317_u32,
             )
             .case(
                 "Example 3",
                 "13 players; last marble is worth 7999 points",
-                146_373u32,
+                146_373_u32,
             )
             .case(
                 "Example 4",
                 "17 players; last marble is worth 1104 points",
-                2_764u32,
+                2_764_u32,
             )
             .case(
                 "Example 5",
                 "21 players; last marble is worth 6111 points",
-                54_718u32,
+                54_718_u32,
             )
             .case(
                 "Example 6",
                 "30 players; last marble is worth 5807 points",
-                37_305u32,
+                37_305_u32,
             )
-            .case("Solution", include_str!("input"), 398_502u32)
+            .case("Solution", include_str!("input"), 398_502_u32)
             .collect()
     }
 
@@ -69,7 +69,7 @@ impl GameDescription {
         let mut scores = Vec::new();
         scores.resize_default(self.num_players as usize);
 
-        let turns = (0usize..self.num_players as usize).cycle();
+        let turns = (0_usize..self.num_players as usize).cycle();
 
         for (player, marble) in turns.zip(1..=self.last_marble) {
             // println!("{:?}", marbles);
@@ -101,7 +101,7 @@ impl std::str::FromStr for GameDescription {
             .map(|captures| captures.get(0).unwrap().as_str().parse().unwrap())
             .collect();
         assert!(numbers.len() == 2);
-        Ok(GameDescription {
+        Ok(Self {
             num_players: numbers[0],
             last_marble: numbers[1],
         })

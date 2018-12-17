@@ -231,17 +231,8 @@ impl PuzzleRunner for Day12Part2 {
         }
 
         // To account for a "sliding" repetition, increase the offset
-        println!(
-            "offset: {}, offset_stride: {}, iteration_target: {}, iterations: {}, remaining: {}",
-            pots_state.offset,
-            offset_stride,
-            iteration_target,
-            pots_state.iterations,
-            iteration_target - pots_state.iterations as u64
-        );
         pots_state.offset +=
             offset_stride as i64 * (iteration_target as i64 - pots_state.iterations as i64);
-        println!("new offset: {}", pots_state.offset);
         pots_state.answer()
     }
 }

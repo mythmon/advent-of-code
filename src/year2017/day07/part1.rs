@@ -44,15 +44,15 @@ impl PuzzleRunner for Day07Part1 {
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut blocked_by = HashMap::new();
 
-        for node in input.iter() {
-            for blocked in node.blocks.iter() {
+        for node in &input {
+            for blocked in &node.blocks {
                 let entry = blocked_by.entry(blocked).or_insert_with(Vec::new);
                 entry.push(node.name.clone());
             }
         }
 
         let mut founds = vec![];
-        for node in input.iter() {
+        for node in &input {
             if !blocked_by.contains_key(&node.name) {
                 founds.push(node.name.clone());
             }
@@ -77,7 +77,7 @@ pub struct NodeDesc {
 impl NodeDesc {
     #[allow(dead_code)]
     fn new(name: &str, blocks: &[&str]) -> Self {
-        NodeDesc {
+        Self {
             name: String::from(name),
             blocks: blocks.iter().map(|s| String::from(*s)).collect(),
         }
@@ -91,7 +91,7 @@ impl FromStr for NodeDesc {
         let parts: Vec<String> = input.split_whitespace().map(String::from).collect();
 
         if parts.len() == 2 {
-            Ok(NodeDesc {
+            Ok(Self {
                 name: parts[0].clone(),
                 blocks: vec![],
             })
@@ -100,7 +100,7 @@ impl FromStr for NodeDesc {
                 .iter()
                 .map(|s| String::from(s.trim_right_matches(',')))
                 .collect();
-            Ok(NodeDesc {
+            Ok(Self {
                 name: parts[0].clone(),
                 blocks,
             })

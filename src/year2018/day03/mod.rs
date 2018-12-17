@@ -29,9 +29,9 @@ impl PuzzleRunner for Day03Part1 {
                 #3 @ 5,5: 2x2
                 "
                 ),
-                4usize,
+                4_usize,
             )
-            .case("Solution", include_str!("input"), 109_143usize)
+            .case("Solution", include_str!("input"), 109_143_usize)
             .collect()
     }
 
@@ -72,9 +72,9 @@ impl PuzzleRunner for Day03Part2 {
                 #3 @ 5,5: 2x2
                 "
                 ),
-                3u32,
+                3_u32,
             )
-            .case("Solution", include_str!("input"), 506u32)
+            .case("Solution", include_str!("input"), 506_u32)
             .collect()
     }
 
@@ -82,7 +82,7 @@ impl PuzzleRunner for Day03Part2 {
         let claims: Vec<Claim> = input.trimmed_lines().map(|l| l.parse().unwrap()).collect();
         let mut taken = HashMap::new();
         // TODO can this be done without iterating twice?
-        for claim in claims.iter() {
+        for claim in &claims {
             for x in claim.x..(claim.x + claim.w) {
                 for y in claim.y..(claim.y + claim.h) {
                     *taken.entry((x, y)).or_insert(0) += 1;

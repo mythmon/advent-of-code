@@ -64,7 +64,7 @@ fn make_graph(input: &str) -> StableGraph<char, ()> {
     let mut graph: StableGraph<char, ()> = StableGraph::new();
     let mut name_to_idx: HashMap<char, _> = HashMap::new();
 
-    for e in edge_descriptions.into_iter() {
+    for e in edge_descriptions {
         let from_idx = *name_to_idx
             .entry(e.name)
             .or_insert_with(|| graph.add_node(e.name));
@@ -112,13 +112,17 @@ impl PuzzleRunner for Day07Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", (include_str!("example"), 2usize, 0u32), 15u32)
-            .case("Solution", (include_str!("input"), 6usize, 60u32), 1_048u32)
+            .case("Example", (include_str!("example"), 2_usize, 0_u32), 15_u32)
+            .case(
+                "Solution",
+                (include_str!("input"), 6_usize, 60_u32),
+                1_048_u32,
+            )
             .collect()
     }
 
     fn run_puzzle((input, max_workers, extra_time_per): Self::Input) -> Self::Output {
-        let mut time = 0;
+        let mut total_time = 0;
         let mut graph = make_graph(input);
         let mut work_in_progress = HashMap::new();
 
@@ -137,8 +141,8 @@ impl PuzzleRunner for Day07Part2 {
             while work_in_progress.len() < max_workers && !ready_nodes.is_empty() {
                 let idx = ready_nodes.pop().unwrap();
                 let work = *graph.node_weight(idx).unwrap();
-                let time = task_length(work, extra_time_per);
-                work_in_progress.insert(idx, time);
+                let task_time = task_length(work, extra_time_per);
+                work_in_progress.insert(idx, task_time);
             }
 
             work_in_progress = work_in_progress
@@ -154,10 +158,10 @@ impl PuzzleRunner for Day07Part2 {
                 })
                 .collect();
 
-            time += 1;
+            total_time += 1;
         }
 
-        time
+        total_time
     }
 }
 

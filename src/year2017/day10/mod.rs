@@ -16,7 +16,7 @@ impl KnotHash {
         let mut skip_size = 0;
 
         for _ in 0..64 {
-            for c in input.iter() {
+            for c in &input {
                 let mut section: Vec<usize> = if position + c < length {
                     let range = position..(position + c);
                     Vec::from(&hash_parts[range])

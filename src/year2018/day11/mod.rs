@@ -22,7 +22,7 @@ impl PuzzleRunner for Day11Part1 {
             .case(
                 "Solution",
                 include_str!("input").trim().parse::<i32>().unwrap(),
-                None,
+                "21,41".to_owned(),
             )
             .collect()
     }

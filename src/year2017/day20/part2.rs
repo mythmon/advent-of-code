@@ -20,9 +20,9 @@ impl PuzzleRunner for Day20Part2 {
                 "Example",
                 "p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\np=<-4,0,0>, v=< 2,0,0>, a=< \
                  0,0,0>\np=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\np=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>",
-                1usize,
+                1_usize,
             )
-            .case("Solution", include_str!("input"), 504usize)
+            .case("Solution", include_str!("input"), 504_usize)
             .collect()
     }
 
@@ -33,7 +33,7 @@ impl PuzzleRunner for Day20Part2 {
         let mut num_escaped = 0;
         while particles.len() > 1 {
             let mut positions: HashMap<Vec3, Vec<Particle>> = HashMap::new();
-            for p in particles.iter() {
+            for p in &particles {
                 let entry = positions.entry(p.p).or_insert_with(Vec::new);
                 entry.push(*p);
             }
@@ -44,7 +44,7 @@ impl PuzzleRunner for Day20Part2 {
                 .collect();
             particles.retain(|p| !collided.contains(p));
 
-            for p in particles.iter_mut() {
+            for p in &mut particles {
                 p.tick();
             }
 
@@ -121,7 +121,7 @@ impl Vec3 {
 
 impl From<(i64, i64, i64)> for Vec3 {
     fn from(t: (i64, i64, i64)) -> Self {
-        Vec3 {
+        Self {
             x: t.0,
             y: t.1,
             z: t.2,
@@ -130,7 +130,7 @@ impl From<(i64, i64, i64)> for Vec3 {
 }
 
 impl AddAssign for Vec3 {
-    fn add_assign(&mut self, other: Vec3) {
+    fn add_assign(&mut self, other: Self) {
         self.x += other.x;
         self.y += other.y;
         self.z += other.z;
