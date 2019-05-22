@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 
 #[derive(Debug)]
-pub struct Day03Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day03Part2 {
+impl PuzzleRunner for Part2 {
     type Input = u32;
     type Output = u32;
 

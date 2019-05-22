@@ -5,8 +5,6 @@
     clippy::cast_possible_wrap,
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
-    // TODO(lint) re-enable stutter and re-name lots of things
-    clippy::stutter,
 
     // I just don't like this one
     clippy::filter_map,
@@ -14,12 +12,9 @@
 #![feature(
     associated_type_defaults,
     inner_deref,
-    range_contains,
     slice_patterns,
-    try_from,
     try_trait,
-    vec_resize_default,
-    vec_resize_with
+    vec_resize_default
 )]
 
 use std::cmp;

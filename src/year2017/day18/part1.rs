@@ -4,9 +4,9 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day18Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day18Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = i64;
 

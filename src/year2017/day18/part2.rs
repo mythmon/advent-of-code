@@ -6,9 +6,9 @@ use indoc::{indoc, indoc_impl};
 use std::collections::VecDeque;
 
 #[derive(Debug)]
-pub struct Day18Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day18Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 

@@ -1,5 +1,6 @@
 #![allow(clippy::all)]
 #![allow(clippy::pedantic)]
+#![allow(deprecated)]
 
 use crate::year2018::day04::{SleepLogLine, LogEvent, DateTime};
 
@@ -32,4 +33,3 @@ u32: u32 = {
 u8: u8 = {
     <s:r"[0-9]+"> => s.parse::<u8>().unwrap()
 };
-

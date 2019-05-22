@@ -1,5 +1,6 @@
 #![allow(clippy::all)]
 #![allow(clippy::pedantic)]
+#![allow(deprecated)]
 
 use crate::year2018::day03::Claim;
 
@@ -17,4 +18,3 @@ usize: usize = {
 u32: u32 = {
     <s:r"[0-9]+"> => s.parse().unwrap()
 };
-

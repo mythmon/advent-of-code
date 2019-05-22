@@ -5,9 +5,9 @@ use std::str::FromStr;
 use std::{cmp, fmt};
 
 #[derive(Debug)]
-pub struct Day22Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day22Part2 {
+impl PuzzleRunner for Part2 {
     type Input = (&'static str, usize);
     type Output = usize;
 

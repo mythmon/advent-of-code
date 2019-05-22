@@ -3,9 +3,9 @@ use std::collections::HashSet;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day13Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day13Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 

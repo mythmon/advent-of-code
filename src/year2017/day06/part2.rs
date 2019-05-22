@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Day06Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day06Part2 {
+impl PuzzleRunner for Part2 {
     type Input = Vec<usize>;
     type Output = i32;
 

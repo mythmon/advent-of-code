@@ -4,9 +4,9 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct Day11Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day11Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = u32;
 

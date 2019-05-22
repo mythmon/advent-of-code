@@ -4,9 +4,9 @@ use std::ops::{Add, AddAssign};
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day22Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day22Part1 {
+impl PuzzleRunner for Part1 {
     type Input = (&'static str, usize);
     type Output = usize;
 

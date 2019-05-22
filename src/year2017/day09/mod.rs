@@ -7,3 +7,9 @@ pub enum ParseState {
     Garbage,
     Cancel,
 }
+
+enum ParseAction {
+    Nothing,
+    Pop,
+    Push(ParseState),
+}

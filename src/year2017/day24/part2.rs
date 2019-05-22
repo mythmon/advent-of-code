@@ -3,9 +3,9 @@ use std::collections::VecDeque;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day24Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day24Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 
@@ -104,7 +104,7 @@ impl FromStr for Part {
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<usize> = input.split('/').map(|p| p.parse().unwrap()).collect();
         assert_eq!(parts.len(), 2);
-        Ok(Part(parts[0], parts[1]))
+        Ok(Self(parts[0], parts[1]))
     }
 }
 

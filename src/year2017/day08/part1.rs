@@ -4,9 +4,9 @@ use indoc::{indoc, indoc_impl};
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Day08Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day08Part1 {
+impl PuzzleRunner for Part1 {
     type Input = Vec<Instruction>;
     type Output = isize;
 

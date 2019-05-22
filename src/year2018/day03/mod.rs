@@ -8,9 +8,9 @@ use std::{collections::HashMap, iter::Iterator, str::FromStr};
 mod parser;
 
 #[derive(Debug)]
-pub struct Day03Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day03Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 
@@ -51,9 +51,9 @@ impl PuzzleRunner for Day03Part1 {
 }
 
 #[derive(Debug)]
-pub struct Day03Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day03Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = u32;
 

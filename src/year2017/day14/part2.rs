@@ -5,9 +5,9 @@ use crate::{
 use std::{collections::HashSet, fmt};
 
 #[derive(Debug)]
-pub struct Day14Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day14Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 

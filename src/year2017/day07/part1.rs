@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day07Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day07Part1 {
+impl PuzzleRunner for Part1 {
     type Input = Vec<NodeDesc>;
     type Output = String;
 
@@ -98,7 +98,7 @@ impl FromStr for NodeDesc {
         } else if parts.len() >= 4 {
             let blocks: Vec<String> = parts[3..]
                 .iter()
-                .map(|s| String::from(s.trim_right_matches(',')))
+                .map(|s| String::from(s.trim_end_matches(',')))
                 .collect();
             Ok(Self {
                 name: parts[0].clone(),

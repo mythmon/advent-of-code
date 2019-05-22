@@ -6,9 +6,9 @@ use itertools::Itertools;
 use rayon::prelude::*;
 
 #[derive(Debug)]
-pub struct Day11Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day11Part1 {
+impl PuzzleRunner for Part1 {
     type Input = i32;
     type Output = String;
 
@@ -37,7 +37,7 @@ impl PuzzleRunner for Day11Part1 {
 
         let max_point = (0..size - 2)
             .cartesian_product(0..size - 2)
-            .map(|p| p.into())
+            .map(Into::into)
             .map(|p: Point| {
                 let power_sum = (p.x..p.x + 3)
                     .cartesian_product(p.y..p.y + 3)
@@ -83,9 +83,9 @@ mod tests {
 }
 
 #[derive(Debug)]
-pub struct Day11Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day11Part2 {
+impl PuzzleRunner for Part2 {
     type Input = i32;
     type Output = String;
 

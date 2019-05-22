@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::{collections::HashSet, iter::Iterator};
 
 #[derive(Debug)]
-pub struct Day05Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day05Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 
@@ -66,9 +66,9 @@ fn collapse_polymer(s: &str) -> String {
 }
 
 #[derive(Debug)]
-pub struct Day05Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day05Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 

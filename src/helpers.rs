@@ -66,7 +66,7 @@ impl<T: Default> Grid<T> {
     pub fn new(width: usize, height: usize) -> Self {
         let size = width * height;
         let mut storage = Vec::with_capacity(size);
-        storage.resize_default(size);
+        storage.resize_with(size, Default::default);
         Self {
             storage,
             stride: width,
@@ -192,7 +192,7 @@ impl std::str::FromStr for Point {
     type Err = Box<dyn std::error::Error>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let parts: Vec<_> = s.split(',').map(|p| p.trim()).collect();
+        let parts: Vec<_> = s.split(',').map(str::trim).collect();
         if parts.len() == 2 {
             Ok(Self {
                 x: parts[0].parse()?,

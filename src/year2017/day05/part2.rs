@@ -1,9 +1,9 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
-pub struct Day05Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day05Part2 {
+impl PuzzleRunner for Part2 {
     type Input = Vec<i32>;
     type Output = u32;
 

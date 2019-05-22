@@ -8,9 +8,9 @@ use std::{collections::HashMap, iter::Iterator, str::FromStr};
 mod parser;
 
 #[derive(Debug)]
-pub struct Day04Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day04Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = u32;
 
@@ -26,7 +26,7 @@ impl PuzzleRunner for Day04Part1 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let log: Result<Vec<SleepLogLine>, String> =
-            input.trimmed_lines().map(|l| l.parse()).collect();
+            input.trimmed_lines().map(str::parse).collect();
         let mut log = log.expect("Couldn't parse input");
         log.sort_by_key(|log| log.datetime);
 
@@ -103,9 +103,9 @@ impl PuzzleRunner for Day04Part1 {
 }
 
 #[derive(Debug)]
-pub struct Day04Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day04Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = u32;
 
@@ -121,7 +121,7 @@ impl PuzzleRunner for Day04Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let log: Result<Vec<SleepLogLine>, String> =
-            input.trimmed_lines().map(|l| l.parse()).collect();
+            input.trimmed_lines().map(str::parse).collect();
         let mut log = log.expect("Couldn't parse input");
         log.sort_by_key(|log| log.datetime);
 

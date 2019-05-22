@@ -1,9 +1,10 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::year2017::day09::ParseAction;
 
 #[derive(Debug)]
-pub struct Day09Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day09Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = u32;
 
@@ -32,30 +33,29 @@ impl PuzzleRunner for Day09Part1 {
         let mut state_stack = vec![];
 
         for c in input.trim().chars() {
-            let state = state_stack.last();
-            match (state, c) {
-                (Some(&s), '!') if s != Cancel => {
-                    state_stack.push(Cancel);
-                }
-                (Some(Cancel), _) | (Some(Garbage), '>') => {
-                    state_stack.pop();
-                }
-                (None, '{') => {
-                    state_stack.push(InGroup(1));
-                }
-                (Some(InGroup(v)), '{') => {
-                    state_stack.push(InGroup(v + 1));
-                }
+            let next_action = match (state_stack.last(), c) {
+                (Some(&s), '!') if s != Cancel => ParseAction::Push(Cancel),
+                (Some(Cancel), _) | (Some(Garbage), '>') => ParseAction::Pop,
+                (None, '{') => ParseAction::Push(InGroup(1)),
+                (Some(InGroup(v)), '{') => ParseAction::Push(InGroup(v + 1)),
                 (Some(&InGroup(v)), '}') => {
-                    state_stack.pop();
                     total_score += v;
+                    ParseAction::Pop
                 }
-                (Some(InGroup(_)), '<') => {
-                    state_stack.push(Garbage);
-                }
-                (Some(InGroup(_)), ',') | (Some(Garbage), _) => (),
+                (Some(InGroup(_)), '<') => ParseAction::Push(Garbage),
+                (Some(InGroup(_)), ',') | (Some(Garbage), _) => ParseAction::Nothing,
 
-                _ => panic!("unexpected input '{}' in {:?}", c, state),
+                (s, c) => panic!("unexpected input '{}' in {:?}", c, s),
+            };
+
+            match next_action {
+                ParseAction::Nothing => {}
+                ParseAction::Push(v) => {
+                    state_stack.push(v);
+                }
+                ParseAction::Pop => {
+                    state_stack.pop();
+                }
             }
         }
 

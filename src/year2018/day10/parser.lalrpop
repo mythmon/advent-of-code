@@ -1,5 +1,6 @@
 #![allow(clippy::all)]
 #![allow(clippy::pedantic)]
+#![allow(deprecated)]
 
 use crate::year2018::day10::Particle;
 

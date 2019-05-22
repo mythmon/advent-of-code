@@ -4,9 +4,9 @@ use std::ops::AddAssign;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day20Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day20Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 
@@ -40,7 +40,7 @@ impl PuzzleRunner for Day20Part2 {
             let collided: HashSet<Particle> = positions
                 .values()
                 .filter(|entries| entries.len() > 1)
-                .flat_map(|es| es.clone())
+                .flat_map(Clone::clone)
                 .collect();
             particles.retain(|p| !collided.contains(p));
 

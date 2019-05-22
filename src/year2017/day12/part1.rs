@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashSet;
 
 #[derive(Debug)]
-pub struct Day12Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day12Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 

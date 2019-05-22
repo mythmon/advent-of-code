@@ -4,9 +4,9 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day13Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day13Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 
@@ -25,7 +25,9 @@ impl PuzzleRunner for Day13Part1 {
         let mut scanners: HashMap<usize, Scanner> = HashMap::new();
         let mut max_depth = 0;
         for line in input.trim().lines() {
-            let scanner: Scanner = line.parse().expect(&format!("Could not parse line: {:?}", &line));
+            let scanner: Scanner = line
+                .parse()
+                .unwrap_or_else(|_| panic!("Could not parse line: {:?}", &line));
             max_depth = cmp::max(scanner.depth, max_depth);
             scanners.insert(scanner.depth, scanner);
         }
@@ -92,7 +94,10 @@ impl FromStr for Scanner {
         if parts.len() == 2 {
             Ok(Self::new(parts[0], parts[1]))
         } else {
-            Err(format!("Wrong number of parts, expected 2, got {}", parts.len()))
+            Err(format!(
+                "Wrong number of parts, expected 2, got {}",
+                parts.len()
+            ))
         }
     }
 }

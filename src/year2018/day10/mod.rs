@@ -8,12 +8,12 @@ use std::{cmp, iter::Iterator, str::FromStr};
 mod parser;
 
 #[derive(Debug)]
-pub struct Day10Part1;
+pub struct Part1;
 
 // TODO(challenge) How can this return a meaningful answer instead of printing
 // the output?
 
-impl PuzzleRunner for Day10Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = ();
 
@@ -175,9 +175,9 @@ impl FromStr for Particle {
 }
 
 #[derive(Debug)]
-pub struct Day10Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day10Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = u32;
 

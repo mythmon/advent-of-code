@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::ops::{Add, AddAssign};
 
 #[derive(Debug)]
-pub struct Day19Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day19Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = usize;
 
@@ -21,7 +21,7 @@ impl PuzzleRunner for Day19Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-        let max_width = grid.iter().map(|row| row.len()).max().unwrap();
+        let max_width = grid.iter().map(Vec::len).max().unwrap();
         for row in &mut grid {
             row.resize(max_width, ' ');
         }

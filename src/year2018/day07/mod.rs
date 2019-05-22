@@ -11,9 +11,9 @@ use std::{
 };
 
 #[derive(Debug)]
-pub struct Day07Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day07Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = String;
 
@@ -52,7 +52,7 @@ impl PuzzleRunner for Day07Part1 {
         }
 
         path.iter()
-            .map(|c| c.to_string())
+            .map(ToString::to_string)
             .collect::<Vec<String>>()
             .join("")
     }
@@ -100,9 +100,9 @@ impl std::str::FromStr for EdgeDescription {
 }
 
 #[derive(Debug)]
-pub struct Day07Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day07Part2 {
+impl PuzzleRunner for Part2 {
     type Input = (&'static str, usize, u32);
     type Output = u32;
 

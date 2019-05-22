@@ -3,9 +3,9 @@ use regex::Regex;
 use std::{collections::VecDeque, iter::Iterator};
 
 #[derive(Debug)]
-pub struct Day09Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day09Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = u32;
 
@@ -67,7 +67,7 @@ impl GameDescription {
         let mut marbles: VecDeque<u32> = VecDeque::new();
         marbles.push_back(0);
         let mut scores = Vec::new();
-        scores.resize_default(self.num_players as usize);
+        scores.resize_with(self.num_players as usize, Default::default);
 
         let turns = (0_usize..self.num_players as usize).cycle();
 
@@ -109,9 +109,9 @@ impl std::str::FromStr for GameDescription {
 }
 
 #[derive(Debug)]
-pub struct Day09Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day09Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = u32;
 

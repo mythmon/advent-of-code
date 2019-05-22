@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashSet;
 
 #[derive(Debug)]
-pub struct Day06Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day06Part1 {
+impl PuzzleRunner for Part1 {
     type Input = Vec<usize>;
     type Output = usize;
 

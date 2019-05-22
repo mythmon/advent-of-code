@@ -4,9 +4,9 @@ use regex::Regex;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day16Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day16Part1 {
+impl PuzzleRunner for Part1 {
     type Input = (usize, &'static str);
     type Output = String;
 

@@ -5,9 +5,9 @@ use std::rc::{Rc, Weak};
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct Day07Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day07Part2 {
+impl PuzzleRunner for Part2 {
     type Input = Vec<NodeDesc>;
     type Output = u32;
 
@@ -121,8 +121,8 @@ impl FromStr for NodeDesc {
 
         if parts.len() == 2 {
             let weight = parts[1]
-                .trim_left_matches('(')
-                .trim_right_matches(')')
+                .trim_start_matches('(')
+                .trim_end_matches(')')
                 .parse()
                 .unwrap();
             Ok(Self {
@@ -133,11 +133,11 @@ impl FromStr for NodeDesc {
         } else if parts.len() >= 4 {
             let holding: Vec<String> = parts[3..]
                 .iter()
-                .map(|s| String::from(s.trim_right_matches(',')))
+                .map(|s| String::from(s.trim_end_matches(',')))
                 .collect();
             let weight = parts[1]
-                .trim_left_matches('(')
-                .trim_right_matches(')')
+                .trim_start_matches('(')
+                .trim_end_matches(')')
                 .parse()
                 .unwrap();
             Ok(Self {

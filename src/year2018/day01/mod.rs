@@ -6,9 +6,9 @@ use std::collections::HashSet;
 use std::iter::Iterator;
 
 #[derive(Debug)]
-pub struct Day01Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day01Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = i32;
 
@@ -32,9 +32,9 @@ impl PuzzleRunner for Day01Part1 {
 }
 
 #[derive(Debug)]
-pub struct Day01Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day01Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = i32;
 
@@ -73,7 +73,7 @@ impl PuzzleRunner for Day01Part2 {
 fn parse_input(input: &str) -> Vec<i32> {
     input
         .trimmed_lines()
-        .map(|l| l.trim_start_matches("+"))
+        .map(|l| l.trim_start_matches('+'))
         .filter_map(|l| l.parse::<i32>().ok())
         .collect()
 }

@@ -10,9 +10,9 @@ use std::{
 };
 
 #[derive(Debug)]
-pub struct Day06Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day06Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 
@@ -126,9 +126,9 @@ impl PuzzleRunner for Day06Part1 {
 }
 
 #[derive(Debug)]
-pub struct Day06Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day06Part2 {
+impl PuzzleRunner for Part2 {
     type Input = (&'static str, usize);
     type Output = usize;
 

@@ -6,9 +6,9 @@ use itertools::Itertools;
 use std::{collections::HashMap, iter::Iterator};
 
 #[derive(Debug)]
-pub struct Day02Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day02Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 
@@ -45,9 +45,9 @@ impl PuzzleRunner for Day02Part1 {
 }
 
 #[derive(Debug)]
-pub struct Day02Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day02Part2 {
+impl PuzzleRunner for Part2 {
     type Input = &'static str;
     type Output = String;
 

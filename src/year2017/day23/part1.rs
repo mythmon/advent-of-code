@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::year2017::day18::{Instr, InstrType, Machine};
 
 #[derive(Debug)]
-pub struct Day23Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day23Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = usize;
 

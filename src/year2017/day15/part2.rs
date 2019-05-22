@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
 #[derive(Debug)]
-pub struct Day15Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day15Part2 {
+impl PuzzleRunner for Part2 {
     type Input = (&'static str, usize);
     type Output = usize;
 

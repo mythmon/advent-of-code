@@ -4,9 +4,9 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct Day14Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day14Part1 {
+impl PuzzleRunner for Part1 {
     type Input = &'static str;
     type Output = u32;
 
@@ -25,7 +25,7 @@ impl PuzzleRunner for Day14Part1 {
         (0..128)
             .map(|row| format!("{}-{}", input.trim(), row))
             .flat_map(|row_input| KnotHash::new(&row_input).dense())
-            .map(|hash_part| hash_part.count_ones())
+            .map(usize::count_ones)
             .sum()
     }
 }

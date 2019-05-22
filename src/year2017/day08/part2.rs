@@ -5,9 +5,9 @@ use crate::{
 use std::{cmp, collections::HashMap};
 
 #[derive(Debug)]
-pub struct Day08Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day08Part2 {
+impl PuzzleRunner for Part2 {
     type Input = Vec<Instruction>;
     type Output = isize;
 
@@ -42,7 +42,7 @@ impl PuzzleRunner for Day08Part2 {
 
 #[cfg(test)]
 mod tests {
-    use super::Day08Part2;
+    use super::Part2;
     use crate::{cases::PuzzleRunner, year2017::day08::Instruction};
 
     #[test]
@@ -50,6 +50,6 @@ mod tests {
         // dec can raise the value of a register when used with negative
         // numbers, which should affect highest ever.
         let instr: Instruction = "a dec -1 if a == 0".parse().unwrap();
-        assert_eq!(Day08Part2::run_puzzle(vec![instr]), 1);
+        assert_eq!(Part2::run_puzzle(vec![instr]), 1);
     }
 }

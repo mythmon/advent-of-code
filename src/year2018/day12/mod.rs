@@ -2,9 +2,9 @@ use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug)]
-pub struct Day12Part1;
+pub struct Part1;
 
-impl PuzzleRunner for Day12Part1 {
+impl PuzzleRunner for Part1 {
     type Input = PotsState;
     type Output = i64;
 
@@ -127,7 +127,7 @@ pub struct PotsError(String);
 
 impl From<std::option::NoneError> for PotsError {
     fn from(_: std::option::NoneError) -> Self {
-        PotsError("Tried to unwrap None".to_owned())
+        Self("Tried to unwrap None".to_owned())
     }
 }
 
@@ -176,9 +176,9 @@ impl std::str::FromStr for PotsState {
 }
 
 #[derive(Debug)]
-pub struct Day12Part2;
+pub struct Part2;
 
-impl PuzzleRunner for Day12Part2 {
+impl PuzzleRunner for Part2 {
     type Input = PotsState;
     type Output = i64;
 
