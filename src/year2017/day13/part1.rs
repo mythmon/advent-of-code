@@ -25,7 +25,7 @@ impl PuzzleRunner for Day13Part1 {
         let mut scanners: HashMap<usize, Scanner> = HashMap::new();
         let mut max_depth = 0;
         for line in input.trim().lines() {
-            let scanner: Scanner = line.parse().unwrap();
+            let scanner: Scanner = line.parse().expect(&format!("Could not parse line: {:?}", &line));
             max_depth = cmp::max(scanner.depth, max_depth);
             scanners.insert(scanner.depth, scanner);
         }
@@ -85,14 +85,14 @@ impl Scanner {
 }
 
 impl FromStr for Scanner {
-    type Err = ();
+    type Err = String;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<usize> = input.split(": ").filter_map(|p| p.parse().ok()).collect();
         if parts.len() == 2 {
-            Err(())
-        } else {
             Ok(Self::new(parts[0], parts[1]))
+        } else {
+            Err(format!("Wrong number of parts, expected 2, got {}", parts.len()))
         }
     }
 }
