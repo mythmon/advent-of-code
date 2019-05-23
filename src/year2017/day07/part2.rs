@@ -74,7 +74,7 @@ impl PuzzleRunner for Part2 {
 
         let mut named_nodes = HashMap::new();
 
-        let mut node_descriptions = input.clone();
+        let mut node_descriptions = input;
 
         while !node_descriptions.is_empty() {
             let node_desc = node_descriptions.pop().unwrap();

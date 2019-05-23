@@ -235,7 +235,7 @@ impl PatternSet {
     }
 
     fn apply_to(&self, from: &Grid) -> Grid {
-        self.patterns.get(from).unwrap_or(&from).clone()
+        self.patterns.get(from).unwrap_or(from).clone()
     }
 }
 

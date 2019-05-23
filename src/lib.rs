@@ -1,4 +1,5 @@
 #![deny(clippy::all, clippy::pedantic)]
+#![warn(clippy::nursery)]
 #![allow(
     // Not useful here
     clippy::filter_map,

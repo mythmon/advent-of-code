@@ -38,7 +38,7 @@ pub struct Grid<T> {
 }
 
 impl<T> Grid<T> {
-    pub fn width(&self) -> usize {
+    pub const fn width(&self) -> usize {
         self.stride
     }
 
@@ -54,10 +54,10 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn iter_values(&self) -> GridValIterator<'_, T> {
+    pub const fn iter_values(&self) -> GridValIterator<'_, T> {
         GridValIterator {
             state: 0,
-            grid: &self,
+            grid: self,
         }
     }
 }

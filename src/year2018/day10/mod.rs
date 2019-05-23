@@ -158,7 +158,7 @@ pub struct Particle {
 }
 
 impl Particle {
-    fn new(position: (i32, i32), velocity: (i32, i32)) -> Self {
+    const fn new(position: (i32, i32), velocity: (i32, i32)) -> Self {
         Self { position, velocity }
     }
 }

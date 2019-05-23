@@ -13,7 +13,7 @@ pub struct HexVec {
 }
 
 impl HexVec {
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         Self { x: 0, y: 0, z: 0 }
     }
 

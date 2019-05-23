@@ -51,7 +51,7 @@ impl PuzzleRunner for Part2 {
                         continue;
                     }
                     for c in connections {
-                        if group.contains(&c) {
+                        if group.contains(c) {
                             changed = true;
                             group.insert(idx);
                             break;

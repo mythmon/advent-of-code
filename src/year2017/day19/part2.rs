@@ -86,7 +86,7 @@ struct Pos {
 }
 
 impl Pos {
-    fn new(x: i32, y: i32) -> Self {
+    const fn new(x: i32, y: i32) -> Self {
         Self { x, y }
     }
 }
@@ -123,7 +123,7 @@ impl Dir {
         Self { x, y }
     }
 
-    fn rotate90(self) -> Self {
+    const fn rotate90(self) -> Self {
         Self {
             x: -self.y,
             y: self.x,

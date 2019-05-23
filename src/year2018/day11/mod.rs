@@ -53,7 +53,7 @@ impl PuzzleRunner for Part1 {
     }
 }
 
-fn power_level(cell: Point, grid_serial: i32) -> i32 {
+const fn power_level(cell: Point, grid_serial: i32) -> i32 {
     // Find the fuel cell's rack ID, which is its X coordinate plus 10.
     let rack_id: i32 = cell.x as i32 + 10;
     // Begin with a power level of the rack ID times the Y coordinate.

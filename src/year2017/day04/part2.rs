@@ -87,6 +87,3 @@ fn test_valid_example_4() {
 fn test_valid_example_5() {
     assert!(!is_valid("oiii ioii iioi iiio")); // spell-checker: disable-line
 }
-
-#[test]
-fn test_puzzle_example() {}

@@ -58,7 +58,7 @@ struct Scanner {
 }
 
 impl Scanner {
-    fn new(depth: usize, range: usize) -> Self {
+    const fn new(depth: usize, range: usize) -> Self {
         Self {
             depth,
             range,
@@ -81,7 +81,7 @@ impl Scanner {
         }
     }
 
-    fn severity(&self) -> usize {
+    const fn severity(&self) -> usize {
         self.depth * self.range
     }
 }

@@ -20,7 +20,7 @@ impl PuzzleRunner for Part1 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-        let mut machine = Machine::new(0, instructions.clone());
+        let mut machine = Machine::new(0, instructions);
         machine.run();
         machine.debug_counts[&InstrType::Mul]
     }
@@ -30,7 +30,7 @@ impl PuzzleRunner for Part1 {
 fn test_h() {
     let input = include_str!("input");
     let instructions: Vec<Instr> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-    let mut machine = Machine::new(0, instructions.clone());
+    let mut machine = Machine::new(0, instructions);
     machine.run();
     assert_eq!(*machine.registers.get(&'h').unwrap_or(&0), 0);
 }

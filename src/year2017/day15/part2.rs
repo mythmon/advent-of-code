@@ -65,7 +65,7 @@ struct Generator {
 }
 
 impl Generator {
-    fn with_multiple_of(initial_value: u64, factor: u64, multiple_of: u64) -> Self {
+    const fn with_multiple_of(initial_value: u64, factor: u64, multiple_of: u64) -> Self {
         Self {
             factor,
             divisor: 2_147_483_647,

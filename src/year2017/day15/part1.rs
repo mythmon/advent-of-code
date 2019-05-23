@@ -64,7 +64,7 @@ struct Generator {
 }
 
 impl Generator {
-    fn new(initial_value: u64, factor: u64) -> Self {
+    const fn new(initial_value: u64, factor: u64) -> Self {
         Self {
             factor,
             divisor: 2_147_483_647,

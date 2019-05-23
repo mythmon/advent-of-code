@@ -57,7 +57,7 @@ impl Iterator for GridStressValues {
             let s = p
                 .neighbors()
                 .iter()
-                .map(|n| self.values.get(&n).unwrap_or(&0))
+                .map(|n| self.values.get(n).unwrap_or(&0))
                 .sum();
             self.values.insert(p, s);
             Some(s)
@@ -72,7 +72,7 @@ struct GridCoordinate {
 }
 
 impl GridCoordinate {
-    fn new(x: i32, y: i32) -> Self {
+    const fn new(x: i32, y: i32) -> Self {
         Self { x, y }
     }
 
@@ -167,7 +167,7 @@ impl Direction {
         Self { x, y }
     }
 
-    fn rotate90(self) -> Self {
+    const fn rotate90(self) -> Self {
         Self {
             x: -self.y,
             y: self.x,

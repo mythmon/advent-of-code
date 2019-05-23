@@ -46,7 +46,7 @@ impl PuzzleRunner for Part2 {
         }
 
         if let Some(cycle_at) = cycle_at {
-            dancers = original_dancers.clone();
+            dancers = original_dancers;
             for _ in 0..(1_000_000_000 % cycle_at) {
                 for instr in &instructions {
                     instr.exec(&mut dancers);
@@ -122,6 +122,3 @@ fn test_example_series() {
     Instruction::Partner(b'e', b'b').exec(&mut dancers);
     assert_eq!(dancers, "baedc".bytes().collect::<Vec<u8>>());
 }
-
-#[test]
-fn test_correct_answer() {}
