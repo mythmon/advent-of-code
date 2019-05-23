@@ -1,4 +1,4 @@
-#![allow(clippy::all, clippy::pedantic, deprecated, clippy::nursery)]
+#![allow(clippy::all, clippy::pedantic, clippy::nursery)]
 
 use crate::year2018::day04::{SleepLogLine, LogEvent, DateTime};
 

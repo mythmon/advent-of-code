@@ -1,5 +1,5 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use lazy_static::{__lazy_static_create, __lazy_static_internal, lazy_static};
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
 

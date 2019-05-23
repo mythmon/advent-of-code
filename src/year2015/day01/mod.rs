@@ -29,12 +29,11 @@ impl PuzzleRunner for Part1 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         input
-            .trim()
             .chars()
             .map(|c| match c {
                 '(' => 1,
                 ')' => -1,
-                _ => panic!("Unexpected char"),
+                _ => 0,
             })
             .sum()
     }
@@ -61,12 +60,11 @@ impl PuzzleRunner for Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         input
-            .trim()
             .chars()
             .map(|c| match c {
                 '(' => 1,
                 ')' => -1,
-                _ => panic!("Unexpected char"),
+                _ => 0,
             })
             .scan(0, |floor, delta| {
                 *floor += delta;

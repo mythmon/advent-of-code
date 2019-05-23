@@ -2,7 +2,7 @@ use crate::{
     cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
     helpers::{Grid, Point, StringAdventExt},
 };
-use indoc::{indoc, indoc_impl};
+use indoc::indoc;
 use std::{
     cmp,
     collections::{HashMap, HashSet},

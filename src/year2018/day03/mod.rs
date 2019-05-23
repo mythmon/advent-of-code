@@ -2,7 +2,7 @@ use crate::{
     cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
     helpers::StringAdventExt,
 };
-use indoc::{indoc, indoc_impl};
+use indoc::indoc;
 use std::{collections::HashMap, iter::Iterator, str::FromStr};
 
 mod parser;

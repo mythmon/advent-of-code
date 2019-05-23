@@ -1,5 +1,5 @@
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
-use indoc::{indoc, indoc_impl};
+use indoc::indoc;
 use std::collections::HashMap;
 use std::str::FromStr;
 
