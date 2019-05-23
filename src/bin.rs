@@ -7,6 +7,7 @@ use std::{collections::BTreeMap, fs, path::PathBuf};
 
 use advent::{
     cases::{Puzzle, PuzzleResult},
+    year2015,
     year2017,
     year2018,
 };
@@ -96,7 +97,8 @@ impl<'a> From<&clap::ArgMatches<'a>> for RunOptions {
 }
 
 fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    let mut puzzles = year2017::get_puzzles();
+    let mut puzzles = year2015::get_puzzles();
+    puzzles.extend(year2017::get_puzzles());
     puzzles.extend(year2018::get_puzzles());
     puzzles
 }
