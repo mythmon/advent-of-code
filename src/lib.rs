@@ -1,13 +1,11 @@
 #![deny(clippy::all, clippy::pedantic)]
 #![allow(
-    // TODO(lint) probably re-enable these
+    // Not useful here
+    clippy::filter_map,
+    clippy::cast_sign_loss,
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
     clippy::cast_precision_loss,
-    clippy::cast_sign_loss,
-
-    // I just don't like this one
-    clippy::filter_map,
 )]
 #![feature(
     associated_type_defaults,
