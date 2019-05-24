@@ -1,6 +1,10 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
 use regex::Regex;
 use std::{collections::VecDeque, iter::Iterator};
+
+pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    vec![Box::new(Part1), Box::new(Part2)]
+}
 
 #[derive(Debug)]
 pub struct Part1;

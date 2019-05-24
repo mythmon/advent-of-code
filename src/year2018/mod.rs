@@ -15,30 +15,22 @@ mod day12;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![
-        Box::new(day01::Part1),
-        Box::new(day01::Part2),
-        Box::new(day02::Part1),
-        Box::new(day02::Part2),
-        Box::new(day03::Part1),
-        Box::new(day03::Part2),
-        Box::new(day04::Part1),
-        Box::new(day04::Part2),
-        Box::new(day05::Part1),
-        Box::new(day05::Part2),
-        Box::new(day06::Part1),
-        Box::new(day06::Part2),
-        Box::new(day07::Part1),
-        Box::new(day07::Part2),
+        day01::get_puzzles(),
+        day02::get_puzzles(),
+        day03::get_puzzles(),
+        day04::get_puzzles(),
+        day05::get_puzzles(),
+        day06::get_puzzles(),
+        day07::get_puzzles(),
         // TODO accidentally deleted day 8, recreate it
         // Box::new(day08::Part1),
         // Box::new(day08::Part2),
-        Box::new(day09::Part1),
-        Box::new(day09::Part2),
-        Box::new(day10::Part1),
-        Box::new(day10::Part2),
-        Box::new(day11::Part1),
-        Box::new(day11::Part2),
-        Box::new(day12::Part1),
-        Box::new(day12::Part2),
+        day09::get_puzzles(),
+        day10::get_puzzles(),
+        day11::get_puzzles(),
+        day12::get_puzzles(),
     ]
+    .into_iter()
+    .flatten()
+    .collect()
 }

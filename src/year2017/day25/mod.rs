@@ -1,6 +1,11 @@
+use crate::cases::Puzzle;
 use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::collections::HashMap;
 use std::fmt;
+
+pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    vec![Box::new(Day25)]
+}
 
 #[derive(Debug)]
 pub struct Day25;

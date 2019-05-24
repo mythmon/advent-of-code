@@ -1,9 +1,13 @@
 use crate::{
-    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     helpers::{Grid, Point},
 };
 use itertools::Itertools;
 use rayon::prelude::*;
+
+pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    vec![Box::new(Part1), Box::new(Part2)]
+}
 
 #[derive(Debug)]
 pub struct Part1;

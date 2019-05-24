@@ -1,5 +1,5 @@
 use crate::{
-    cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner},
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     helpers::StringAdventExt,
 };
 use lazy_static::lazy_static;
@@ -9,6 +9,10 @@ use std::{
     collections::{BTreeSet, HashMap},
     iter::Iterator,
 };
+
+pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    vec![Box::new(Part1), Box::new(Part2)]
+}
 
 #[derive(Debug)]
 pub struct Part1;
