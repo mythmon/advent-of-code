@@ -14,8 +14,14 @@ impl StringAdventExt for &str {
     }
 }
 
+impl StringAdventExt for String {
+    fn trimmed_lines(&self) -> TrimmedLines {
+        TrimmedLines(self.lines())
+    }
+}
+
 #[derive(Debug, Clone)]
-pub struct TrimmedLines<'a>(str::Lines<'a>);
+pub struct TrimmedLines<'a>(std::str::Lines<'a>);
 
 impl<'a> Iterator for TrimmedLines<'a> {
     type Item = &'a str;
