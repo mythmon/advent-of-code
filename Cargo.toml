@@ -23,6 +23,8 @@ reqwest = "^0.9.17"
 itertools = "^0.8.0"
 lalrpop-util = "^0.17.0"
 petgraph = "^0.4"
+md5 = "0.6.1"
+hex = "0.3.2"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.
