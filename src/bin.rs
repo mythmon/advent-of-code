@@ -2,8 +2,7 @@
 
 use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
-use rayon::prelude::*;
-use std::{collections::BTreeMap, fs, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 use advent::{
     cases::{Puzzle, PuzzleResult},
@@ -118,73 +117,61 @@ where
             .collect();
     }
 
-    puzzles
-        .par_iter()
-        .flat_map(|part| {
-            part.cases()
-                .into_iter()
-                .map(|case| (part, case))
-                .collect::<Vec<_>>()
-        })
-        .map(|(part, case)| {
-            let result = case.run();
-            (part, case, result)
-        })
-        .collect::<Vec<_>>()
-        .iter()
-        .fold(BTreeMap::new(), |mut map, (part, case, result)| {
-            map.entry(part.name())
-                .or_insert_with(Vec::new)
-                .push((case, result));
-            map
-        })
-        .iter()
-        .for_each(|(group_name, results)| {
-            print!("{} ", group_name);
-            if opts.verbose {
-                println!();
-                for (case, result) in results {
-                    print!(
-                        "    {} ",
-                        match result {
-                            PuzzleResult::Match => "PASS".green(),
-                            PuzzleResult::Unknown { .. } => "UNKO".yellow(),
-                            PuzzleResult::Fail { .. } => "FAIL".red(),
-                        }
-                    );
-                    print!("{:<10}", case.name());
+    for puzzle in puzzles {
+        let results: Vec<_> = puzzle
+            .cases()
+            .into_iter()
+            .map(|case| {
+                let result = case.run();
+                (case, result)
+            })
+            .collect();
+
+        print!("{:<12}", puzzle.name());
+        if opts.verbose {
+            println!();
+            for (case, result) in results {
+                print!(
+                    "    {} ",
                     match result {
-                        PuzzleResult::Unknown { description } => print!(" -> {}", description),
-                        PuzzleResult::Fail { description } => print!(" -> {}", description),
-                        _ => (),
+                        PuzzleResult::Match => "PASS".green(),
+                        PuzzleResult::Unknown { .. } => "UNKO".yellow(),
+                        PuzzleResult::Fail { .. } => "FAIL".red(),
                     }
-                    println!();
-                }
-            } else {
-                for (_, result) in results {
-                    match result {
-                        PuzzleResult::Match => print!("{}", "✔".green()),
-                        PuzzleResult::Unknown { .. } => print!("{}", "?".yellow()),
-                        PuzzleResult::Fail { .. } => print!("{}", "✗".red()),
-                    }
+                );
+                print!("{:<10}", case.name());
+                match result {
+                    PuzzleResult::Match => (),
+                    PuzzleResult::Unknown { description } => print!(" -> {}", description),
+                    PuzzleResult::Fail { description } => print!(" -> {}", description),
                 }
                 println!();
-                for (case, result) in results {
-                    match result {
-                        PuzzleResult::Unknown { description } => println!(
-                            "   {} {:<10} -> {}",
-                            "UNKO".yellow(),
-                            case.name(),
-                            description
-                        ),
-                        PuzzleResult::Fail { description } => {
-                            println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), description)
-                        }
-                        _ => (),
-                    }
+            }
+        } else {
+            for (_, result) in &results {
+                match result {
+                    PuzzleResult::Match => print!("{}", "✔".green()),
+                    PuzzleResult::Unknown { .. } => print!("{}", "?".yellow()),
+                    PuzzleResult::Fail { .. } => print!("{}", "✗".red()),
                 }
             }
-        });
+            println!();
+            for (case, result) in results {
+                match result {
+                    PuzzleResult::Unknown { description } => println!(
+                        "   {} {:<10} -> {}",
+                        "UNKO".yellow(),
+                        case.name(),
+                        description
+                    ),
+                    PuzzleResult::Fail { description } => {
+                        println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), description)
+                    }
+                    _ => (),
+                }
+            }
+        }
+    }
 }
 
 struct AddDayOptions {

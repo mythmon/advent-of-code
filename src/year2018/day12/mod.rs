@@ -1,5 +1,8 @@
 use crate::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    convert::TryFrom,
+};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![Box::new(Part1), Box::new(Part2)]
@@ -109,8 +112,7 @@ impl PotsState {
             }
         }
 
-        assert!(first <= i64::max_value() as usize);
-        self.offset += first as i64;
+        self.offset += i64::try_from(first).unwrap();
         self.pots = self.pots[first..=last].to_owned();
     }
 

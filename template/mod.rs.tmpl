@@ -1,8 +1,15 @@
-use crate::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
+use crate::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
+pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    vec![
+        Box::new(Part1),
+        // Box::new(Part2),
+    ]
+}
+
 #[derive(Debug)]
-pub struct Day{{DAY_PADDED}}Part1;
+pub struct Part1;
 
 impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
     type Input = &'static str;
@@ -25,7 +32,7 @@ impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
 }
 
 // #[derive(Debug)]
-// pub struct Day{{DAY_PADDED}}Part2;
+// pub struct Part2;
 //
 // impl PuzzleRunner for Day{{DAY_PADDED}}Part2 {
 //     type Input = &'static str;
