@@ -31,7 +31,7 @@ impl PuzzleRunner for Part1 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.iter().map(|i| i/3-2).sum()
+        input.iter().map(|i| i / 3 - 2).sum()
     }
 }
 
@@ -57,16 +57,19 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.iter().map(|i| {
-            let mut new_weight = *i;
-            let mut total_fuel = 0;
-            // weights less than 9 will produce non-positive extra weight
-            while new_weight >= 9 {
-                new_weight = new_weight / 3 - 2;
-                total_fuel += new_weight
-            }
-            total_fuel
-        }).sum()
+        input
+            .iter()
+            .map(|i| {
+                let mut new_weight = *i;
+                let mut total_fuel = 0;
+                // weights less than 9 will produce non-positive extra weight
+                while new_weight >= 9 {
+                    new_weight = new_weight / 3 - 2;
+                    total_fuel += new_weight
+                }
+                total_fuel
+            })
+            .sum()
     }
 }
 

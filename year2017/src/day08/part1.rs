@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day08::{Instruction, Operation};
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use indoc::indoc;
 use std::collections::HashMap;
 

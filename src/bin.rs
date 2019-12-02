@@ -4,9 +4,7 @@ use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
 use std::{fs, path::PathBuf};
 
-use advent_lib::{
-    cases::{Puzzle, PuzzleResult},
-};
+use advent_lib::cases::{Puzzle, PuzzleResult};
 
 fn main() {
     let matches = App::new("Advent")

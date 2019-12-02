@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day18::{Instr, Machine};
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use indoc::indoc;
 use std::collections::VecDeque;
 

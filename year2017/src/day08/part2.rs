@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day08::{Instruction, Operation};
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use std::{cmp, collections::HashMap};
 
 #[derive(Debug)]
@@ -41,7 +41,7 @@ impl PuzzleRunner for Part2 {
 #[cfg(test)]
 mod tests {
     use super::Part2;
-    use crate::{cases::PuzzleRunner, crate::day08::Instruction};
+    use crate::{crate::day08::Instruction, cases::PuzzleRunner};
 
     #[test]
     fn test_dec_can_affect_highest_ever() {

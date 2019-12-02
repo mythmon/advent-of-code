@@ -186,7 +186,7 @@ where
             Some(ref transform) => {
                 let transformed_input = transform(raw_input);
                 self.case(name, transformed_input, expected)
-            },
+            }
             None => panic!("Must call `add_transform` before transformed_case"),
         }
     }

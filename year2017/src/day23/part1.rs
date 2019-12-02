@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day18::{Instr, InstrType, Machine};
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
 pub struct Part1;

@@ -80,7 +80,8 @@ fn test_valid_example_3() {
 
 #[test]
 fn test_valid_example_4() {
-    assert!(is_valid("iiii oiii ooii oooi oooo")); // spell-checker: disable-line
+    assert!(is_valid("iiii oiii ooii oooi oooo")); // spell-checker:
+                                                   // disable-line
 }
 
 #[test]

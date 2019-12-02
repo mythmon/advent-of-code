@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day09::ParseAction;
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
 pub struct Part2;

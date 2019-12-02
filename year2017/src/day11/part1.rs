@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day11::{HexDir, HexVec};
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
 pub struct Part1;

@@ -1,5 +1,5 @@
-use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 use crate::day10::KnotHash;
+use advent_lib::cases::{GenericPuzzleCase, PuzzleCase, PuzzleRunner};
 
 #[derive(Debug)]
 pub struct Part1;
