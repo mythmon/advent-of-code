@@ -206,7 +206,7 @@ where
         fs::write(mod_path, mod_template)?;
     }
 
-    let mut input_path = puzzle_path.clone();
+    let mut input_path = puzzle_path;
     input_path.push("input");
     if !input_path.exists() {
         let url = format!(

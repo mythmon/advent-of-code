@@ -25,7 +25,7 @@ impl PuzzleRunner for Part1 {
             .case("Example 1", vec![12], 2)
             .case("Example 2", vec![14], 2)
             .case("Example 3", vec![1969], 654)
-            .case("Example 4", vec![100756], 33583)
+            .case("Example 4", vec![100_756], 33583)
             .transformed_case("Solution", include_str!("input"), 3_390_830)
             .collect()
     }

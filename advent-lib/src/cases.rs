@@ -47,9 +47,9 @@ pub enum ExpectedValue<T> {
 impl<T: std::fmt::Debug> std::fmt::Debug for ExpectedValue<T> {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            ExpectedValue::Exact(v) => write!(fmt, "ExpectedValue::Exact({:?})", v)?,
-            ExpectedValue::None => write!(fmt, "ExpectedValue::None")?,
-            ExpectedValue::Predicate(_) => write!(fmt, "ExpectedValue::Predicate(<>)")?,
+            Self::Exact(v) => write!(fmt, "ExpectedValue::Exact({:?})", v)?,
+            Self::None => write!(fmt, "ExpectedValue::None")?,
+            Self::Predicate(_) => write!(fmt, "ExpectedValue::Predicate(<>)")?,
         };
         Ok(())
     }
@@ -62,8 +62,8 @@ where
     fn from(v: U) -> Self {
         let opt: Option<T> = v.into();
         match opt {
-            Some(v) => ExpectedValue::Exact(v),
-            None => ExpectedValue::None,
+            Some(v) => Self::Exact(v),
+            None => Self::None,
         }
     }
 }
@@ -128,6 +128,7 @@ where
     O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
     I: Clone + 'a + std::fmt::Debug + Sync + Send,
 {
+    #[must_use]
     pub fn build_set() -> CaseSetBuilder<'a, T, I, O> {
         CaseSetBuilder::new()
     }
@@ -155,8 +156,7 @@ where
 
     pub fn add_transform<F>(mut self, transform: F) -> Self
     where
-        F: Fn(&str) -> I,
-        F: 'static,
+        F: Fn(&str) -> I + 'static,
     {
         self.transform = Some(Box::new(transform));
         self
@@ -191,6 +191,7 @@ where
         }
     }
 
+    #[must_use]
     pub fn collect(self) -> Vec<Box<dyn PuzzleCase + 'a>> {
         self.cases
             .into_iter()
