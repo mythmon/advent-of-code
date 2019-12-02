@@ -41,7 +41,8 @@ impl PuzzleRunner for Part2 {
 #[cfg(test)]
 mod tests {
     use super::Part2;
-    use crate::{crate::day08::Instruction, cases::PuzzleRunner};
+    use crate::day08::Instruction;
+    use advent_lib::cases::PuzzleRunner;
 
     #[test]
     fn test_dec_can_affect_highest_ever() {
