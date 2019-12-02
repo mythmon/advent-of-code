@@ -4,12 +4,8 @@ use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
 use std::{fs, path::PathBuf};
 
-use advent::{
+use advent_lib::{
     cases::{Puzzle, PuzzleResult},
-    year2015,
-    year2017,
-    year2018,
-    year2019,
 };
 
 fn main() {

@@ -5,26 +5,23 @@ name = "advent"
 version = "2019.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
-# default-run = "advent"
 build = "build.rs" # LALRPOP preprocessing
 
 [build-dependencies]
 lalrpop = "^0.17.0"
 
 [dependencies]
-rand = "^0.6.5"
-regex = "^1.1.6"
-lazy_static = "^1.3.0"
+# Puzzle groups
+advent-lib = { path = "./advent-lib" }
+year2015 = { path = "./year2015" }
+year2017 = { path = "./year2017" }
+year2018 = { path = "./year2018" }
+year2019 = { path = "./year2019" }
+
+# Runner dependencies
 colored = "^1.8.0"
-indoc = "^0.3.3"
-rayon = "^1.0.3"
 clap = "^2.33.0"
 reqwest = "^0.9.17"
-itertools = "^0.8.0"
-lalrpop-util = "^0.17.0"
-petgraph = "^0.4"
-md5 = "0.6.1"
-hex = "0.3.2"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.
@@ -35,3 +32,6 @@ overflow-checks = true
 [[bin]]
 name = "advent"
 path = "src/bin.rs"
+
+[workspace]
+members = [".", "advent-lib", "year*"]
