@@ -182,12 +182,13 @@ where
         S: Into<String>,
         O_: Into<ExpectedValue<O>>,
     {
-        let transform = self
-            .transform
-            .deref()
-            .expect("Must call add_transform before transformed_case");
-        let transformed_input = transform(raw_input);
-        self.case(name, transformed_input, expected)
+        match self.transform {
+            Some(ref transform) => {
+                let transformed_input = transform(raw_input);
+                self.case(name, transformed_input, expected)
+            },
+            None => panic!("Must call `add_transform` before transformed_case"),
+        }
     }
 
     pub fn collect(self) -> Vec<Box<dyn PuzzleCase + 'a>> {

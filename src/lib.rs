@@ -23,6 +23,7 @@ pub mod helpers;
 pub mod year2015;
 pub mod year2017;
 pub mod year2018;
+pub mod year2019;
 
 /// Find the lowest and highest value in `items`.
 pub fn extremes<T>(items: T) -> Option<(T::Item, T::Item)>

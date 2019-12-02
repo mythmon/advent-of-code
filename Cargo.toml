@@ -2,7 +2,7 @@
 
 [package]
 name = "advent"
-version = "2018.12.0"
+version = "2019.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 # default-run = "advent"

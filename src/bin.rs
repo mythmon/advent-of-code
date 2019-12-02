@@ -9,6 +9,7 @@ use advent::{
     year2015,
     year2017,
     year2018,
+    year2019,
 };
 
 fn main() {
@@ -99,6 +100,7 @@ fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     let mut puzzles = year2015::get_puzzles();
     puzzles.extend(year2017::get_puzzles());
     puzzles.extend(year2018::get_puzzles());
+    puzzles.extend(year2019::get_puzzles());
     puzzles
 }
 
