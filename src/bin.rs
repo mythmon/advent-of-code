@@ -2,9 +2,8 @@
 
 use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
-use std::{fs, path::PathBuf};
-
-use advent_lib::cases::{Puzzle, PuzzleResult};
+use std::{fs, path::PathBuf, time::Duration, fmt};
+use advent_lib::cases::{Puzzle, PuzzleResultStatus};
 
 fn main() {
     let matches = App::new("Advent")
@@ -129,44 +128,61 @@ where
             for (case, result) in results {
                 print!(
                     "    {} ",
-                    match result {
-                        PuzzleResult::Match => "PASS".green(),
-                        PuzzleResult::Unknown { .. } => "UNKO".yellow(),
-                        PuzzleResult::Fail { .. } => "FAIL".red(),
+                    match result.status {
+                        PuzzleResultStatus::Match => "PASS".green(),
+                        PuzzleResultStatus::Unknown => "UNKO".yellow(),
+                        PuzzleResultStatus::Fail => "FAIL".red(),
                     }
                 );
-                print!("{:<10}", case.name());
-                match result {
-                    PuzzleResult::Match => (),
-                    PuzzleResult::Unknown { description } => print!(" -> {}", description),
-                    PuzzleResult::Fail { description } => print!(" -> {}", description),
+                print!("{:<10} ", case.name());
+                match result.status {
+                    PuzzleResultStatus::Match => (),
+                    PuzzleResultStatus::Unknown => print!(" -> {}", result.description),
+                    PuzzleResultStatus::Fail => print!(" -> {}", result.description),
                 }
+                print!("{}", format_sum_duration(vec![result.duration]));
                 println!();
             }
         } else {
             for (_, result) in &results {
-                match result {
-                    PuzzleResult::Match => print!("{}", "✔".green()),
-                    PuzzleResult::Unknown { .. } => print!("{}", "?".yellow()),
-                    PuzzleResult::Fail { .. } => print!("{}", "✗".red()),
+                match result.status {
+                    PuzzleResultStatus::Match => print!("{}", "✔".green()),
+                    PuzzleResultStatus::Unknown => print!("{}", "?".yellow()),
+                    PuzzleResultStatus::Fail => print!("{}", "✗".red()),
                 }
             }
-            println!();
+
+            let spacer = (results.len()..10).map(|_| " ").collect::<String>();
+            println!("{}{}", spacer, format_sum_duration(results.iter().map(|(_, res)| res.duration).collect()));
+
             for (case, result) in results {
-                match result {
-                    PuzzleResult::Unknown { description } => println!(
+                match result.status {
+                    PuzzleResultStatus::Unknown => println!(
                         "   {} {:<10} -> {}",
                         "UNKO".yellow(),
                         case.name(),
-                        description
+                        result.description
                     ),
-                    PuzzleResult::Fail { description } => {
-                        println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), description)
+                    PuzzleResultStatus::Fail => {
+                        println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), result.description)
                     }
                     _ => (),
                 }
             }
         }
+    }
+}
+
+fn format_sum_duration(ds: Vec<Duration>) -> impl fmt::Display {
+    let sum: u128 = ds.iter().map(Duration::as_millis).sum();
+    let s = format!("{:>5} ms", sum);
+    match sum {
+        0 => s.bright_black(),
+        d if d < 100 => s.bright_black(),
+        d if d < 200 => s.blue(),
+        d if d < 1_000 => s.yellow(),
+        d if d < 2_000 => s.red(),
+        _ => s.black().on_red(),
     }
 }
 

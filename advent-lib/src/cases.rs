@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use std::{time::{Duration, Instant}, marker::PhantomData};
 
 /// A puzzle case that can be executed, comparing expected output to actual
 /// output.
@@ -76,10 +76,16 @@ pub struct GenericPuzzleCase<'a, T, I, O> {
     pub phantom: PhantomData<&'a T>,
 }
 
-pub enum PuzzleResult {
+pub struct PuzzleResult {
+    pub status: PuzzleResultStatus,
+    pub description: String,
+    pub duration: Duration,
+}
+
+pub enum PuzzleResultStatus {
     Match,
-    Fail { description: String },
-    Unknown { description: String },
+    Fail,
+    Unknown,
 }
 
 impl<'a, T, I, O> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
@@ -93,29 +99,44 @@ where
     }
 
     fn run(&self) -> PuzzleResult {
+        let start = Instant::now();
         let actual = T::run_puzzle(self.input.clone());
+        let duration = start.elapsed();
+
         match self.expected {
             ExpectedValue::Exact(ref expected) => {
                 if actual == *expected {
-                    PuzzleResult::Match
+                    PuzzleResult {
+                        status: PuzzleResultStatus::Match,
+                        duration,
+                        description: format!("{:?} is correct", actual),
+                    }
                 } else {
-                    PuzzleResult::Fail {
+                    PuzzleResult {
+                        status: PuzzleResultStatus::Fail,
+                        duration,
                         description: format!("expected {:?} got {:?}", expected, actual),
                     }
                 }
             }
             ExpectedValue::Predicate(predicate) => {
                 if predicate(&actual) {
-                    PuzzleResult::Unknown {
+                    PuzzleResult {
+                        status: PuzzleResultStatus::Unknown,
+                        duration,
                         description: format!("{:?} matches predicate", actual),
                     }
                 } else {
-                    PuzzleResult::Fail {
+                    PuzzleResult {
+                        status: PuzzleResultStatus::Fail,
+                        duration,
                         description: format!("{:?} does not match predicate", actual),
                     }
                 }
             }
-            ExpectedValue::None => PuzzleResult::Unknown {
+            ExpectedValue::None => PuzzleResult {
+                status: PuzzleResultStatus::Unknown,
+                duration,
                 description: format!("{:?}", actual),
             },
         }
