@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 advent-lib = { path = "../advent-lib" }
+itertools = "^0.8.0"

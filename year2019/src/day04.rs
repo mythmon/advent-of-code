@@ -1,6 +1,7 @@
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
 };
+use itertools::Itertools;
 use std::{iter::Iterator, collections::HashSet};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -60,14 +61,14 @@ impl PuzzleRunner for Part2 {
     fn run_puzzle((low, high): Self::Input) -> Self::Output {
         (low..=high)
             .map(|n| n.to_string().chars().map(|c| c.to_digit(10).unwrap()).collect())
-            .filter(|digits: &Vec<u32>| digits.windows(2).all(|pair| pair[0] <= pair[1]))
+            .filter(|digits: &Vec<u32>| digits.iter().tuple_windows().all(|(a, b)| a <= b))
             .filter(|digits| {
-                let double_indexes: HashSet<_> = digits.windows(2).enumerate()
-                    .filter(|(_, pair)| pair[0] == pair[1])
+                let double_indexes: HashSet<_> = digits.iter().tuple_windows().enumerate()
+                    .filter(|(_, (a, b))| a == b)
                     .map(|(left_index, _)| left_index)
                     .collect();
-                let indexes_in_triples: HashSet<_> = digits.windows(3).enumerate()
-                    .filter(|(_, pair)| pair[0] == pair[1] && pair[1] == pair[2])
+                let indexes_in_triples: HashSet<_> = digits.iter().tuple_windows().enumerate()
+                    .filter(|(_, (a, b, c))| a == b && b == c)
                     .flat_map(|(left_index, _)| vec![left_index, left_index+1])
                     .collect();
                 double_indexes.difference(&indexes_in_triples).count() > 0

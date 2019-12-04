@@ -1882,6 +1882,7 @@ name = "year2019"
 version = "0.1.0"
 dependencies = [
  "advent-lib 0.1.0",
+ "itertools 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [metadata]
