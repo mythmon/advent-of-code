@@ -20,8 +20,8 @@ year2019 = { path = "./year2019" }
 
 # Runner dependencies
 colored = "^1.8.0"
-clap = "^2.33.0"
 reqwest = "^0.9.17"
+structopt = "^0.3.5"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.

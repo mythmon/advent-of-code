@@ -1,78 +1,58 @@
 #![deny(clippy::all)]
 
-use clap::{crate_version, App, AppSettings, Arg, SubCommand};
 use colored::Colorize;
 use std::{fs, path::PathBuf, time::Duration, fmt};
 use advent_lib::cases::{Puzzle, PuzzleResultStatus};
+use structopt::StructOpt;
 
-fn main() {
-    let matches = App::new("Advent")
-        .version(crate_version!())
-        .settings(&[
-            AppSettings::ColoredHelp,
-            AppSettings::ArgsNegateSubcommands,
-            AppSettings::DeriveDisplayOrder,
-            AppSettings::InferSubcommands,
-            AppSettings::SubcommandRequiredElseHelp,
-            AppSettings::UnifiedHelpMessage,
-        ])
-        .arg(
-            Arg::with_name("verbose")
-                .global(true)
-                .multiple(true)
-                .short("v")
-                .long("verbose")
-                .help("Print more verbose output"),
-        )
-        .subcommand(
-            SubCommand::with_name("run")
-                .about("Runs puzzles")
-                .setting(AppSettings::ColoredHelp)
-                .arg(
-                    Arg::with_name("filter")
-                        .takes_value(true)
-                        .help("Only run tests whose name contains this string")
-                        .required(false),
-                ),
-        )
-        .subcommand(
-            SubCommand::with_name("add-puzzle")
-                .about("Adds a puzzle, templating the code and fetching the input")
-                .setting(AppSettings::ColoredHelp)
-                .arg(
-                    Arg::with_name("day")
-                        .takes_value(true)
-                        .help("The day of the puzzle to add (1 through 25)")
-                        .required(true),
-                )
-                .arg(
-                    Arg::with_name("year")
-                        .short("y")
-                        .long("year")
-                        .default_value("2018")
-                        .takes_value(true)
-                        .help("The year of the puzzle to add defaults to 2018")
-                        .required(false),
-                )
-                .arg(
-                    Arg::with_name("advent_cookie")
-                        .long("advent-cookie")
-                        .env("ADVENT_COOKIE")
-                        .help("Session cookie from adventofcode.com")
-                        .required(true)
-                        .takes_value(true),
-                ),
-        )
-        .get_matches();
+#[derive(StructOpt, Debug)]
+struct Opt {
+    /// Verbose mode, can be repeated (-v, -vv, -vvv, etc.)
+    #[structopt(short, long, parse(from_occurrences))]
+    verbose: u8,
 
-    match matches.subcommand() {
-        ("run", Some(opts)) => run(opts),
-        ("add-puzzle", Some(opts)) => add_puzzle(opts).unwrap(),
-        _ => {
-            println!("Unknown command!");
-            std::process::exit(1);
-        }
+    #[structopt(subcommand)]
+    cmd: Command,
+}
+
+#[derive(StructOpt, Debug)]
+enum Command {
+    /// Runs puzzles
+    Run {
+        /// Only run tests who's name contains this string
+        #[structopt()]
+        filter: Option<String>,
+
+        /// Verbose mode, can be repeated (-v, -vv, -vvv, etc.)
+        #[structopt(short, long, parse(from_occurrences))]
+        verbose: u8,
+    },
+
+    /// Adds a puzzle, templating the code and fetching the input
+    AddDay {
+        /// The day of the puzzle to add (1 through 25)
+        #[structopt(short, long)]
+        day: u8,
+
+        /// The year of the puzzle to add defaults to 2019
+        #[structopt(short, long, default_value = "2019")]
+        year: u16,
+
+        /// Session cookie from adventofcode.com
+        #[structopt(short, long, env = "ADVENT_COOKIE", hide_env_values = true)]
+        advent_cookie: String,
+    },
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let opt = Opt::from_args();
+
+    match opt.cmd {
+        Command::Run { .. } => run(opt),
+        Command::AddDay { .. } => add_puzzle(opt)?,
     }
+
+    Ok(())
 }
 
 struct RunOptions {
@@ -80,11 +60,16 @@ struct RunOptions {
     verbose: bool,
 }
 
-impl<'a> From<&clap::ArgMatches<'a>> for RunOptions {
-    fn from(matches: &clap::ArgMatches) -> Self {
-        Self {
-            filter: matches.value_of("filter").map(|f| f.to_owned()),
-            verbose: matches.is_present("verbose"),
+impl<'a> From<Opt> for RunOptions {
+    fn from(opt: Opt) -> Self {
+        let Opt { verbose: top_verbose, cmd, .. } = opt;
+        if let Command::Run { filter, verbose: cmd_verbose } = cmd {
+            Self {
+                filter: filter,
+                verbose: cmd_verbose + top_verbose > 0,
+            }
+        } else {
+            panic!("Incorrect subcommand, expected run");
         }
     }
 }
@@ -175,7 +160,7 @@ where
 
 fn format_sum_duration(ds: Vec<Duration>) -> impl fmt::Display {
     let sum: u128 = ds.iter().map(Duration::as_millis).sum();
-    let s = format!("{:>5} ms", sum);
+    let s = format!("{:>5} ms ", sum);
     match sum {
         0 => s.bright_black(),
         d if d < 100 => s.bright_black(),
@@ -192,12 +177,13 @@ struct AddDayOptions {
     advent_cookie: String,
 }
 
-impl<'a> From<&clap::ArgMatches<'a>> for AddDayOptions {
-    fn from(matches: &clap::ArgMatches) -> Self {
-        Self {
-            day: matches.value_of("day").unwrap().parse().unwrap(),
-            year: matches.value_of("year").unwrap().parse().unwrap(),
-            advent_cookie: matches.value_of("advent_cookie").unwrap().to_owned(),
+impl<'a> From<Opt> for AddDayOptions {
+    fn from(opt: Opt) -> Self {
+        let Opt { cmd, .. } = opt;
+        if let Command::AddDay { day, year, advent_cookie } = cmd {
+            Self { day, year, advent_cookie }
+        } else {
+            panic!("Incorrect subcommand, expected run");
         }
     }
 }
