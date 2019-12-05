@@ -17,22 +17,20 @@ impl PuzzleRunner for Part1 {
     type Output = isize;
 
     fn name(&self) -> String {
-        "2019-D02-P1".to_owned()
+        "2019-D05-P1".to_owned()
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), 3_790_645)
+            .transformed_case("Solution", include_str!("input"), 7_566_643)
             .collect()
     }
 
-    fn run_puzzle(mut program: Self::Input) -> Self::Output {
-        program[1] = 12;
-        program[2] = 2;
-        let mut computer = IntcodeComputer::build(program).done();
+    fn run_puzzle(program: Self::Input) -> Self::Output {
+        let mut computer = IntcodeComputer::build(program).with_input(vec![1]).done();
         computer.run_to_end();
-        computer.memory[0]
+        *computer.output.last().unwrap()
     }
 }
 
@@ -44,31 +42,20 @@ impl PuzzleRunner for Part2 {
     type Output = isize;
 
     fn name(&self) -> String {
-        "2019-D02-P1".to_owned()
+        "2019-D05-P2".to_owned()
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), 6577)
+            .transformed_case("Solution", include_str!("input"), 9_265_694)
             .collect()
     }
 
     fn run_puzzle(program: Self::Input) -> Self::Output {
-        for a in 0..100 {
-            for b in 0..100 {
-                let mut modified_program = program.clone();
-                modified_program[1] = a;
-                modified_program[2] = b;
-                let mut computer = IntcodeComputer::build(modified_program).done();
-                computer.run_to_end();
-
-                if computer.memory[0] == 19_690_720 {
-                    return 100 * a + b;
-                }
-            }
-        }
-        panic!("No answer found");
+        let mut computer = IntcodeComputer::build(program).with_input(vec![5]).done();
+        computer.run_to_end();
+        *computer.output.last().unwrap()
     }
 }
 

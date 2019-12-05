@@ -1,4 +1,7 @@
-use std::{time::{Duration, Instant}, marker::PhantomData};
+use std::{
+    marker::PhantomData,
+    time::{Duration, Instant},
+};
 
 /// A puzzle case that can be executed, comparing expected output to actual
 /// output.

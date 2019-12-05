@@ -1,8 +1,8 @@
 #![deny(clippy::all)]
 
-use colored::Colorize;
-use std::{fs, path::PathBuf, time::Duration, fmt};
 use advent_lib::cases::{Puzzle, PuzzleResultStatus};
+use colored::Colorize;
+use std::{fmt, fs, path::PathBuf, time::Duration};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -62,8 +62,16 @@ struct RunOptions {
 
 impl<'a> From<Opt> for RunOptions {
     fn from(opt: Opt) -> Self {
-        let Opt { verbose: top_verbose, cmd, .. } = opt;
-        if let Command::Run { filter, verbose: cmd_verbose } = cmd {
+        let Opt {
+            verbose: top_verbose,
+            cmd,
+            ..
+        } = opt;
+        if let Command::Run {
+            filter,
+            verbose: cmd_verbose,
+        } = cmd
+        {
             Self {
                 filter: filter,
                 verbose: cmd_verbose + top_verbose > 0,
@@ -138,7 +146,11 @@ where
             }
 
             let spacer = (results.len()..10).map(|_| " ").collect::<String>();
-            println!("{}{}", spacer, format_sum_duration(results.iter().map(|(_, res)| res.duration).collect()));
+            println!(
+                "{}{}",
+                spacer,
+                format_sum_duration(results.iter().map(|(_, res)| res.duration).collect())
+            );
 
             for (case, result) in results {
                 match result.status {
@@ -148,9 +160,12 @@ where
                         case.name(),
                         result.description
                     ),
-                    PuzzleResultStatus::Fail => {
-                        println!("   {} {:<10} -> {}", "FAIL".red(), case.name(), result.description)
-                    }
+                    PuzzleResultStatus::Fail => println!(
+                        "   {} {:<10} -> {}",
+                        "FAIL".red(),
+                        case.name(),
+                        result.description
+                    ),
                     _ => (),
                 }
             }
@@ -180,8 +195,17 @@ struct AddDayOptions {
 impl<'a> From<Opt> for AddDayOptions {
     fn from(opt: Opt) -> Self {
         let Opt { cmd, .. } = opt;
-        if let Command::AddDay { day, year, advent_cookie } = cmd {
-            Self { day, year, advent_cookie }
+        if let Command::AddDay {
+            day,
+            year,
+            advent_cookie,
+        } = cmd
+        {
+            Self {
+                day,
+                year,
+                advent_cookie,
+            }
         } else {
             panic!("Incorrect subcommand, expected run");
         }
