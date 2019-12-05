@@ -73,7 +73,7 @@ impl<'a> From<Opt> for RunOptions {
         } = cmd
         {
             Self {
-                filter: filter,
+                filter,
                 verbose: cmd_verbose + top_verbose > 0,
             }
         } else {
