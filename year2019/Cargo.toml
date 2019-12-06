@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 advent-lib = { path = "../advent-lib" }
 itertools = "^0.8.0"
+petgraph = "^0.4"
+indoc = "^0.3"

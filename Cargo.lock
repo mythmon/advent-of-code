@@ -1957,7 +1957,9 @@ name = "year2019"
 version = "0.1.0"
 dependencies = [
  "advent-lib 0.1.0",
+ "indoc 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "petgraph 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [metadata]
