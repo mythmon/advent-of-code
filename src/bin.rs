@@ -220,7 +220,7 @@ where
 
     let day_padded = format!("{:0>2}", opts.day.to_string());
 
-    let puzzle_path = PathBuf::from(format!("./src/year{}/day{}", opts.year, day_padded));
+    let puzzle_path = PathBuf::from(format!("./year{}/src/day{}", opts.year, day_padded));
     fs::create_dir_all(&puzzle_path)?;
 
     let mut mod_path = puzzle_path.clone();

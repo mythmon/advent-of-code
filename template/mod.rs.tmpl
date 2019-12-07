@@ -1,4 +1,8 @@
-use advent_lib::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
+use crate::intcode::IntcodeComputer;
+use advent_lib::{
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    helpers::StringAdventExt,
+};
 use std::iter::Iterator;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -21,8 +25,9 @@ impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example", "example", None)
-            .case("Solution", include_str!("input"), None)
+            .add_transform(parse_input)
+            .case("Example", 42, None)
+            .transformed_case("Solution", include_str!("input"), None)
             .collect()
     }
 
@@ -53,3 +58,10 @@ impl PuzzleRunner for Day{{DAY_PADDED}}Part1 {
 //         unimplemented!();
 //     }
 // }
+
+fn parse_input(input: &str) -> Vec<u32> {
+    input
+        .trimmed_lines()
+        .map(|line| line.parse().unwrap())
+        .collect()
+}
