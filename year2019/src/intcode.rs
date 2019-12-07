@@ -3,6 +3,7 @@ use std::fmt;
 pub struct IntcodeComputer {
     pub memory: Vec<isize>,
     pub output: Vec<isize>,
+    output_pointer: usize,
     input: Vec<isize>,
     input_pointer: usize,
     instruction_pointer: usize,
@@ -10,6 +11,7 @@ pub struct IntcodeComputer {
     verbose: bool,
 }
 
+// public methods
 impl IntcodeComputer {
     pub fn build(initial_memory: Vec<isize>) -> IntcodeComputerBuilder {
         IntcodeComputerBuilder::new(initial_memory)
@@ -17,6 +19,7 @@ impl IntcodeComputer {
 
     pub fn step(&mut self) {
         let op = self.get_op();
+        self.log(format!("[{:>4}] {}", self.instruction_pointer, &op));
         let mut should_advance_ip = true;
         match op {
             Op::Add {
@@ -31,7 +34,10 @@ impl IntcodeComputer {
                 src_b,
                 dst_addr,
             } => {
-                self.memory[dst_addr] = self.get_param(src_a) * self.get_param(src_b);
+                let a = self.get_param(src_a);
+                let b = self.get_param(src_b);
+                // println!("MUL {} * {}", a, b);
+                self.memory[dst_addr] = a * b;
             }
             Op::Input { dst_addr } => {
                 let input = self.get_input();
@@ -87,6 +93,26 @@ impl IntcodeComputer {
         }
     }
 
+    pub fn run_until_output(&mut self) -> Option<isize> {
+        while !self.halted && self.output_pointer >= self.output.len() {
+            self.step()
+        }
+        if self.halted {
+            None
+        } else {
+            let rv = self.output[self.output_pointer];
+            self.output_pointer += 1;
+            Some(rv)
+        }
+    }
+
+    pub fn add_input(&mut self, v: isize) {
+        self.input.push(v);
+    }
+}
+
+// private methods
+impl IntcodeComputer {
     fn read_relative(&self, offset: usize) -> isize {
         let pc = self.instruction_pointer;
         self.memory[pc + offset]
@@ -117,20 +143,17 @@ impl IntcodeComputer {
 
     fn get_op(&mut self) -> Op {
         let instruction = self.memory[self.instruction_pointer];
-        self.log(format!("processing instruction {}", instruction));
         let opcode = instruction % 100;
         let param_modes: [ParameterMode; 2] = [
             (instruction / 100 % 10).into(),
             (instruction / 1_000 % 10).into(),
         ];
-        self.log(format!("opcode={}, param modes={:?}", opcode, param_modes));
 
         match opcode {
             1 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
                 let dst = self.read_relative_address(3);
-                self.log(format!("ADD a={} b={} dst={}", a, b, dst));
                 Op::Add {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
@@ -141,7 +164,6 @@ impl IntcodeComputer {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
                 let dst = self.read_relative_address(3);
-                self.log(format!("ADD a={} b={} dst={}", a, b, dst));
                 Op::Mult {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
@@ -150,12 +172,10 @@ impl IntcodeComputer {
             }
             3 => {
                 let dst_addr = self.read_relative_address(1);
-                self.log(format!("input dst_addr={}", dst_addr));
                 Op::Input { dst_addr }
             }
             4 => {
                 let a = self.read_relative(1);
-                self.log(format!("output a={}", a));
                 Op::Output {
                     src: param_modes[0].with_value(a),
                 }
@@ -163,7 +183,6 @@ impl IntcodeComputer {
             5 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                self.log(format!("jump-if-true a={} b={}", a, b));
                 Op::JumpIfTrue {
                     predicate: param_modes[0].with_value(a),
                     target: param_modes[1].with_value(b),
@@ -172,7 +191,6 @@ impl IntcodeComputer {
             6 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                self.log(format!("jump-if-false a={} b={}", a, b));
                 Op::JumpIfFalse {
                     predicate: param_modes[0].with_value(a),
                     target: param_modes[1].with_value(b),
@@ -182,7 +200,6 @@ impl IntcodeComputer {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
                 let dst = self.read_relative_address(3);
-                self.log(format!("less than a={} b={} dst={}", a, b, dst));
                 Op::LessThan {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
@@ -193,7 +210,6 @@ impl IntcodeComputer {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
                 let dst = self.read_relative_address(3);
-                self.log(format!("equals a={} b={} dst={}", a, b, dst));
                 Op::Equals {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
@@ -246,6 +262,7 @@ impl IntcodeComputerBuilder {
             input: self.input,
             input_pointer: 0,
             output: Vec::new(),
+            output_pointer: 0,
             verbose: self.verbose,
         }
     }
@@ -262,6 +279,7 @@ impl IntcodeComputerBuilder {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 enum Op {
     Add {
         src_a: Parameter,
@@ -300,10 +318,53 @@ enum Op {
     Halt,
 }
 
+impl fmt::Display for Op {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Add {
+                src_a,
+                src_b,
+                dst_addr,
+            } => write!(fmt, "ADD {} {} &{}", src_a, src_b, dst_addr)?,
+            Self::Mult {
+                src_a,
+                src_b,
+                dst_addr,
+            } => write!(fmt, "MUL {} {} &{}", src_a, src_b, dst_addr)?,
+            Self::Input { dst_addr } => write!(fmt, "INP &{}", dst_addr)?,
+            Self::Output { src } => write!(fmt, "INP {}", src)?,
+            Self::Halt => write!(fmt, "HLT")?,
+            Self::LessThan {
+                src_a,
+                src_b,
+                dst_addr,
+            } => write!(fmt, "LST {} {} &{}", src_a, src_b, dst_addr)?,
+            Self::Equals {
+                src_a,
+                src_b,
+                dst_addr,
+            } => write!(fmt, "EQS {} {} &{}", src_a, src_b, dst_addr)?,
+            Self::JumpIfTrue { predicate, target } => write!(fmt, "JIT {} {}", predicate, target)?,
+            Self::JumpIfFalse { predicate, target } => write!(fmt, "JIF {} {}", predicate, target)?,
+        };
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 enum Parameter {
     Immediate(isize),
     Position(usize),
+}
+
+impl fmt::Display for Parameter {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Immediate(v) => write!(fmt, "!{}", v)?,
+            Self::Position(v) => write!(fmt, "&{}", v)?,
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
