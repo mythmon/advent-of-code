@@ -52,7 +52,7 @@ impl PuzzleRunner for Part1 {
 
     fn run_puzzle(orbits: Self::Input) -> Self::Output {
         build_orbit_graph(orbits)
-            .0
+            .graph
             .node_weights_mut()
             .map(|count| count.expect("disconnected element"))
             .sum()
@@ -99,7 +99,7 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(orbits: Self::Input) -> Self::Output {
-        let (graph, name_map) = build_orbit_graph(orbits);
+        let OrbitInfo { graph, name_map } = build_orbit_graph(orbits);
         let mut you_path = path_to_com(&graph, name_map["YOU"]);
         let mut san_path = path_to_com(&graph, name_map["SAN"]);
 
@@ -123,7 +123,7 @@ fn parse_input(input: &str) -> Vec<(String, String)> {
     input
         .trimmed_lines()
         .map(|line| {
-            let parts = line.split(")").map(str::to_owned).collect::<Vec<String>>();
+            let parts = line.split(')').map(str::to_owned).collect::<Vec<String>>();
             if parts.len() != 2 {
                 panic!(format!("could not parse line {}", line));
             }
@@ -132,48 +132,48 @@ fn parse_input(input: &str) -> Vec<(String, String)> {
         .collect()
 }
 
-fn build_orbit_graph(
-    orbits: Vec<(String, String)>,
-) -> (
-    Graph<Option<u32>, (), petgraph::Directed, u32>,
-    HashMap<String, NodeIndex>,
-) {
-    let mut orbit_graph: Graph<Option<u32>, (), petgraph::Directed, u32> = Graph::new();
+struct OrbitInfo {
+    graph: Graph<Option<u32>, (), petgraph::Directed, u32>,
+    name_map: HashMap<String, NodeIndex>,
+}
+
+fn build_orbit_graph(orbits: Vec<(String, String)>) -> OrbitInfo {
+    let mut graph: Graph<Option<u32>, (), petgraph::Directed, u32> = Graph::new();
     let mut com_index = None;
 
-    let mut object_indexes = HashMap::new();
+    let mut name_map = HashMap::new();
 
     for (parent, satellite) in orbits.into_iter() {
         let is_com = parent == "COM";
-        let satellite_index = *object_indexes
+        let satellite_index = *name_map
             .entry(satellite)
-            .or_insert_with(|| orbit_graph.add_node(None));
-        let parent_index = *object_indexes
+            .or_insert_with(|| graph.add_node(None));
+        let parent_index = *name_map
             .entry(parent)
-            .or_insert_with(|| orbit_graph.add_node(None));
-        orbit_graph.add_edge(parent_index, satellite_index, ());
+            .or_insert_with(|| graph.add_node(None));
+        graph.add_edge(parent_index, satellite_index, ());
         if is_com {
             com_index = Some(parent_index);
         }
     }
 
     let com_index = com_index.expect("No center-of-mass (COM) found in input");
-    orbit_graph[com_index] = Some(0);
+    graph[com_index] = Some(0);
 
     let mut todo = VecDeque::new();
     todo.push_back(com_index);
 
     while !todo.is_empty() {
         let parent_index = todo.pop_front().unwrap();
-        let parent_count = orbit_graph[parent_index].expect("disconnected element");
-        let mut walker = orbit_graph.neighbors(parent_index).detach();
-        while let Some((_, satellite_index)) = walker.next(&orbit_graph) {
-            orbit_graph[satellite_index] = Some(parent_count + 1);
+        let parent_count = graph[parent_index].expect("disconnected element");
+        let mut walker = graph.neighbors(parent_index).detach();
+        while let Some((_, satellite_index)) = walker.next(&graph) {
+            graph[satellite_index] = Some(parent_count + 1);
             todo.push_back(satellite_index);
         }
     }
 
-    (orbit_graph, object_indexes)
+    OrbitInfo { graph, name_map }
 }
 
 fn path_to_com(orbit_graph: &Graph<Option<u32>, ()>, starting_point: NodeIndex) -> Vec<NodeIndex> {

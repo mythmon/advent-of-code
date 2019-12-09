@@ -70,8 +70,7 @@ impl PuzzleRunner for Part2 {
                 let pixel = layers
                     .iter()
                     .map(|l| l[pixel_offset])
-                    .filter(|p| *p != '2')
-                    .next()
+                    .find(|p| *p != '2')
                     .unwrap_or('0');
                 match pixel {
                     '0' => print!("  "),

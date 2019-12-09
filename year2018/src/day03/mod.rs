@@ -7,9 +7,16 @@ use lalrpop_util::lalrpop_mod;
 use std::{collections::HashMap, iter::Iterator, str::FromStr};
 
 #[cfg(windows)]
-lalrpop_mod!(parser, "\\day03\\parser.rs");
+lalrpop_mod!(
+    #[allow(clippy::all)]
+    parser,
+    "\\day03\\parser.rs"
+);
 #[cfg(unix)]
-lalrpop_mod!(parser);
+lalrpop_mod!(
+    #[allow(clippy::all)]
+    parser
+);
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![Box::new(Part1), Box::new(Part2)]
