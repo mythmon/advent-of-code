@@ -5,10 +5,6 @@ name = "advent"
 version = "2019.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
-build = "build.rs" # LALRPOP preprocessing
-
-[build-dependencies]
-lalrpop = "^0.17.0"
 
 [dependencies]
 # Puzzle groups

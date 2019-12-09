@@ -3,9 +3,13 @@ use advent_lib::{
     helpers::StringAdventExt,
 };
 use itertools::Itertools;
+use lalrpop_util::lalrpop_mod;
 use std::{cmp, iter::Iterator, str::FromStr};
 
-mod parser;
+#[cfg(windows)]
+lalrpop_mod!(parser, "\\day10\\parser.rs");
+#[cfg(unix)]
+lalrpop_mod!(parser);
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![Box::new(Part1), Box::new(Part2)]

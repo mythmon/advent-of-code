@@ -1,5 +1,3 @@
-#![allow(clippy::all, clippy::pedantic, clippy::nursery)]
-
 use crate::day04::{SleepLogLine, LogEvent, DateTime};
 
 grammar;
