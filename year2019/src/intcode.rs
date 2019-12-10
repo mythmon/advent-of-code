@@ -1,14 +1,15 @@
 use std::fmt;
 
 pub struct IntcodeComputer {
-    pub memory: Vec<isize>,
+    _memory: Vec<isize>,
     pub output: Vec<isize>,
     output_pointer: usize,
     input: Vec<isize>,
-    input_pointer: usize,
-    instruction_pointer: usize,
+    input_pointer: isize,
+    instruction_pointer: isize,
     halted: bool,
     verbose: bool,
+    relative_base: isize,
 }
 
 // public methods
@@ -22,26 +23,22 @@ impl IntcodeComputer {
         self.log(format!("[{:>4}] {}", self.instruction_pointer, &op));
         let mut should_advance_ip = true;
         match op {
-            Op::Add {
-                src_a,
-                src_b,
-                dst_addr,
-            } => {
-                self.memory[dst_addr] = self.get_param(src_a) + self.get_param(src_b);
+            Op::Add { src_a, src_b, dst } => {
+                self.write_mem(
+                    self.get_param_addr(dst),
+                    self.get_param(src_a) + self.get_param(src_b),
+                );
             }
-            Op::Mult {
-                src_a,
-                src_b,
-                dst_addr,
-            } => {
+            Op::Mult { src_a, src_b, dst } => {
                 let a = self.get_param(src_a);
                 let b = self.get_param(src_b);
-                // println!("MUL {} * {}", a, b);
-                self.memory[dst_addr] = a * b;
+                let dst = self.get_param_addr(dst);
+                self.write_mem(dst, a * b);
             }
-            Op::Input { dst_addr } => {
+            Op::Input { dst } => {
                 let input = self.get_input();
-                self.memory[dst_addr] = input.expect("Out of input");
+                let dst = self.get_param_addr(dst);
+                self.write_mem(dst, input.expect("Out of input"));
             }
             Op::Output { src } => {
                 self.output.push(self.get_param(src));
@@ -49,36 +46,37 @@ impl IntcodeComputer {
             Op::JumpIfTrue { predicate, target } => {
                 if self.get_param(predicate) != 0 {
                     should_advance_ip = false;
-                    self.instruction_pointer = self.get_param_addr(target);
+                    self.instruction_pointer = self.get_param(target) as isize;
                 }
             }
             Op::JumpIfFalse { predicate, target } => {
                 if self.get_param(predicate) == 0 {
                     should_advance_ip = false;
-                    self.instruction_pointer = self.get_param_addr(target);
+                    self.instruction_pointer = self.get_param(target) as isize;
                 }
             }
-            Op::LessThan {
-                src_a,
-                src_b,
-                dst_addr,
-            } => {
-                self.memory[dst_addr] = if self.get_param(src_a) < self.get_param(src_b) {
-                    1
-                } else {
-                    0
-                }
+            Op::LessThan { src_a, src_b, dst } => {
+                self.write_mem(
+                    self.get_param_addr(dst),
+                    if self.get_param(src_a) < self.get_param(src_b) {
+                        1
+                    } else {
+                        0
+                    },
+                );
             }
-            Op::Equals {
-                src_a,
-                src_b,
-                dst_addr,
-            } => {
-                self.memory[dst_addr] = if self.get_param(src_a) == self.get_param(src_b) {
-                    1
-                } else {
-                    0
-                }
+            Op::Equals { src_a, src_b, dst } => {
+                self.write_mem(
+                    self.get_param_addr(dst),
+                    if self.get_param(src_a) == self.get_param(src_b) {
+                        1
+                    } else {
+                        0
+                    },
+                );
+            }
+            Op::AdjustRelBase { src } => {
+                self.relative_base += self.get_param(src);
             }
             Op::Halt => self.halted = true,
         }
@@ -113,66 +111,73 @@ impl IntcodeComputer {
 
 // private methods
 impl IntcodeComputer {
-    fn read_relative(&self, offset: usize) -> isize {
+    fn read_relative(&self, offset: isize) -> isize {
         let pc = self.instruction_pointer;
-        self.memory[pc + offset]
-    }
-
-    fn read_relative_address(&self, offset: usize) -> usize {
-        let rv = self.read_relative(offset);
-        if rv < 0 {
-            panic!("Invalid memory address while reading instruction {}", rv);
-        }
-        rv as usize
+        self.read_mem(pc + offset)
     }
 
     fn get_param(&self, param: Parameter) -> isize {
         match param {
             Parameter::Immediate(value) => value,
-            Parameter::Position(addr) => self.memory[addr],
+            Parameter::Position(addr) => self.read_mem(addr),
+            Parameter::Relative(offset) => {
+                let addr = self.relative_base + offset;
+                assert!(
+                    addr >= 0,
+                    "Invalid result of relative parameter read: {}",
+                    addr
+                );
+                self.read_mem(addr)
+            }
         }
     }
 
-    fn get_param_addr(&self, param: Parameter) -> usize {
-        let rv = self.get_param(param);
-        if rv < 0 {
-            panic!("Invalid memory address while reading parameter {}", rv);
+    fn get_param_addr(&self, param: Parameter) -> isize {
+        match param {
+            Parameter::Immediate(_) => panic!("Still can't write to immediate values"),
+            Parameter::Position(addr) => addr,
+            Parameter::Relative(offset) => self.relative_base + offset,
         }
-        rv as usize
     }
 
     fn get_op(&mut self) -> Op {
-        let instruction = self.memory[self.instruction_pointer];
+        let instruction = self.read_mem(self.instruction_pointer);
         let opcode = instruction % 100;
-        let param_modes: [ParameterMode; 2] = [
+        let param_modes: [ParameterMode; 3] = [
             (instruction / 100 % 10).into(),
             (instruction / 1_000 % 10).into(),
+            (instruction / 10_000 % 10).into(),
         ];
 
         match opcode {
             1 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                let dst = self.read_relative_address(3);
+                let dst = self.read_relative(3);
+                assert_ne!(param_modes[2], ParameterMode::Immediate);
                 Op::Add {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
-                    dst_addr: dst,
+                    dst: param_modes[2].with_value(dst),
                 }
             }
             2 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                let dst = self.read_relative_address(3);
+                let dst = self.read_relative(3);
+                assert_ne!(param_modes[2], ParameterMode::Immediate);
                 Op::Mult {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
-                    dst_addr: dst,
+                    dst: param_modes[2].with_value(dst),
                 }
             }
             3 => {
-                let dst_addr = self.read_relative_address(1);
-                Op::Input { dst_addr }
+                let dst = self.read_relative(1);
+                assert_ne!(param_modes[0], ParameterMode::Immediate);
+                Op::Input {
+                    dst: param_modes[0].with_value(dst),
+                }
             }
             4 => {
                 let a = self.read_relative(1);
@@ -199,31 +204,36 @@ impl IntcodeComputer {
             7 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                let dst = self.read_relative_address(3);
+                let dst = self.read_relative(3);
+                assert_ne!(param_modes[2], ParameterMode::Immediate);
                 Op::LessThan {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
-                    dst_addr: dst,
+                    dst: param_modes[2].with_value(dst),
                 }
             }
             8 => {
                 let a = self.read_relative(1);
                 let b = self.read_relative(2);
-                let dst = self.read_relative_address(3);
+                let dst = self.read_relative(3);
+                assert_ne!(param_modes[2], ParameterMode::Immediate);
                 Op::Equals {
                     src_a: param_modes[0].with_value(a),
                     src_b: param_modes[1].with_value(b),
-                    dst_addr: dst,
+                    dst: param_modes[2].with_value(dst),
                 }
             }
+            9 => Op::AdjustRelBase {
+                src: param_modes[0].with_value(self.read_relative(1)),
+            },
             99 => Op::Halt,
             _ => panic!(format!("Unknown op code {}", opcode)),
         }
     }
 
     fn get_input(&mut self) -> Result<isize, ()> {
-        if self.input_pointer < self.input.len() {
-            let rv = self.input[self.input_pointer];
+        if self.input_pointer < self.input.len() as isize {
+            let rv = self.input[self.input_pointer as usize];
             self.input_pointer += 1;
             Ok(rv)
         } else {
@@ -235,6 +245,20 @@ impl IntcodeComputer {
         if self.verbose {
             println!("{}", msg);
         }
+    }
+
+    pub fn read_mem(&self, addr: isize) -> isize {
+        assert!(addr >= 0, "invalid memory address");
+        *self._memory.get(addr as usize).unwrap_or(&0)
+    }
+
+    fn write_mem(&mut self, addr: isize, val: isize) {
+        assert!(addr >= 0, "invalid memory address");
+        let addr = addr as usize;
+        if addr >= self._memory.len() {
+            self._memory.resize_with(addr + 1, || 0);
+        }
+        self._memory[addr] = val;
     }
 }
 
@@ -256,7 +280,7 @@ impl IntcodeComputerBuilder {
 
     pub fn done(self) -> IntcodeComputer {
         IntcodeComputer {
-            memory: self.initial_memory,
+            _memory: self.initial_memory,
             instruction_pointer: 0,
             halted: false,
             input: self.input,
@@ -264,6 +288,7 @@ impl IntcodeComputerBuilder {
             output: Vec::new(),
             output_pointer: 0,
             verbose: self.verbose,
+            relative_base: 0,
         }
     }
 
@@ -284,15 +309,15 @@ enum Op {
     Add {
         src_a: Parameter,
         src_b: Parameter,
-        dst_addr: usize,
+        dst: Parameter,
     },
     Mult {
         src_a: Parameter,
         src_b: Parameter,
-        dst_addr: usize,
+        dst: Parameter,
     },
     Input {
-        dst_addr: usize,
+        dst: Parameter,
     },
     Output {
         src: Parameter,
@@ -308,53 +333,44 @@ enum Op {
     LessThan {
         src_a: Parameter,
         src_b: Parameter,
-        dst_addr: usize,
+        dst: Parameter,
     },
     Equals {
         src_a: Parameter,
         src_b: Parameter,
-        dst_addr: usize,
+        dst: Parameter,
     },
     Halt,
+    AdjustRelBase {
+        src: Parameter,
+    },
 }
 
 impl fmt::Display for Op {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::Add {
-                src_a,
-                src_b,
-                dst_addr,
-            } => write!(fmt, "ADD {} {} &{}", src_a, src_b, dst_addr)?,
-            Self::Mult {
-                src_a,
-                src_b,
-                dst_addr,
-            } => write!(fmt, "MUL {} {} &{}", src_a, src_b, dst_addr)?,
-            Self::Input { dst_addr } => write!(fmt, "INP &{}", dst_addr)?,
+            Self::Add { src_a, src_b, dst } => write!(fmt, "ADD {} {} &{}", src_a, src_b, dst)?,
+            Self::Mult { src_a, src_b, dst } => write!(fmt, "MUL {} {} &{}", src_a, src_b, dst)?,
+            Self::Input { dst } => write!(fmt, "INP &{}", dst)?,
             Self::Output { src } => write!(fmt, "INP {}", src)?,
             Self::Halt => write!(fmt, "HLT")?,
-            Self::LessThan {
-                src_a,
-                src_b,
-                dst_addr,
-            } => write!(fmt, "LST {} {} &{}", src_a, src_b, dst_addr)?,
-            Self::Equals {
-                src_a,
-                src_b,
-                dst_addr,
-            } => write!(fmt, "EQS {} {} &{}", src_a, src_b, dst_addr)?,
+            Self::LessThan { src_a, src_b, dst } => {
+                write!(fmt, "LST {} {} &{}", src_a, src_b, dst)?
+            }
+            Self::Equals { src_a, src_b, dst } => write!(fmt, "EQS {} {} &{}", src_a, src_b, dst)?,
             Self::JumpIfTrue { predicate, target } => write!(fmt, "JIT {} {}", predicate, target)?,
             Self::JumpIfFalse { predicate, target } => write!(fmt, "JIF {} {}", predicate, target)?,
+            Self::AdjustRelBase { src } => write!(fmt, "ARB {}", src)?,
         };
         Ok(())
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 enum Parameter {
     Immediate(isize),
-    Position(usize),
+    Position(isize),
+    Relative(isize),
 }
 
 impl fmt::Display for Parameter {
@@ -362,30 +378,31 @@ impl fmt::Display for Parameter {
         match self {
             Self::Immediate(v) => write!(fmt, "!{}", v)?,
             Self::Position(v) => write!(fmt, "&{}", v)?,
+            Self::Relative(v) => write!(fmt, "~{}", v)?,
         }
         Ok(())
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 enum ParameterMode {
-    Position,
-    Immediate,
+    Position = 0,
+    Immediate = 1,
+    Relative = 2,
 }
 
 impl ParameterMode {
     fn with_value(self, value: isize) -> Parameter {
         match self {
             ParameterMode::Position => {
-                if value < 0 {
-                    panic!(format!(
-                        "Invalid memory address while building parameter: {}",
-                        value
-                    ));
-                }
-                Parameter::Position(value as usize)
+                assert!(
+                    value >= 0,
+                    format!("Invalid memory address while building parameter: {}", value)
+                );
+                Parameter::Position(value as isize)
             }
             ParameterMode::Immediate => Parameter::Immediate(value),
+            ParameterMode::Relative => Parameter::Relative(value),
         }
     }
 }
@@ -395,17 +412,18 @@ impl From<isize> for ParameterMode {
         match mode {
             0 => ParameterMode::Position,
             1 => ParameterMode::Immediate,
+            2 => ParameterMode::Relative,
             _ => panic!(format!("Unknown parameter mode {}", mode)),
         }
     }
 }
 
 impl Op {
-    fn size(&self) -> usize {
+    fn size(&self) -> isize {
         match self {
             Self::Add { .. } | Self::Mult { .. } | Self::LessThan { .. } | Self::Equals { .. } => 4,
             Self::JumpIfTrue { .. } | Self::JumpIfFalse { .. } => 3,
-            Self::Input { .. } | Self::Output { .. } => 2,
+            Self::Input { .. } | Self::Output { .. } | Self::AdjustRelBase { .. } => 2,
             Self::Halt => 1,
         }
     }
@@ -421,12 +439,12 @@ mod tests {
             IntcodeComputer::build(vec![1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]).done();
         computer.step();
         assert_eq!(
-            computer.memory,
+            computer._memory,
             vec![1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
         );
         computer.step();
         assert_eq!(
-            computer.memory,
+            computer._memory,
             vec![3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
         );
         computer.step();
@@ -437,21 +455,21 @@ mod tests {
     fn day02_example2() {
         let mut computer = IntcodeComputer::build(vec![1, 0, 0, 0, 99]).done();
         computer.run_to_end();
-        assert_eq!(computer.memory, vec![2, 0, 0, 0, 99]);
+        assert_eq!(computer._memory, vec![2, 0, 0, 0, 99]);
     }
 
     #[test]
     fn day02_example3() {
         let mut computer = IntcodeComputer::build(vec![2, 4, 4, 5, 99, 0]).done();
         computer.run_to_end();
-        assert_eq!(computer.memory, vec![2, 4, 4, 5, 99, 9801]);
+        assert_eq!(computer._memory, vec![2, 4, 4, 5, 99, 9801]);
     }
 
     #[test]
     fn day02_example4() {
         let mut computer = IntcodeComputer::build(vec![1, 1, 1, 4, 99, 5, 6, 0, 99]).done();
         computer.run_to_end();
-        assert_eq!(computer.memory, vec![30, 1, 1, 4, 2, 5, 6, 0, 99]);
+        assert_eq!(computer._memory, vec![30, 1, 1, 4, 2, 5, 6, 0, 99]);
     }
 
     #[test]
@@ -467,14 +485,14 @@ mod tests {
     fn day05_p1_example2() {
         let mut computer = IntcodeComputer::build(vec![1002, 4, 3, 4, 33]).done();
         computer.run_to_end();
-        assert_eq!(computer.memory[4], 99);
+        assert_eq!(computer.read_mem(4), 99);
     }
 
     #[test]
     fn day05_p1_example3() {
         let mut computer = IntcodeComputer::build(vec![1101, 100, -1, 4, 0]).done();
         computer.run_to_end();
-        assert_eq!(computer.memory[4], 99);
+        assert_eq!(computer.read_mem(4), 99);
     }
 
     #[test]
@@ -601,5 +619,39 @@ mod tests {
         let mut computer = builder.clone().with_input(vec![9]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 1001);
+    }
+
+    #[test]
+    fn day09_example1() {
+        let program = vec![
+            109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99,
+        ];
+        let mut computer = IntcodeComputer::build(program.clone()).done();
+        computer.run_to_end();
+        assert_eq!(computer.output, program);
+    }
+
+    #[test]
+    fn day09_example2() {
+        let mut computer =
+            IntcodeComputer::build(vec![1102, 34915192, 34915192, 7, 4, 7, 99, 0]).done();
+        computer.run_to_end();
+        let out = computer.output[0];
+        assert_eq!(out.to_string().len(), 16);
+    }
+
+    #[test]
+    fn day09_example3() {
+        let program = vec![104, 1125899906842624, 99];
+        let mut computer = IntcodeComputer::build(program.clone()).done();
+        computer.run_to_end();
+        assert_eq!(computer.output, vec![program[1]]);
+    }
+
+    #[test]
+    fn debug1() {
+        let mut computer = IntcodeComputer::build(vec![204, 0, 99]).done();
+        computer.run_to_end();
+        assert_eq!(computer.output, vec![204]);
     }
 }

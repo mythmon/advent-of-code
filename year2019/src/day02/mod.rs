@@ -32,7 +32,7 @@ impl PuzzleRunner for Part1 {
         program[2] = 2;
         let mut computer = IntcodeComputer::build(program).done();
         computer.run_to_end();
-        computer.memory[0]
+        computer.read_mem(0)
     }
 }
 
@@ -63,7 +63,7 @@ impl PuzzleRunner for Part2 {
                 let mut computer = IntcodeComputer::build(modified_program).done();
                 computer.run_to_end();
 
-                if computer.memory[0] == 19_690_720 {
+                if computer.read_mem(0) == 19_690_720 {
                     return 100 * a + b;
                 }
             }
