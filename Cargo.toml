@@ -18,6 +18,7 @@ year2019 = { path = "./year2019" }
 colored = "^1.8.0"
 reqwest = "^0.9.17"
 structopt = "^0.3.5"
+num-format = "^0.4.0"
 
 # Most of the running is in release mode, to make puzzles go fast. So turn on
 # some niceties that debug mode includes.

@@ -44,7 +44,7 @@ impl PuzzleRunner for Part2 {
     type Output = isize;
 
     fn name(&self) -> String {
-        "2019-D02-P1".to_owned()
+        "2019-D02-P2".to_owned()
     }
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {

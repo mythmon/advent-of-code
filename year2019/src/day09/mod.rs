@@ -27,7 +27,6 @@ impl PuzzleRunner for Part1 {
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut computer = IntcodeComputer::build(input).with_input(vec![1]).done();
         computer.run_to_end();
-        println!("Output: {:?}", computer.output);
         *computer.output.last().expect("no output")
     }
 }

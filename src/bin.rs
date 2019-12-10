@@ -2,6 +2,7 @@
 
 use advent_lib::cases::{Puzzle, PuzzleResultStatus};
 use colored::Colorize;
+use num_format::{Locale, ToFormattedString};
 use std::{fmt, fs, path::PathBuf, time::Duration};
 use structopt::StructOpt;
 
@@ -21,7 +22,7 @@ enum Command {
     Run {
         /// Only run tests who's name contains this string
         #[structopt()]
-        filter: Option<String>,
+        filter: Vec<String>,
 
         /// Verbose mode, can be repeated (-v, -vv, -vvv, etc.)
         #[structopt(short, long, parse(from_occurrences))]
@@ -56,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 struct RunOptions {
-    filter: Option<String>,
+    filter: Vec<String>,
     verbose: bool,
 }
 
@@ -90,30 +91,37 @@ fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     puzzles
 }
 
-fn run<O>(opts: O)
-where
-    O: Into<RunOptions>,
-{
+fn run<O: Into<RunOptions>>(opts: O) {
     let opts = opts.into();
-    let mut puzzles = get_puzzles();
 
-    if let Some(ref filter) = opts.filter {
-        let filter = filter.to_lowercase();
-        puzzles = puzzles
-            .into_iter()
-            .filter(|p| p.name().to_lowercase().contains(&filter))
-            .collect();
-    }
+    let filter_parts: Vec<String> = opts
+        .filter
+        .iter()
+        .flat_map(|f| f.split(' '))
+        .map(|p| p.to_string())
+        .collect();
 
-    for puzzle in puzzles {
+    for puzzle in get_puzzles() {
         let results: Vec<_> = puzzle
             .cases()
             .into_iter()
+            .filter(|case| {
+                if !filter_parts.is_empty() {
+                    let haystack = format!("{} {}", puzzle.name(), case.name()).to_lowercase();
+                    filter_parts.iter().all(|needle| haystack.contains(needle))
+                } else {
+                    true
+                }
+            })
             .map(|case| {
                 let result = case.run();
                 (case, result)
             })
             .collect();
+
+        if results.is_empty() {
+            continue;
+        }
 
         print!("{:<12}", puzzle.name());
         if opts.verbose {
@@ -174,14 +182,15 @@ where
 }
 
 fn format_sum_duration(ds: Vec<Duration>) -> impl fmt::Display {
-    let sum: u128 = ds.iter().map(Duration::as_millis).sum();
-    let s = format!("{:>5} ms ", sum);
+    let sum: u128 = ds.iter().map(Duration::as_micros).sum();
+    let s = sum.to_formatted_string(&Locale::en);
+    let s = format!("{:>10} us ", s);
     match sum {
         0 => s.bright_black(),
-        d if d < 100 => s.bright_black(),
-        d if d < 200 => s.blue(),
-        d if d < 1_000 => s.yellow(),
-        d if d < 2_000 => s.red(),
+        d if d < 1_000 => s.bright_black(),
+        d if d < 10_000 => s.blue(),
+        d if d < 100_000 => s.yellow(),
+        d if d < 1_000_000 => s.red(),
         _ => s.black().on_red(),
     }
 }
