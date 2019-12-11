@@ -20,6 +20,7 @@ use std::cmp;
 
 pub mod cases;
 pub mod helpers;
+pub mod twodee;
 
 /// Find the lowest and highest value in `items`.
 pub fn extremes<T>(items: T) -> Option<(T::Item, T::Item)>

@@ -1,4 +1,7 @@
-use advent_lib::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
+use advent_lib::{
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    twodee::Point,
+};
 use std::iter::Iterator;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -70,12 +73,12 @@ impl PuzzleRunner for Part2 {
         let mut last_shell = last_shell.unwrap();
         last_shell.sort_by_key(|target| {
             (f32::atan2(
-                target.0 as f32 - base.0 as f32,
-                target.1 as f32 - base.1 as f32,
+                target.x as f32 - base.x as f32,
+                target.y as f32 - base.y as f32,
             ) * 1000f32) as i32
         });
         let target_asteroid = last_shell[excess];
-        target_asteroid.0 * 100 + target_asteroid.1
+        target_asteroid.x * 100 + target_asteroid.y
     }
 }
 
@@ -96,11 +99,11 @@ pub struct Map {
 }
 
 impl Map {
-    fn get(&self, (x, y): (usize, usize)) -> bool {
+    fn get(&self, Point { x, y }: Point<usize>) -> bool {
         self.space[y][x]
     }
 
-    fn set(&mut self, (x, y): (usize, usize), v: bool) {
+    fn set(&mut self, Point { x, y }: Point<usize>, v: bool) {
         self.space[y][x] = v;
     }
 
@@ -112,41 +115,37 @@ impl Map {
         self.space[0].len()
     }
 
-    fn asteroid_locations(&self) -> Vec<(usize, usize)> {
+    fn asteroid_locations(&self) -> Vec<Point<usize>> {
         (0..self.height())
-            .flat_map(|y| (0..self.width()).map(move |x| (x, y)))
+            .flat_map(|y| (0..self.width()).map(move |x| Point::new(x, y)))
             .filter(|pos| self.get(*pos))
             .collect()
     }
 
-    fn visible_from(&self, base: (usize, usize)) -> Vec<(usize, usize)> {
+    fn visible_from(&self, base: Point<usize>) -> Vec<Point<usize>> {
         self.asteroid_locations()
             .into_iter()
             .filter(|target| {
                 if base == *target {
                     return false;
                 }
-                let dx = (target.0 as i32) - (base.0 as i32);
-                let dy = (target.1 as i32) - (base.1 as i32);
-                let reduced = gcd(dx.abs() as u32, dy.abs() as u32) as i32;
+                let target_i32: Point<i32> = (*target).into();
+                let base_i32: Point<i32> = base.into();
+                let delta = target_i32 - base_i32;
+                let reduced = gcd(delta.x.abs() as u32, delta.y.abs() as u32) as i32;
 
                 if reduced == 1 {
                     // trivially visible
                     return true;
                 }
 
-                let sx = dx / reduced;
-                let sy = dy / reduced;
-                (1..reduced).all(|i| {
-                    let x = (base.0 as i32 + sx * i) as usize;
-                    let y = (base.1 as i32 + sy * i) as usize;
-                    !self.get((x, y))
-                })
+                let step = delta / reduced;
+                (1..reduced).all(|i| !self.get((base_i32 + step * i).into()))
             })
             .collect()
     }
 
-    fn best_detector(&self) -> ((usize, usize), usize) {
+    fn best_detector(&self) -> (Point<usize>, usize) {
         self.asteroid_locations()
             .into_iter()
             .map(|base| (base, self.visible_from(base).len()))
