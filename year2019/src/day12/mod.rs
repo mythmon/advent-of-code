@@ -1,3 +1,5 @@
+#![allow(clippy::match_ref_pats)]
+
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     helpers::StringAdventExt,
@@ -119,7 +121,6 @@ impl PuzzleRunner for Part2 {
             })
             .collect();
 
-        // universe.step_count
         if let &[a, b, c] = &loop_points[..] {
             let first = (a * b) / gcd(a, b);
             (first * c) / gcd(first, c)

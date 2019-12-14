@@ -5,11 +5,25 @@ pub struct IntcodeComputer {
     pub output: Vec<isize>,
     output_pointer: usize,
     input: Vec<isize>,
-    input_pointer: isize,
+    input_pointer: usize,
     instruction_pointer: isize,
-    halted: bool,
+    state: ComputerState,
     verbose: bool,
     relative_base: isize,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum ComputerState {
+    Ready,
+    Halted,
+    WaitingForInput,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum PauseReason {
+    Halt,
+    Output(isize),
+    Input,
 }
 
 // public methods
@@ -36,9 +50,13 @@ impl IntcodeComputer {
                 self.write_mem(dst, a * b);
             }
             Op::Input { dst } => {
-                let input = self.get_input();
-                let dst = self.get_param_addr(dst);
-                self.write_mem(dst, input.expect("Out of input"));
+                if let Some(input) = self.get_input() {
+                    let dst = self.get_param_addr(dst);
+                    self.write_mem(dst, input);
+                } else {
+                    self.state = ComputerState::WaitingForInput;
+                    should_advance_ip = false;
+                }
             }
             Op::Output { src } => {
                 self.output.push(self.get_param(src));
@@ -78,7 +96,7 @@ impl IntcodeComputer {
             Op::AdjustRelBase { src } => {
                 self.relative_base += self.get_param(src);
             }
-            Op::Halt => self.halted = true,
+            Op::Halt => self.state = ComputerState::Halted,
         }
         if should_advance_ip {
             self.instruction_pointer += op.size();
@@ -86,26 +104,34 @@ impl IntcodeComputer {
     }
 
     pub fn run_to_end(&mut self) {
-        while !self.halted {
+        while self.state == ComputerState::Ready {
             self.step();
+        }
+        if self.state == ComputerState::WaitingForInput {
+            panic!("Not enough input");
         }
     }
 
-    pub fn run_until_output(&mut self) -> Option<isize> {
-        while !self.halted && self.output_pointer >= self.output.len() {
+    pub fn run_until_io(&mut self) -> PauseReason {
+        while self.state == ComputerState::Ready && self.output_pointer >= self.output.len() {
             self.step()
         }
-        if self.halted {
-            None
-        } else {
-            let rv = self.output[self.output_pointer];
-            self.output_pointer += 1;
-            Some(rv)
+        match self.state {
+            ComputerState::Ready => {
+                let rv = self.output[self.output_pointer];
+                self.output_pointer += 1;
+                PauseReason::Output(rv)
+            }
+            ComputerState::WaitingForInput => PauseReason::Input,
+            ComputerState::Halted => PauseReason::Halt,
         }
     }
 
     pub fn add_input(&mut self, v: isize) {
         self.input.push(v);
+        if self.state == ComputerState::WaitingForInput {
+            self.state = ComputerState::Ready;
+        }
     }
 }
 
@@ -231,13 +257,13 @@ impl IntcodeComputer {
         }
     }
 
-    fn get_input(&mut self) -> Result<isize, ()> {
-        if self.input_pointer < self.input.len() as isize {
-            let rv = self.input[self.input_pointer as usize];
+    fn get_input(&mut self) -> Option<isize> {
+        if self.input_pointer < self.input.len() {
+            let rv = self.input[self.input_pointer];
             self.input_pointer += 1;
-            Ok(rv)
+            Some(rv)
         } else {
-            Err(())
+            None
         }
     }
 
@@ -252,7 +278,7 @@ impl IntcodeComputer {
         *self._memory.get(addr as usize).unwrap_or(&0)
     }
 
-    fn write_mem(&mut self, addr: isize, val: isize) {
+    pub fn write_mem(&mut self, addr: isize, val: isize) {
         assert!(addr >= 0, "invalid memory address");
         let addr = addr as usize;
         if addr >= self._memory.len() {
@@ -282,7 +308,7 @@ impl IntcodeComputerBuilder {
         IntcodeComputer {
             _memory: self.initial_memory,
             instruction_pointer: 0,
-            halted: false,
+            state: ComputerState::Ready,
             input: self.input,
             input_pointer: 0,
             output: Vec::new(),
@@ -431,7 +457,7 @@ impl Op {
 
 #[cfg(test)]
 mod tests {
-    use super::IntcodeComputer;
+    use super::{ComputerState, IntcodeComputer};
 
     #[test]
     fn day02_example1() {
@@ -448,7 +474,7 @@ mod tests {
             vec![3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
         );
         computer.step();
-        assert!(computer.halted);
+        assert!(computer.state == ComputerState::Halted);
     }
 
     #[test]

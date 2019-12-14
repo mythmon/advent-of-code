@@ -1,4 +1,4 @@
-use crate::intcode::IntcodeComputer;
+use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
 use std::iter::Iterator;
 
@@ -123,10 +123,14 @@ impl PuzzleRunner for Part2 {
                 for amplifier_id in (0..5).cycle() {
                     let amp = &mut amplifiers[amplifier_id];
                     amp.add_input(next_input);
-                    if let Some(signal) = amp.run_until_output() {
-                        next_input = signal;
-                    } else {
-                        break;
+                    match amp.run_until_io() {
+                        PauseReason::Output(signal) => {
+                            next_input = signal;
+                        }
+                        PauseReason::Input => {
+                            panic!("Mismatched input");
+                        }
+                        PauseReason::Halt => break,
                     }
                 }
 

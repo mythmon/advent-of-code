@@ -1,4 +1,4 @@
-use crate::intcode::IntcodeComputer;
+use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     twodee::{Dir, Point, Turn},
@@ -40,15 +40,16 @@ impl PuzzleRunner for Part1 {
             .with_input(vec![*cells.get(&pos).unwrap_or(&0)])
             .done();
 
-        while let Some(new_color) = computer.run_until_output() {
+        while let PauseReason::Output(new_color) = computer.run_until_io() {
             cells.insert(pos, new_color);
             visited_positions.insert(pos);
-            match computer.run_until_output() {
-                Some(0) => dir *= Turn::Ccw,
-                Some(1) => dir *= Turn::Cw,
-                Some(t) => panic!("invalid turn {}", t),
-                None => panic!("Not enough input"),
-            }
+            match computer.run_until_io() {
+                PauseReason::Output(0) => dir *= Turn::Ccw,
+                PauseReason::Output(1) => dir *= Turn::Cw,
+                PauseReason::Output(t) => panic!("invalid turn {}", t),
+                PauseReason::Input => panic!("Not enough input"),
+                PauseReason::Halt => panic!("Computer ended early"),
+            };
             pos += dir;
             computer.add_input(*cells.get(&pos).unwrap_or(&0));
         }
@@ -83,13 +84,14 @@ impl PuzzleRunner for Part2 {
             .with_input(vec![*cells.get(&pos).unwrap_or(&1)])
             .done();
 
-        while let Some(new_color) = computer.run_until_output() {
+        while let PauseReason::Output(new_color) = computer.run_until_io() {
             cells.insert(pos, new_color);
-            match computer.run_until_output() {
-                Some(0) => dir *= Turn::Ccw,
-                Some(1) => dir *= Turn::Cw,
-                Some(t) => panic!("invalid turn {}", t),
-                None => panic!("Not enough input"),
+            match computer.run_until_io() {
+                PauseReason::Output(0) => dir *= Turn::Ccw,
+                PauseReason::Output(1) => dir *= Turn::Cw,
+                PauseReason::Output(t) => panic!("invalid turn {}", t),
+                PauseReason::Input => panic!("Not enough input"),
+                PauseReason::Halt => panic!("Unexpected halt"),
             }
             pos += dir;
             computer.add_input(*cells.get(&pos).unwrap_or(&0));

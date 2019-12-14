@@ -11,3 +11,13 @@ advent-lib = { path = "../advent-lib" }
 itertools = "^0.8.0"
 petgraph = "^0.4"
 indoc = "^0.3"
+log = "^0.4.8"
+
+[dependencies.cursive]
+version = "0.13"
+default-features = false
+features = ["crossterm-backend"]
+
+[[bin]]
+name = "day13_game"
+path = "src/day13/game.rs"
