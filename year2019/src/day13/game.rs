@@ -137,7 +137,7 @@ impl std::fmt::Display for Symbol {
             Self::Empty => write!(fmt, "  ")?,
             Self::Wall => write!(fmt, "██")?,
             Self::Block => write!(fmt, "[]")?,
-            Self::Paddle => write!(fmt, "__")?,
+            Self::Paddle => write!(fmt, "==")?,
             Self::Ball => write!(fmt, "()")?,
         };
         Ok(())
