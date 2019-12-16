@@ -6,13 +6,16 @@ version = "2019.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 
+[features]
+default = ["year2015", "year2017", "year2018", "year2019"]
+
 [dependencies]
 # Puzzle groups
 advent-lib = { path = "./advent-lib" }
-year2015 = { path = "./year2015" }
-year2017 = { path = "./year2017" }
-year2018 = { path = "./year2018" }
-year2019 = { path = "./year2019" }
+year2015 = { path = "./year2015", optional = true }
+year2017 = { path = "./year2017", optional = true }
+year2018 = { path = "./year2018", optional = true }
+year2019 = { path = "./year2019", optional = true }
 
 # Runner dependencies
 colored = "^1.8.0"

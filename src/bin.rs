@@ -84,10 +84,17 @@ impl<'a> From<Opt> for RunOptions {
 }
 
 fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    let mut puzzles = year2015::get_puzzles();
+    let mut puzzles = vec![];
+
+    #[cfg(feature = "year2015")]
+    puzzles.extend(year2015::get_puzzles());
+    #[cfg(feature = "year2017")]
     puzzles.extend(year2017::get_puzzles());
+    #[cfg(feature = "year2018")]
     puzzles.extend(year2018::get_puzzles());
+    #[cfg(feature = "year2019")]
     puzzles.extend(year2019::get_puzzles());
+
     puzzles
 }
 
