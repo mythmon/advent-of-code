@@ -15,7 +15,8 @@ lalrpop_mod!(
 #[cfg(unix)]
 lalrpop_mod!(
     #[allow(clippy::all)]
-    parser
+    parser,
+    "/day03/parser.rs"
 );
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {

@@ -25,8 +25,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         day06::get_puzzles(),
         day07::get_puzzles(),
         // TODO accidentally deleted day 8, recreate it
-        // Box::new(day08::Part1),
-        // Box::new(day08::Part2),
+        // day08::get_puzzles(),
         day09::get_puzzles(),
         day10::get_puzzles(),
         day11::get_puzzles(),
