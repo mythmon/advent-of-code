@@ -20,7 +20,7 @@ impl PuzzleRunner for Part1 {
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), None)
+            .transformed_case("Solution", include_str!("input"), 361)
             .collect()
     }
 
