@@ -1,8 +1,4 @@
-use advent_lib::{
-    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
-    helpers::StringAdventExt,
-};
-use indoc::indoc;
+use advent_lib::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
 use petgraph::{graph::NodeIndex, Direction, Graph};
 use std::{
     collections::{HashMap, VecDeque},
@@ -17,7 +13,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
 pub struct Part1;
 
 impl PuzzleRunner for Part1 {
-    type Input = Vec<(String, String)>;
+    type Input = &'static str;
     type Output = u32;
 
     fn name(&self) -> String {
@@ -26,31 +22,13 @@ impl PuzzleRunner for Part1 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .add_transform(parse_input)
-            .transformed_case(
-                "Example",
-                indoc!(
-                    "
-                    COM)B
-                    B)C
-                    C)D
-                    D)E
-                    E)F
-                    B)G
-                    G)H
-                    D)I
-                    E)J
-                    J)K
-                    K)L
-                    "
-                ),
-                42,
-            )
-            .transformed_case("Solution", include_str!("input"), 387_356)
+            .case("Example", include_str!("example1"), 42)
+            .case("Solution", include_str!("input"), 387_356)
             .collect()
     }
 
-    fn run_puzzle(orbits: Self::Input) -> Self::Output {
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let orbits = parse_input(input);
         build_orbit_graph(orbits)
             .graph
             .node_weights_mut()
@@ -59,11 +37,11 @@ impl PuzzleRunner for Part1 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Part2;
 
 impl PuzzleRunner for Part2 {
-    type Input = Vec<(String, String)>;
+    type Input = &'static str;
     type Output = usize;
 
     fn name(&self) -> String {
@@ -72,33 +50,13 @@ impl PuzzleRunner for Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .add_transform(parse_input)
-            .transformed_case(
-                "Example",
-                indoc!(
-                    "
-                    COM)B
-                    B)C
-                    C)D
-                    D)E
-                    E)F
-                    B)G
-                    G)H
-                    D)I
-                    E)J
-                    J)K
-                    K)L
-                    K)YOU
-                    I)SAN
-                    "
-                ),
-                4,
-            )
-            .transformed_case("Solution", include_str!("input"), 532)
+            .case("Example", include_str!("example2"), 4)
+            .case("Solution", include_str!("input"), 532)
             .collect()
     }
 
-    fn run_puzzle(orbits: Self::Input) -> Self::Output {
+    fn run_puzzle(input: Self::Input) -> Self::Output {
+        let orbits = parse_input(input);
         let OrbitInfo { graph, name_map } = build_orbit_graph(orbits);
         let mut you_path = path_to_com(&graph, name_map["YOU"]);
         let mut san_path = path_to_com(&graph, name_map["SAN"]);
@@ -119,11 +77,12 @@ impl PuzzleRunner for Part2 {
     }
 }
 
-fn parse_input(input: &str) -> Vec<(String, String)> {
-    input
-        .trimmed_lines()
+fn parse_input<'a>(input: &'a str) -> Vec<(&'a str, &'a str)> {
+    input.trim()
+        // .trimmed_lines()
+        .lines()
         .map(|line| {
-            let parts = line.split(')').map(str::to_owned).collect::<Vec<String>>();
+            let parts = line.trim().split(')').collect::<Vec<_>>();
             if parts.len() != 2 {
                 panic!(format!("could not parse line {}", line));
             }
@@ -132,12 +91,12 @@ fn parse_input(input: &str) -> Vec<(String, String)> {
         .collect()
 }
 
-struct OrbitInfo {
+struct OrbitInfo<'a> {
     graph: Graph<Option<u32>, (), petgraph::Directed, u32>,
-    name_map: HashMap<String, NodeIndex>,
+    name_map: HashMap<&'a str, NodeIndex>,
 }
 
-fn build_orbit_graph(orbits: Vec<(String, String)>) -> OrbitInfo {
+fn build_orbit_graph<'a>(orbits: Vec<(&'a str, &'a str)>) -> OrbitInfo<'a> {
     let mut graph: Graph<Option<u32>, (), petgraph::Directed, u32> = Graph::new();
     let mut com_index = None;
 
