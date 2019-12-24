@@ -83,6 +83,7 @@ fn update_screen(
     if let Some(i) = input {
         computer.add_input(i);
     }
+    #[allow(clippy::while_let_loop)] // TODO
     loop {
         match computer.run_until_io() {
             PauseReason::Output(v) => output.push(v),
@@ -92,6 +93,7 @@ fn update_screen(
 
     log::info!("Got {} output chunks", output.len() / 3);
 
+    #[allow(clippy::match_ref_pats)]
     for chunk in output.chunks(3) {
         if let &[x, y, symbol] = chunk {
             if x == -1 && y == 0 {

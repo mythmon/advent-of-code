@@ -1,31 +1,72 @@
-use num_traits::{One, Zero};
-use std::{fmt::Debug, ops};
+use num_traits::{sign::Signed, Num};
+use std::{cmp, fmt, iter, ops};
+
+mod grid;
+
+pub use self::grid::Grid;
+pub use self::grid::HashGrid;
+
+pub trait PointAxe: fmt::Debug + Clone + Copy + Eq + Num {}
+impl<T> PointAxe for T where T: fmt::Debug + Clone + Copy + Eq + Num {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Point<T>
-where
-    T: Debug + Clone + Copy + Eq,
-{
+pub struct Point<T: PointAxe> {
     pub x: T,
     pub y: T,
 }
 
-impl<T> Point<T>
-where
-    T: Debug + Clone + Copy + Eq,
-{
+impl<T: PointAxe> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
-}
 
-impl<T> Point<T>
-where
-    T: Debug + Clone + Copy + Eq + Zero,
-{
+    pub fn manhattan_magnitude(&self) -> T {
+        self.x + self.y
+    }
+
+    pub fn direction_to(&self, rhs: Point<T>) -> Option<Dir> {
+        let zero = T::zero();
+        let one = T::one();
+        let negative_one = zero - one;
+        match rhs - *self {
+            Self { x, y } if x == zero && y == negative_one => Some(Dir::Up),
+            Self { x, y } if x == zero && y == one => Some(Dir::Down),
+            Self { x, y } if x == negative_one && y == zero => Some(Dir::Left),
+            Self { x, y } if x == one && y == zero => Some(Dir::Right),
+            _ => None,
+        }
+    }
+
+    pub fn neighbors4(&self) -> [Self; 4] {
+        [
+            Self {
+                x: self.x,
+                y: self.y + T::one(),
+            },
+            Self {
+                x: self.x,
+                y: self.y - T::one(),
+            },
+            Self {
+                x: self.x + T::one(),
+                y: self.y,
+            },
+            Self {
+                x: self.x - T::one(),
+                y: self.y,
+            },
+        ]
+    }
+
     #[must_use]
     pub fn zero() -> Self {
         Self::new(T::zero(), T::zero())
+    }
+}
+
+impl<T: PointAxe + Signed> Point<T> {
+    pub fn manhattan_distance(&self, rhs: Point<T>) -> T {
+        (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
     }
 }
 
@@ -46,7 +87,7 @@ pub enum Turn {
 
 impl<T> ops::Sub<Point<T>> for Point<T>
 where
-    T: Debug + Clone + Copy + Eq + ops::Sub<T, Output = T>,
+    T: PointAxe + ops::Sub<T, Output = T>,
 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
@@ -59,9 +100,9 @@ where
 
 impl<T, R, O> ops::Add<Point<R>> for Point<T>
 where
-    T: ops::Add<R, Output = O> + Debug + Clone + Copy + Eq,
-    R: Debug + Clone + Copy + Eq,
-    O: Debug + Clone + Copy + Eq,
+    T: PointAxe + ops::Add<R, Output = O>,
+    R: PointAxe,
+    O: PointAxe,
 {
     #![allow(clippy::use_self)]
     type Output = Point<O>;
@@ -74,10 +115,7 @@ where
     }
 }
 
-impl<T> ops::Add<Dir> for Point<T>
-where
-    T: Debug + Clone + Copy + Eq + ops::Add<T, Output = T> + ops::Sub<T, Output = T> + One,
-{
+impl<T: PointAxe> ops::Add<Dir> for Point<T> {
     type Output = Self;
 
     fn add(self, rhs: Dir) -> Self::Output {
@@ -106,7 +144,7 @@ where
 
 impl<T> ops::AddAssign<Dir> for Point<T>
 where
-    T: Copy + Clone + Debug + Eq,
+    T: PointAxe,
     Point<T>: ops::Add<Dir, Output = Point<T>>,
 {
     fn add_assign(&mut self, rhs: Dir) {
@@ -146,9 +184,9 @@ impl ops::MulAssign<Turn> for Dir {
 
 impl<T, R, O> ops::Mul<R> for Point<T>
 where
-    T: Copy + Clone + Debug + Eq + ops::Mul<R, Output = O>,
-    R: Copy,
-    O: Copy + Clone + Debug + Eq,
+    T: PointAxe + ops::Mul<R, Output = O>,
+    R: PointAxe,
+    O: PointAxe,
 {
     #![allow(clippy::use_self)]
     type Output = Point<O>;
@@ -163,9 +201,9 @@ where
 
 impl<T, R, O> ops::Div<R> for Point<T>
 where
-    T: Copy + Clone + Debug + Eq + ops::Div<R, Output = O>,
-    R: Copy,
-    O: Copy + Clone + Debug + Eq,
+    T: PointAxe + ops::Div<R, Output = O>,
+    R: PointAxe,
+    O: PointAxe,
 {
     #![allow(clippy::use_self)]
     type Output = Point<O>;
@@ -193,3 +231,60 @@ macro_rules! point_from {
 
 point_from!(usize, i32);
 point_from!(i32, usize);
+
+impl<T> fmt::Display for Point<T>
+where
+    T: PointAxe + fmt::Display,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({},{})", self.x, self.y)?;
+        Ok(())
+    }
+}
+
+pub struct Bounds<I> {
+    top: I,
+    left: I,
+    right: I,
+    bottom: I,
+}
+
+impl<I> Bounds<I>
+where
+    I: PointAxe,
+{
+    fn top_left(&self) -> Point<I> {
+        Point::new(self.left, self.top)
+    }
+
+    fn bottom_right(&self) -> Point<I> {
+        Point::new(self.right, self.bottom)
+    }
+}
+
+impl<I> iter::FromIterator<Point<I>> for Bounds<I>
+where
+    I: PointAxe + cmp::Ord,
+{
+    fn from_iter<T: IntoIterator<Item = Point<I>>>(iter: T) -> Self {
+        let mut iter = iter.into_iter();
+        let (mut top, mut right, mut bottom, mut left) = match iter.next() {
+            Some(first) => (first.y, first.x, first.y, first.x),
+            None => (I::zero(), I::zero(), I::zero(), I::zero()),
+        };
+
+        for point in iter {
+            left = cmp::min(left, point.x);
+            right = cmp::max(right, point.x);
+            top = cmp::min(top, point.y);
+            bottom = cmp::max(bottom, point.y);
+        }
+
+        Self {
+            top,
+            right,
+            bottom,
+            left,
+        }
+    }
+}
