@@ -23,7 +23,7 @@ impl PuzzleRunner for Part1 {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example1", include_str!("example1"), 31)
             .case("Example2", include_str!("example2"), 165)
-            .case("Example3", include_str!("example3"), 133_12)
+            .case("Example3", include_str!("example3"), 13_312)
             .case("Example4", include_str!("example4"), 180_697)
             .case("Example5", include_str!("example5"), 2_210_736)
             .case("Solution", include_str!("input"), 907_302)
@@ -97,6 +97,7 @@ fn make_fuel<'a>(fuel_count: usize, rule_map: &HashMap<&'a str, Rule<'a>>) -> us
     needed.insert("FUEL", fuel_count);
 
     while !needed.is_empty() {
+        #[allow(clippy::clone_double_ref)] // TODO this could probably be better
         let key = &needed.keys().next().unwrap().clone();
         let mut needed_count = needed.remove(*key).unwrap();
 
@@ -155,6 +156,7 @@ fn make_fuel<'a>(fuel_count: usize, rule_map: &HashMap<&'a str, Rule<'a>>) -> us
     ore_count
 }
 
+#[allow(clippy::ptr_arg)] // TODO this could probably be better
 fn parse_input<'a>(input: &'a String) -> HashMap<&'a str, Rule<'a>> {
     input
         .trimmed_lines()

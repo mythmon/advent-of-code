@@ -82,11 +82,11 @@ fn parse_input<'a>(input: &'a str) -> Vec<(&'a str, &'a str)> {
         // .trimmed_lines()
         .lines()
         .map(|line| {
-            let parts = line.trim().split(')').collect::<Vec<_>>();
+            let parts: Vec<&str> = line.trim().split(')').collect();
             if parts.len() != 2 {
                 panic!(format!("could not parse line {}", line));
             }
-            (parts[0].clone(), parts[1].clone())
+            (parts[0], parts[1])
         })
         .collect()
 }

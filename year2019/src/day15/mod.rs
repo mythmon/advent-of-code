@@ -1,6 +1,6 @@
 use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::{
-    cases::{ExpectedValue, GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     twodee::{Dir, Grid, HashGrid, Point},
 };
 use itertools::Itertools;
@@ -133,7 +133,7 @@ impl PuzzleRunner for Part1 {
 
                         return grid
                             .astar(Point::zero(), position, &walkable_tiles)
-                            .expect(&format!("no route found from origin to {}", position))
+                            .unwrap_or_else(|| panic!("no route found from origin to {}", position))
                             .len()
                             - 1;
                     }
