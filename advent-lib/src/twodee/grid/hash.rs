@@ -18,7 +18,7 @@ pub struct HashGrid<C, I = isize>
 where
     I: PointAxe + Hash + Eq,
 {
-    cells: HashMap<Point<I>, C>,
+    pub cells: HashMap<Point<I>, C>,
 }
 
 impl<C, I> Grid<C, I> for HashGrid<C, I>

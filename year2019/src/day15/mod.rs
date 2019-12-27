@@ -13,9 +13,13 @@ use std::{
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![
         Box::new(Part1),
-        // Box::new(Part2),
+        Box::new(Part2),
     ]
 }
+
+// TODO this uses A* with a lot of repetition. It would probably be better
+// served by accumulating a graph of distances from A-B for all A and B. Maybe
+// dijkstra's, or something fancier?
 
 #[derive(Debug)]
 pub struct Part1;
@@ -36,113 +40,68 @@ impl PuzzleRunner for Part1 {
     }
 
     fn run_puzzle(program: Self::Input) -> Self::Output {
-        let mut grid = HashGrid::<Area>::default();
-        grid.set(Point::zero(), Area::Origin);
-
+        let grid = explore_grid(program).expect("Problem exploring grid");
         let walkable_tiles = {
             let mut rv = HashSet::new();
             rv.insert(Area::Floor);
             rv.insert(Area::OxygenSystem);
+            rv.insert(Area::Robot);
+            rv.insert(Area::Goal);
             rv
         };
-        let mut robot = IntcodeComputer::build(program).done();
+        let (o2_position, _) = grid
+            .cells
+            .iter()
+            .find(|(_, area)| **area == Area::OxygenSystem)
+            .expect("No answer found");
 
-        let mut position: Point<isize> = Point::zero();
-        let mut todo: VecDeque<Point<isize>> = VecDeque::new();
-        let mut seen: HashSet<Point<isize>> = HashSet::new();
+        grid.astar(Point::zero(), *o2_position, &walkable_tiles)
+            .expect("no path found")
+            .len()
+            - 1
+    }
+}
 
-        for neighbor in &Point::zero().neighbors4() {
-            todo.push_back(*neighbor);
-        }
+#[derive(Debug)]
+pub struct Part2;
 
-        'next_goal: while !todo.is_empty() {
-            let goal = todo.pop_front().unwrap();
-            if !seen.insert(goal) {
-                // skipping duplicate
-                continue;
-            }
-            if let Some(Area::Wall) = grid.get(goal) {
-                // Don't bother trying to route into walls
-                continue;
-            }
+impl PuzzleRunner for Part2 {
+    type Input = Vec<isize>;
+    type Output = usize;
 
-            let directions = match position.direction_to(goal) {
-                Some(dir) => vec![dir],
-                None => {
-                    // assume the target is an empty floor for path finding purposes
-                    let should_reset = if grid.get(goal).is_none() {
-                        grid.set(goal, Area::Floor);
-                        true
-                    } else {
-                        false
-                    };
+    fn name(&self) -> String {
+        "2019-D15-P2".to_owned()
+    }
 
-                    let route = grid.astar(position, goal, &walkable_tiles);
+    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+        GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_transform(parse_input)
+            .transformed_case("Solution", include_str!("input"), 398)
+            .collect()
+    }
 
-                    if should_reset {
-                        grid.remove(&goal);
-                    }
+    fn run_puzzle(program: Self::Input) -> Self::Output {
+        let grid = explore_grid(program).expect("Problem exploring grid");
+        let walkable_tiles = {
+            let mut rv = HashSet::new();
+            rv.insert(Area::Floor);
+            rv.insert(Area::OxygenSystem);
+            rv.insert(Area::Robot);
+            rv.insert(Area::Goal);
+            rv
+        };
+        let (o2_position, _) = grid
+            .cells
+            .iter()
+            .find(|(_, area)| **area == Area::OxygenSystem)
+            .expect("No answer found");
 
-                    if let Some(route) = route {
-                        route
-                            .iter()
-                            .tuple_windows()
-                            .map(|(&from, &to)| {
-                                from.direction_to(to).unwrap_or_else(|| {
-                                    panic!(
-                                        "Invalid astar path, {:?} -> {:?} is not a 4-direction",
-                                        from, to
-                                    )
-                                })
-                            })
-                            .collect()
-                    } else {
-                        continue 'next_goal;
-                    }
-                }
-            };
-
-            for dir in directions {
-                robot.add_input(match dir {
-                    Dir::Up => 1,
-                    Dir::Down => 2,
-                    Dir::Left => 3,
-                    Dir::Right => 4,
-                });
-                match robot.run_until_io() {
-                    PauseReason::Output(0) => {
-                        // Hit a wall
-                        grid.set(position + dir, Area::Wall);
-                    }
-                    PauseReason::Output(1) => {
-                        // moved and found floor
-                        position += dir;
-                        grid.entry(position).or_insert(Area::Floor);
-                        todo.extend(position.neighbors4().iter().filter(|n| !seen.contains(n)));
-                    }
-                    PauseReason::Output(2) => {
-                        // moved and also found the oxygen system
-                        position += dir;
-                        grid.entry(position).or_insert(Area::OxygenSystem);
-
-                        println!(
-                            "{}",
-                            grid.with_patch(position, Area::Robot)
-                                .with_patch(goal, Area::Goal)
-                        );
-
-                        return grid
-                            .astar(Point::zero(), position, &walkable_tiles)
-                            .unwrap_or_else(|| panic!("no route found from origin to {}", position))
-                            .len()
-                            - 1;
-                    }
-                    _ => panic!("Invalid robot activity"),
-                }
-            }
-        }
-
-        panic!("No solution found");
+        grid.cells
+            .iter()
+            .filter(|(_p, c)| walkable_tiles.contains(c))
+            .map(|(p, _)| grid.astar(*o2_position, *p, &walkable_tiles).expect("no path").len() - 1)
+            .max()
+            .unwrap()
     }
 }
 
@@ -174,6 +133,106 @@ impl fmt::Display for Area {
         }
         Ok(())
     }
+}
+
+fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
+    let mut grid = HashGrid::<Area>::default();
+    grid.set(Point::zero(), Area::Origin);
+
+    let walkable_tiles = {
+        let mut rv = HashSet::new();
+        rv.insert(Area::Floor);
+        rv.insert(Area::OxygenSystem);
+        rv.insert(Area::Robot);
+        rv.insert(Area::Goal);
+        rv
+    };
+    let mut robot = IntcodeComputer::build(program).done();
+
+    let mut position: Point<isize> = Point::zero();
+    let mut todo: VecDeque<Point<isize>> = VecDeque::new();
+    let mut seen: HashSet<Point<isize>> = HashSet::new();
+
+    for neighbor in &Point::zero().neighbors4() {
+        todo.push_back(*neighbor);
+    }
+
+    'next_goal: while !todo.is_empty() {
+        let goal = todo.pop_front().unwrap();
+        if !seen.insert(goal) {
+            // skipping duplicate
+            continue;
+        }
+        if let Some(Area::Wall) = grid.get(goal) {
+            // Don't bother trying to route into walls
+            continue;
+        }
+
+        let directions = match position.direction_to(goal) {
+            Some(dir) => vec![dir],
+            None => {
+                // assume the target is an empty floor for path finding purposes
+                let should_reset = if grid.get(goal).is_none() {
+                    grid.set(goal, Area::Floor);
+                    true
+                } else {
+                    false
+                };
+
+                let route = grid.astar(position, goal, &walkable_tiles);
+
+                if should_reset {
+                    grid.remove(&goal);
+                }
+
+                if let Some(route) = route {
+                    route
+                        .iter()
+                        .tuple_windows()
+                        .map(|(&from, &to)| {
+                            from.direction_to(to).unwrap_or_else(|| {
+                                panic!(
+                                    "Invalid astar path, {:?} -> {:?} is not a 4-direction",
+                                    from, to
+                                )
+                            })
+                        })
+                        .collect()
+                } else {
+                    continue 'next_goal;
+                }
+            }
+        };
+
+        for dir in directions {
+            robot.add_input(match dir {
+                Dir::Up => 1,
+                Dir::Down => 2,
+                Dir::Left => 3,
+                Dir::Right => 4,
+            });
+            match robot.run_until_io() {
+                PauseReason::Output(0) => {
+                    // Hit a wall
+                    grid.set(position + dir, Area::Wall);
+                }
+                PauseReason::Output(1) => {
+                    // moved and found floor
+                    position += dir;
+                    grid.entry(position).or_insert(Area::Floor);
+                    todo.extend(position.neighbors4().iter().filter(|n| !seen.contains(n)));
+                }
+                PauseReason::Output(2) => {
+                    // moved and also found the oxygen system
+                    position += dir;
+                    grid.entry(position).or_insert(Area::OxygenSystem);
+                }
+                _ => Err("Invalid robot activity")?,
+            }
+        }
+    }
+
+    Ok(grid)
 }
 
 fn parse_input(input: &str) -> Vec<isize> {

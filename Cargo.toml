@@ -7,7 +7,7 @@ authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
 
 [features]
-default = ["year2015", "year2017", "year2018", "year2019"]
+default = ["year2019"]
 
 [dependencies]
 # Puzzle groups
