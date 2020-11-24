@@ -105,7 +105,7 @@ fn run<O: Into<RunOptions>>(opts: O) {
         .filter
         .iter()
         .flat_map(|f| f.split(' '))
-        .map(|p| p.to_string())
+        .map(|p| p.to_string().to_lowercase())
         .collect();
 
     for puzzle in get_puzzles() {
