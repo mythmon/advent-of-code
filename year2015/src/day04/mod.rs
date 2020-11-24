@@ -38,7 +38,7 @@ fn find_leading_zeroes(input: &'static str, n: usize) -> u32 {
         }
     }
 
-    unreachable!();
+    panic!("Leading zeroes didn't work");
 }
 
 #[derive(Debug)]

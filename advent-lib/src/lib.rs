@@ -12,11 +12,8 @@
 )]
 #![feature(
     associated_type_defaults,
-    inner_deref,
-    slice_patterns,
     step_trait,
     try_trait,
-    vec_resize_default
 )]
 
 use std::cmp;

@@ -1,0 +1,26 @@
+[package]
+name = "advent-runner"
+version = "0.1.0"
+authors = ["Mike Cooper <mythmon@gmail.com>"]
+edition = "2018"
+
+[features]
+default = ["year2019"]
+
+[dependencies]
+# Puzzle groups
+advent-lib = { path = "../advent-lib" }
+year2015 = { path = "../year2015", optional = true }
+year2017 = { path = "../year2017", optional = true }
+year2018 = { path = "../year2018", optional = true }
+year2019 = { path = "../year2019", optional = true }
+
+# Runner dependencies
+colored = "^1.8.0"
+reqwest = "^0.9.17"
+structopt = "^0.3.5"
+num-format = "^0.4.0"
+
+[[bin]]
+name = "advent"
+path = "src/bin.rs"

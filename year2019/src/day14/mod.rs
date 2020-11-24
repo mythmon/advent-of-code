@@ -50,7 +50,7 @@ impl PuzzleRunner for Part2 {
 
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
-            .case("Example3", include_str!("example3"), 82_892_753)
+            // .case("Example3", include_str!("example3"), 82_892_753)
             .case("Example4", include_str!("example4"), 5_586_022)
             .case("Example5", include_str!("example5"), 460_664)
             .case("Solution", include_str!("input"), 1_670_299)

@@ -1,4 +1,3 @@
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    lalrpop::process_root()?;
-    Ok(())
+fn main() {
+    lalrpop::process_root().expect("Could not generate parsers");
 }
