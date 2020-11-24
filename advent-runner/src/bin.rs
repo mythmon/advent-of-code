@@ -29,6 +29,17 @@ enum Command {
         verbose: u8,
     },
 
+    /// Lists puzzle that could run
+    List {
+        /// Only run tests who's name contains this string
+        #[structopt()]
+        filter: Vec<String>,
+
+        /// Verbose mode, can be repeated (-v, -vv, -vvv, etc.)
+        #[structopt(short, long, parse(from_occurrences))]
+        verbose: u8,
+    },
+
     /// Adds a puzzle, templating the code and fetching the input
     AddDay {
         /// The day of the puzzle to add (1 through 25)
@@ -50,10 +61,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match opt.cmd {
         Command::Run { .. } => run(opt),
+        Command::List { .. } => list(opt),
         Command::AddDay { .. } => add_puzzle(opt)?,
     }
 
     Ok(())
+}
+
+fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
+    let mut puzzles = vec![];
+
+    #[cfg(feature = "year2015")]
+    puzzles.extend(year2015::get_puzzles());
+    #[cfg(feature = "year2017")]
+    puzzles.extend(year2017::get_puzzles());
+    #[cfg(feature = "year2018")]
+    puzzles.extend(year2018::get_puzzles());
+    #[cfg(feature = "year2019")]
+    puzzles.extend(year2019::get_puzzles());
+
+    puzzles
 }
 
 struct RunOptions {
@@ -81,21 +108,6 @@ impl<'a> From<Opt> for RunOptions {
             panic!("Incorrect subcommand, expected run");
         }
     }
-}
-
-fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    let mut puzzles = vec![];
-
-    #[cfg(feature = "year2015")]
-    puzzles.extend(year2015::get_puzzles());
-    #[cfg(feature = "year2017")]
-    puzzles.extend(year2017::get_puzzles());
-    #[cfg(feature = "year2018")]
-    puzzles.extend(year2018::get_puzzles());
-    #[cfg(feature = "year2019")]
-    puzzles.extend(year2019::get_puzzles());
-
-    puzzles
 }
 
 fn run<O: Into<RunOptions>>(opts: O) {
@@ -269,4 +281,69 @@ where
     }
 
     Ok(())
+}
+
+struct ListOptions {
+    filter: Vec<String>,
+    verbose: bool,
+}
+
+impl<'a> From<Opt> for ListOptions {
+    fn from(opt: Opt) -> Self {
+        let Opt {
+            verbose: top_verbose,
+            cmd,
+            ..
+        } = opt;
+        if let Command::List {
+            filter,
+            verbose: cmd_verbose,
+        } = cmd
+        {
+            Self {
+                filter,
+                verbose: cmd_verbose + top_verbose > 0,
+            }
+        } else {
+            panic!("Incorrect subcommand, expected list");
+        }
+    }
+}
+
+fn list<O: Into<ListOptions>>(opts: O) {
+    let opts = opts.into();
+
+    let filter_parts: Vec<String> = opts
+        .filter
+        .iter()
+        .flat_map(|f| f.split(' '))
+        .map(|p| p.to_string().to_lowercase())
+        .collect();
+
+    for puzzle in get_puzzles() {
+        let results: Vec<_> = puzzle
+            .cases()
+            .into_iter()
+            .filter(|case| {
+                if !filter_parts.is_empty() {
+                    let haystack = format!("{} {}", puzzle.name(), case.name()).to_lowercase();
+                    filter_parts.iter().all(|needle| haystack.contains(needle))
+                } else {
+                    true
+                }
+            })
+            .collect();
+
+        if results.is_empty() {
+            continue;
+        }
+
+        println!("{:<12}", puzzle.name());
+
+        if opts.verbose {
+            for case in results {
+                println!("  {:<10} ", case.name());
+            }
+        }
+    }
 }
