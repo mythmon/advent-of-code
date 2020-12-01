@@ -18,6 +18,8 @@ where
     fn bounds(&self) -> Bounds<I>;
     fn get(&self, p: Point<I>) -> Option<C>;
 
+    /// # Errors
+    /// Will return an error if any of called formatters do.
     fn display(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let bounds = self.bounds();
 

@@ -120,7 +120,7 @@ impl<T: PointAxe> ops::Add<Dir> for Point<T> {
 
     fn add(self, rhs: Dir) -> Self::Output {
         #![allow(clippy::suspicious_arithmetic_impl)]
-        use Dir::*;
+        use Dir::{Up, Down, Left, Right};
         match rhs {
             Up => Self {
                 x: self.x,
@@ -156,8 +156,8 @@ impl ops::Mul<Turn> for Dir {
     type Output = Self;
 
     fn mul(self, rhs: Turn) -> Self::Output {
-        use Dir::*;
-        use Turn::*;
+        use Dir::{Up, Down, Right, Left};
+        use Turn::{Cw, Ccw, Flip};
         #[allow(clippy::match_same_arms)]
         match (self, rhs) {
             (Up, Cw) => Right,

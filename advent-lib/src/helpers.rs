@@ -29,7 +29,7 @@ impl<'a> Iterator for TrimmedLines<'a> {
     fn next(&mut self) -> Option<&'a str> {
         while let Some(l) = self.0.next() {
             let trimmed = l.trim();
-            if trimmed != "" {
+            if !trimmed.is_empty() {
                 return Some(trimmed);
             }
         }
