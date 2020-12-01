@@ -26,6 +26,7 @@ dependencies = [
  "year2017",
  "year2018",
  "year2019",
+ "year2020",
 ]
 
 [[package]]
@@ -2569,4 +2570,11 @@ dependencies = [
  "itertools 0.8.0",
  "log",
  "petgraph 0.4.13",
+]
+
+[[package]]
+name = "year2020"
+version = "0.1.0"
+dependencies = [
+ "advent-lib",
 ]

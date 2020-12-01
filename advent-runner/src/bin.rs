@@ -80,6 +80,8 @@ fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     puzzles.extend(year2018::get_puzzles());
     #[cfg(feature = "year2019")]
     puzzles.extend(year2019::get_puzzles());
+    #[cfg(feature = "year2020")]
+    puzzles.extend(year2020::get_puzzles());
 
     puzzles
 }
