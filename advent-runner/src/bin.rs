@@ -3,6 +3,7 @@
 use advent_lib::cases::{Puzzle, PuzzleResultStatus};
 use colored::Colorize;
 use num_format::{Locale, ToFormattedString};
+use reqwest::StatusCode;
 use std::{fmt, fs, path::PathBuf, time::Duration};
 use structopt::StructOpt;
 
@@ -214,6 +215,7 @@ fn format_sum_duration(ds: Vec<Duration>) -> impl fmt::Display {
     }
 }
 
+#[derive(Debug)]
 struct AddDayOptions {
     day: u8,
     year: u16,
@@ -267,17 +269,26 @@ where
             "https://adventofcode.com/{}/day/{}/input",
             opts.year, opts.day,
         );
+
         let client = reqwest::Client::new();
-        let input = client
+        let mut res = client
             .get(&url)
             .header(
                 reqwest::header::COOKIE,
                 format!("session={}", opts.advent_cookie),
             )
-            .send()?
-            .error_for_status()?
-            .text()?;
-        fs::write(input_path, input)?;
+            .send()?;
+
+        if res.status() == StatusCode::NOT_FOUND {
+            println!("No input for this puzzle");
+        } else {
+            let body = res.text()?;
+            if !res.status().is_success() {
+                println!("Error: {}", body);
+                res.error_for_status()?;
+            }
+            fs::write(input_path, body)?;
+        }
     }
 
     Ok(())
