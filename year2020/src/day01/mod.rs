@@ -2,7 +2,7 @@ use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     helpers::StringAdventExt,
 };
-use std::iter::Iterator;
+use std::{collections::HashSet, iter::Iterator};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![
@@ -31,11 +31,19 @@ impl PuzzleRunner for Part1 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        for (idx, x) in input.iter().enumerate() {
-            for y in &input[(idx + 1)..] {
-                if x + y == 2020 {
-                    return x * y;
-                }
+        // assumption: there are no duplicates
+        let original_len = input.len();
+        let numbers: HashSet<_> = input.into_iter().collect();
+        assert_eq!(original_len, numbers.len());
+
+        for x in numbers.iter() {
+            let y = 2020 - x;
+            if *x == y {
+                // Can't pair a number with itself
+                continue
+            }
+            if numbers.contains(&y) {
+                return x * y
             }
         }
         panic!("No answer found");
@@ -66,15 +74,21 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
+        // assumption: there are no duplicates
+        let numbers: HashSet<_> = input.clone().into_iter().collect();
+        assert_eq!(input.len(), numbers.len());
+
         for (idx1, x) in input.iter().enumerate() {
-            for (idx2, y) in input[(idx1 + 1)..].iter().enumerate() {
+            for y in input[(idx1 + 1)..].iter() {
                 if x + y >= 2020 {
                     continue
                 }
-                for z in &input[(idx2 + 1)..] {
-                    if x + y + z == 2020 {
-                        return x * y * z;
-                    }
+                let z = 2020 - x - y;
+                if z == *x || z == *y {
+                    continue;
+                }
+                if numbers.contains(&z) {
+                    return x * y * z
                 }
             }
         }
