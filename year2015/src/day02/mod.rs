@@ -12,7 +12,7 @@ pub fn parse_input(s: &'static str) -> Vec<(u32, u32, u32)> {
         .map(|l| l.split('x').map(|n| n.parse().unwrap()).collect())
         .map(|mut dimensions: Vec<u32>| {
             assert_eq!(dimensions.len(), 3);
-            dimensions.sort();
+            dimensions.sort_unstable();
             (dimensions[0], dimensions[1], dimensions[2])
         })
         .collect()

@@ -1,5 +1,5 @@
 use advent_lib::cases::Puzzle;
-use std::str::FromStr;
+use std::{str::FromStr, num::ParseIntError};
 
 pub mod part1;
 pub mod part2;
@@ -17,20 +17,20 @@ pub struct Instruction {
 }
 
 impl FromStr for Instruction {
-    type Err = ();
+    type Err = String;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = input.split_whitespace().collect();
         if parts.len() != 7 {
-            return Err(());
+            return Err(format!("Expected 7 instruction parts, found {}", parts.len()));
         }
 
         // c inc -20 if c == 10
         Ok(Self {
             register: parts[0].into(),
-            op: parts[1].parse()?,
-            amount: parts[2].parse().map_err(|_| ())?,
-            condition: Condition::from_parts(&parts[4..])?,
+            op: parts[1].parse().map_err(|err| format!("Couldn't parse operator: {}", err))?,
+            amount: parts[2].parse().map_err(|err: ParseIntError| format!("Could not parse amount: {}", err))?,
+            condition: Condition::from_parts(&parts[4..]).map_err(|err| format!("Couldn't parse condition: {}", err))?,
         })
     }
 }
@@ -42,13 +42,13 @@ pub enum Operation {
 }
 
 impl FromStr for Operation {
-    type Err = ();
+    type Err = String;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "inc" => Ok(Operation::Inc),
             "dec" => Ok(Operation::Dec),
-            _ => Err(()),
+            _ => Err(format!("Couldn't parse `{}` as operation", input)),
         }
     }
 }
@@ -61,16 +61,16 @@ pub struct Condition {
 }
 
 impl Condition {
-    fn from_parts(parts: &[&str]) -> Result<Self, ()> {
+    fn from_parts(parts: &[&str]) -> Result<Self, String> {
         assert_eq!(parts.len(), 3);
         Ok(Self {
             register: parts[0].into(),
-            comparison: parts[1].parse()?,
-            value: parts[2].parse().map_err(|_| ())?,
+            comparison: parts[1].parse().map_err(|err| format!("Couldn't parse comparison: {}", err))?,
+            value: parts[2].parse().map_err(|err| format!("Couldn't parse value: {}", err))?,
         })
     }
 
-    pub fn matches(&self, register_value: isize) -> bool {
+    pub const fn matches(&self, register_value: isize) -> bool {
         match self.comparison {
             Comparison::LessThan => register_value < self.value,
             Comparison::LessThanEqual => register_value <= self.value,
@@ -93,7 +93,7 @@ pub enum Comparison {
 }
 
 impl FromStr for Comparison {
-    type Err = ();
+    type Err = String;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
@@ -103,7 +103,7 @@ impl FromStr for Comparison {
             ">=" => Ok(Comparison::GreaterThanEqual),
             "==" => Ok(Comparison::Equal),
             "!=" => Ok(Comparison::NotEqual),
-            _ => Err(()),
+            _ => Err(format!("Could not parse `{}` as a comparison", input)),
         }
     }
 }

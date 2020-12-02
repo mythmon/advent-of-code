@@ -1,7 +1,8 @@
-use std::fmt;
+use std::{convert::{TryFrom, TryInto}, fmt};
 
+#[allow(clippy::clippy::module_name_repetitions)]
 pub struct IntcodeComputer {
-    _memory: Vec<isize>,
+    memory: Vec<isize>,
     pub output: Vec<isize>,
     output_pointer: usize,
     input: Vec<isize>,
@@ -28,7 +29,7 @@ pub enum PauseReason {
 
 // public methods
 impl IntcodeComputer {
-    pub fn build(initial_memory: Vec<isize>) -> IntcodeComputerBuilder {
+    #[must_use] pub fn build(initial_memory: Vec<isize>) -> IntcodeComputerBuilder {
         IntcodeComputerBuilder::new(initial_memory)
     }
 
@@ -170,9 +171,9 @@ impl IntcodeComputer {
         let instruction = self.read_mem(self.instruction_pointer);
         let opcode = instruction % 100;
         let param_modes: [ParameterMode; 3] = [
-            (instruction / 100 % 10).into(),
-            (instruction / 1_000 % 10).into(),
-            (instruction / 10_000 % 10).into(),
+            (instruction / 100 % 10).try_into().expect("Couldn't parse parameter mode"),
+            (instruction / 1_000 % 10).try_into().expect("Couldn't parse parameter mode"),
+            (instruction / 10_000 % 10).try_into().expect("Couldn't parse parameter mode"),
         ];
 
         match opcode {
@@ -273,21 +274,22 @@ impl IntcodeComputer {
         }
     }
 
-    pub fn read_mem(&self, addr: isize) -> isize {
+    #[must_use] pub fn read_mem(&self, addr: isize) -> isize {
         assert!(addr >= 0, "invalid memory address");
-        *self._memory.get(addr as usize).unwrap_or(&0)
+        *self.memory.get(addr as usize).unwrap_or(&0)
     }
 
     pub fn write_mem(&mut self, addr: isize, val: isize) {
         assert!(addr >= 0, "invalid memory address");
         let addr = addr as usize;
-        if addr >= self._memory.len() {
-            self._memory.resize_with(addr + 1, || 0);
+        if addr >= self.memory.len() {
+            self.memory.resize_with(addr + 1, || 0);
         }
-        self._memory[addr] = val;
+        self.memory[addr] = val;
     }
 }
 
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone)]
 pub struct IntcodeComputerBuilder {
     initial_memory: Vec<isize>,
@@ -304,9 +306,11 @@ impl IntcodeComputerBuilder {
         }
     }
 
+    #[must_use]
+    #[allow(clippy::missing_const_for_fn)] // this can't be const because it consumes `self`
     pub fn done(self) -> IntcodeComputer {
         IntcodeComputer {
-            _memory: self.initial_memory,
+            memory: self.initial_memory,
             instruction_pointer: 0,
             state: ComputerState::Ready,
             input: self.input,
@@ -324,7 +328,8 @@ impl IntcodeComputerBuilder {
     }
 
     #[allow(dead_code)]
-    pub fn verbose(mut self) -> Self {
+    #[must_use]
+    pub const fn verbose(mut self) -> Self {
         self.verbose = true;
         self
     }
@@ -433,19 +438,21 @@ impl ParameterMode {
     }
 }
 
-impl From<isize> for ParameterMode {
-    fn from(mode: isize) -> Self {
+impl TryFrom<isize> for ParameterMode {
+    type Error = String;
+
+    fn try_from(mode: isize) -> Result<Self, Self::Error> {
         match mode {
-            0 => ParameterMode::Position,
-            1 => ParameterMode::Immediate,
-            2 => ParameterMode::Relative,
-            _ => panic!(format!("Unknown parameter mode {}", mode)),
+            0 => Ok(ParameterMode::Position),
+            1 => Ok(ParameterMode::Immediate),
+            2 => Ok(ParameterMode::Relative),
+            _ => Err(format!("Unknown parameter mode {}", mode)),
         }
     }
 }
 
 impl Op {
-    fn size(&self) -> isize {
+    const fn size(&self) -> isize {
         match self {
             Self::Add { .. } | Self::Mult { .. } | Self::LessThan { .. } | Self::Equals { .. } => 4,
             Self::JumpIfTrue { .. } | Self::JumpIfFalse { .. } => 3,
@@ -465,12 +472,12 @@ mod tests {
             IntcodeComputer::build(vec![1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]).done();
         computer.step();
         assert_eq!(
-            computer._memory,
+            computer.memory,
             vec![1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
         );
         computer.step();
         assert_eq!(
-            computer._memory,
+            computer.memory,
             vec![3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
         );
         computer.step();
@@ -481,21 +488,21 @@ mod tests {
     fn day02_example2() {
         let mut computer = IntcodeComputer::build(vec![1, 0, 0, 0, 99]).done();
         computer.run_to_end();
-        assert_eq!(computer._memory, vec![2, 0, 0, 0, 99]);
+        assert_eq!(computer.memory, vec![2, 0, 0, 0, 99]);
     }
 
     #[test]
     fn day02_example3() {
         let mut computer = IntcodeComputer::build(vec![2, 4, 4, 5, 99, 0]).done();
         computer.run_to_end();
-        assert_eq!(computer._memory, vec![2, 4, 4, 5, 99, 9801]);
+        assert_eq!(computer.memory, vec![2, 4, 4, 5, 99, 9801]);
     }
 
     #[test]
     fn day02_example4() {
         let mut computer = IntcodeComputer::build(vec![1, 1, 1, 4, 99, 5, 6, 0, 99]).done();
         computer.run_to_end();
-        assert_eq!(computer._memory, vec![30, 1, 1, 4, 2, 5, 6, 0, 99]);
+        assert_eq!(computer.memory, vec![30, 1, 1, 4, 2, 5, 6, 0, 99]);
     }
 
     #[test]
@@ -532,7 +539,7 @@ mod tests {
         assert_eq!(computer.output[0], 1);
 
         // run with not 8 as input, expect 0 (false) as output
-        let mut computer = builder.clone().with_input(vec![9]).done();
+        let mut computer = builder.with_input(vec![9]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 0);
     }
@@ -548,7 +555,7 @@ mod tests {
         assert_eq!(computer.output[0], 1);
 
         // run with 8 as input, expect 0 (false) as output
-        let mut computer = builder.clone().with_input(vec![8]).done();
+        let mut computer = builder.with_input(vec![8]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 0);
     }
@@ -564,7 +571,7 @@ mod tests {
         assert_eq!(computer.output[0], 1);
 
         // run with not 8 as input, expect 0 (false) as output
-        let mut computer = builder.clone().with_input(vec![9]).done();
+        let mut computer = builder.with_input(vec![9]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 0);
     }
@@ -580,7 +587,7 @@ mod tests {
         assert_eq!(computer.output[0], 1);
 
         // run with 8 as input, expect 0 (false) as output
-        let mut computer = builder.clone().with_input(vec![8]).done();
+        let mut computer = builder.with_input(vec![8]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 0);
     }
@@ -599,7 +606,7 @@ mod tests {
         assert_eq!(computer.output[0], 0);
 
         // run with non-zero as input, expect 1 (true) as output
-        let mut computer = builder.clone().with_input(vec![8]).done();
+        let mut computer = builder.with_input(vec![8]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 1);
     }
@@ -616,7 +623,7 @@ mod tests {
         assert_eq!(computer.output[0], 0);
 
         // run with non-zero as input, expect 1 (true) as output
-        let mut computer = builder.clone().with_input(vec![8]).done();
+        let mut computer = builder.with_input(vec![8]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 1);
     }
@@ -642,7 +649,7 @@ mod tests {
         assert_eq!(computer.output[0], 1000);
 
         // run with 9 as input, expect 1001 as output
-        let mut computer = builder.clone().with_input(vec![9]).done();
+        let mut computer = builder.with_input(vec![9]).done();
         computer.run_to_end();
         assert_eq!(computer.output[0], 1001);
     }
@@ -660,7 +667,7 @@ mod tests {
     #[test]
     fn day09_example2() {
         let mut computer =
-            IntcodeComputer::build(vec![1102, 34915192, 34915192, 7, 4, 7, 99, 0]).done();
+            IntcodeComputer::build(vec![1_102, 34_915_192, 34_915_192, 7, 4, 7, 99, 0]).done();
         computer.run_to_end();
         let out = computer.output[0];
         assert_eq!(out.to_string().len(), 16);
@@ -668,7 +675,7 @@ mod tests {
 
     #[test]
     fn day09_example3() {
-        let program = vec![104, 1125899906842624, 99];
+        let program = vec![104, 1_125_899_906_842_624, 99];
         let mut computer = IntcodeComputer::build(program.clone()).done();
         computer.run_to_end();
         assert_eq!(computer.output, vec![program[1]]);

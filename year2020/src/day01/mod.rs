@@ -36,7 +36,7 @@ impl PuzzleRunner for Part1 {
         let numbers: HashSet<_> = input.into_iter().collect();
         assert_eq!(original_len, numbers.len());
 
-        for x in numbers.iter() {
+        for x in &numbers {
             let y = 2020 - x;
             if *x == y {
                 // Can't pair a number with itself

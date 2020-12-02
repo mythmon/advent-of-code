@@ -114,7 +114,7 @@ struct Vec3 {
 }
 
 impl Vec3 {
-    fn manhattan(&self) -> i64 {
+    const fn manhattan(&self) -> i64 {
         self.x.abs() + self.y.abs() + self.z.abs()
     }
 }

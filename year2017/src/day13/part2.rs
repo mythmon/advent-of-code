@@ -49,7 +49,7 @@ impl PuzzleRunner for Part2 {
     }
 }
 
-fn gcd(mut a: usize, mut b: usize) -> usize {
+const fn gcd(mut a: usize, mut b: usize) -> usize {
     // euclid's algorithm
     while b > 0 {
         let t = b;
@@ -59,7 +59,7 @@ fn gcd(mut a: usize, mut b: usize) -> usize {
     a
 }
 
-fn lcm(a: usize, b: usize) -> usize {
+const fn lcm(a: usize, b: usize) -> usize {
     a * b / gcd(a, b)
 }
 
@@ -76,7 +76,7 @@ impl Scanner {
     }
 
     #[inline]
-    fn cycle_length(&self) -> usize {
+    const fn cycle_length(&self) -> usize {
         if self.range == 1 {
             1
         } else {

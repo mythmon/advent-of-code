@@ -26,25 +26,25 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        use crate::day09::ParseState::*;
+        use crate::day09::ParseState;
 
         let mut garbage_count = 0;
         let mut state_stack = vec![];
 
         for c in input.trim().chars() {
             let next_action = match (&state_stack.last(), c) {
-                (Some(&s), '!') if s != Cancel => ParseAction::Push(Cancel),
-                (Some(Cancel), _) | (Some(InGroup(_)), '}') | (Some(Garbage), '>') => {
+                (Some(&s), '!') if s != ParseState::Cancel => ParseAction::Push(ParseState::Cancel),
+                (Some(ParseState::Cancel), _) | (Some(ParseState::InGroup(_)), '}') | (Some(ParseState::Garbage), '>') => {
                     ParseAction::Pop
                 }
-                (None, '{') => ParseAction::Push(InGroup(1)),
-                (Some(InGroup(v)), '{') => ParseAction::Push(InGroup(v + 1)),
-                (Some(InGroup(_)), ',') => ParseAction::Nothing,
-                (Some(Garbage), _) => {
+                (None, '{') => ParseAction::Push(ParseState::InGroup(1)),
+                (Some(ParseState::InGroup(v)), '{') => ParseAction::Push(ParseState::InGroup(v + 1)),
+                (Some(ParseState::InGroup(_)), ',') => ParseAction::Nothing,
+                (Some(ParseState::Garbage), _) => {
                     garbage_count += 1;
                     ParseAction::Nothing
                 }
-                (_, '<') => ParseAction::Push(Garbage),
+                (_, '<') => ParseAction::Push(ParseState::Garbage),
                 (&s, c) => panic!("unexpected input '{}' in {:?}", c, s),
             };
 

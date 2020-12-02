@@ -50,8 +50,8 @@ impl PuzzleRunner for Part1 {
                 .collect();
             assert!(!ready_nodes.is_empty(), "At least one node should be ready");
             ready_nodes.sort_by_key(|k| graph.node_weight(*k));
-            let n = *ready_nodes.iter().next().unwrap();
-            path.push(graph.node_weight(n).unwrap().clone());
+            let n = *ready_nodes.get(0).unwrap();
+            path.push(*graph.node_weight(n).unwrap());
             graph.remove_node(n);
         }
 
@@ -184,11 +184,12 @@ where
 {
     fn pop(&mut self) -> Option<T> {
         let popped = self.iter().next();
-        if let Some(v) = popped {
-            let v = v.clone(); // ends the borrow of `self` from above
-            self.take(&v)
-        } else {
-            None
+        match popped {
+            Some(v) => {
+                let v = v.clone(); // ends the borrow of `self` from above
+                self.take(&v)
+            }
+            None => None,
         }
     }
 }

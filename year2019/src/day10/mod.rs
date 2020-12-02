@@ -75,7 +75,7 @@ impl PuzzleRunner for Part2 {
             (f32::atan2(
                 target.x as f32 - base.x as f32,
                 target.y as f32 - base.y as f32,
-            ) * 1000f32) as i32
+            ) * 1000_f32) as i32
         });
         let target_asteroid = last_shell[excess];
         target_asteroid.x * 100 + target_asteroid.y
@@ -83,7 +83,7 @@ impl PuzzleRunner for Part2 {
 }
 
 // TODO unify this between here and 2017-d13
-fn gcd(mut a: u32, mut b: u32) -> u32 {
+const fn gcd(mut a: u32, mut b: u32) -> u32 {
     // euclid's algorithm
     while b > 0 {
         let t = b;

@@ -9,12 +9,16 @@ use std::{collections::HashMap, iter::Iterator, str::FromStr};
 #[cfg(windows)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "\\day03\\parser.rs"
 );
 #[cfg(unix)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "/day03/parser.rs"
 );
@@ -134,9 +138,9 @@ pub struct Claim {
 
 impl FromStr for Claim {
     // TODO better error handling
-    type Err = ();
+    type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parser::ClaimParser::new().parse(s).map_err(|_| ())
+        parser::ClaimParser::new().parse(s).map_err(|err| err.to_string())
     }
 }

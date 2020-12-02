@@ -82,14 +82,13 @@ impl FromStr for HexDir {
     type Err = ();
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        use self::HexDir::*;
         match input {
-            "n" => Ok(North),
-            "ne" => Ok(NorthEast),
-            "nw" => Ok(NorthWest),
-            "s" => Ok(South),
-            "se" => Ok(SouthEast),
-            "sw" => Ok(SouthWest),
+            "n" => Ok(HexDir::North),
+            "ne" => Ok(HexDir::NorthEast),
+            "nw" => Ok(HexDir::NorthWest),
+            "s" => Ok(HexDir::South),
+            "se" => Ok(HexDir::SouthEast),
+            "sw" => Ok(HexDir::SouthWest),
             _ => Err(()),
         }
     }

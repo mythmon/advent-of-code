@@ -1,10 +1,28 @@
-#![deny(clippy::all)]
+#![deny(clippy::all, clippy::pedantic)]
+#![warn(clippy::nursery)]
+#![allow(
+    // Not useful here
+    clippy::filter_map,
+    clippy::cast_sign_loss,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_precision_loss,
+    clippy::non_ascii_literal,
+
+    clippy::use_self, // Doesn't work well with generics
+)]
 
 use advent_lib::cases::{Puzzle, PuzzleResultStatus};
 use colored::Colorize;
 use num_format::{Locale, ToFormattedString};
 use reqwest::StatusCode;
-use std::{fmt, fs, path::PathBuf, time::Duration};
+use std::{
+    convert::{TryFrom, TryInto},
+    fmt::{self, Display},
+    fs,
+    path::PathBuf,
+    time::Duration,
+};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -91,8 +109,10 @@ struct RunOptions {
     verbose: bool,
 }
 
-impl<'a> From<Opt> for RunOptions {
-    fn from(opt: Opt) -> Self {
+impl<'a> TryFrom<Opt> for RunOptions {
+    type Error = String;
+
+    fn try_from(opt: Opt) -> Result<Self, Self::Error> {
         let Opt {
             verbose: top_verbose,
             cmd,
@@ -103,18 +123,21 @@ impl<'a> From<Opt> for RunOptions {
             verbose: cmd_verbose,
         } = cmd
         {
-            Self {
+            Ok(Self {
                 filter,
                 verbose: cmd_verbose + top_verbose > 0,
-            }
+            })
         } else {
-            panic!("Incorrect subcommand, expected run");
+            Err("Incorrect subcommand, expected run".to_owned())
         }
     }
 }
 
-fn run<O: Into<RunOptions>>(opts: O) {
-    let opts = opts.into();
+fn run<O: TryInto<RunOptions>>(opts: O)
+where
+    O::Error: Display,
+{
+    let opts = opts.try_into().unwrap_or_else(|err| panic!("{}", err));
 
     let filter_parts: Vec<String> = opts
         .filter
@@ -128,11 +151,11 @@ fn run<O: Into<RunOptions>>(opts: O) {
             .cases()
             .into_iter()
             .filter(|case| {
-                if !filter_parts.is_empty() {
+                if filter_parts.is_empty() {
+                    true
+                } else {
                     let haystack = format!("{} {}", puzzle.name(), case.name()).to_lowercase();
                     filter_parts.iter().all(|needle| haystack.contains(needle))
-                } else {
-                    true
                 }
             })
             .map(|case| {
@@ -160,10 +183,11 @@ fn run<O: Into<RunOptions>>(opts: O) {
                 print!("{:<10} ", case.name());
                 match result.status {
                     PuzzleResultStatus::Match => (),
-                    PuzzleResultStatus::Unknown => print!(" -> {}", result.description),
-                    PuzzleResultStatus::Fail => print!(" -> {}", result.description),
+                    PuzzleResultStatus::Unknown | PuzzleResultStatus::Fail => {
+                        print!(" -> {}", result.description)
+                    }
                 }
-                print!("{}", format_sum_duration(vec![result.duration]));
+                print!("{}", format_sum_duration(&[result.duration]));
                 println!();
             }
         } else {
@@ -176,11 +200,8 @@ fn run<O: Into<RunOptions>>(opts: O) {
             }
 
             let spacer = (results.len()..10).map(|_| " ").collect::<String>();
-            println!(
-                "{}{}",
-                spacer,
-                format_sum_duration(results.iter().map(|(_, res)| res.duration).collect())
-            );
+            let durations: Vec<_> = results.iter().map(|(_, res)| res.duration).collect();
+            println!("{}{}", spacer, format_sum_duration(&durations));
 
             for (case, result) in results {
                 match result.status {
@@ -196,14 +217,14 @@ fn run<O: Into<RunOptions>>(opts: O) {
                         case.name(),
                         result.description
                     ),
-                    _ => (),
+                    PuzzleResultStatus::Match => (),
                 }
             }
         }
     }
 }
 
-fn format_sum_duration(ds: Vec<Duration>) -> impl fmt::Display {
+fn format_sum_duration(ds: &[Duration]) -> impl fmt::Display {
     let sum: u128 = ds.iter().map(Duration::as_micros).sum();
     let s = sum.to_formatted_string(&Locale::en);
     let s = format!("{:>10} us ", s);
@@ -224,8 +245,10 @@ struct AddDayOptions {
     advent_cookie: String,
 }
 
-impl<'a> From<Opt> for AddDayOptions {
-    fn from(opt: Opt) -> Self {
+impl<'a> TryFrom<Opt> for AddDayOptions {
+    type Error = String;
+
+    fn try_from(opt: Opt) -> Result<Self, Self::Error> {
         let Opt { cmd, .. } = opt;
         if let Command::AddDay {
             day,
@@ -233,22 +256,22 @@ impl<'a> From<Opt> for AddDayOptions {
             advent_cookie,
         } = cmd
         {
-            Self {
+            Ok(Self {
                 day,
                 year,
                 advent_cookie,
-            }
+            })
         } else {
-            panic!("Incorrect subcommand, expected run");
+            Err("Incorrect subcommand, expected run".to_owned())
         }
     }
 }
 
-fn add_puzzle<O>(opts: O) -> Result<(), Box<dyn std::error::Error>>
+fn add_puzzle<O: TryInto<AddDayOptions>>(opts: O) -> Result<(), Box<dyn std::error::Error>>
 where
-    O: Into<AddDayOptions>,
+    O::Error: Display,
 {
-    let opts = opts.into();
+    let opts = opts.try_into().unwrap_or_else(|err| panic!("{}", err));
 
     let day_padded = format!("{:0>2}", opts.day.to_string());
 
@@ -301,8 +324,10 @@ struct ListOptions {
     verbose: bool,
 }
 
-impl<'a> From<Opt> for ListOptions {
-    fn from(opt: Opt) -> Self {
+impl<'a> TryFrom<Opt> for ListOptions {
+    type Error = String;
+
+    fn try_from(opt: Opt) -> Result<Self, Self::Error> {
         let Opt {
             verbose: top_verbose,
             cmd,
@@ -313,18 +338,21 @@ impl<'a> From<Opt> for ListOptions {
             verbose: cmd_verbose,
         } = cmd
         {
-            Self {
+            Ok(Self {
                 filter,
                 verbose: cmd_verbose + top_verbose > 0,
-            }
+            })
         } else {
-            panic!("Incorrect subcommand, expected list");
+            Err("Incorrect subcommand, expected list".to_owned())
         }
     }
 }
 
-fn list<O: Into<ListOptions>>(opts: O) {
-    let opts = opts.into();
+fn list<O: TryInto<ListOptions>>(opts: O)
+where
+    O::Error: Display,
+{
+    let opts = opts.try_into().unwrap_or_else(|err| panic!("{}", err));
 
     let filter_parts: Vec<String> = opts
         .filter
@@ -338,11 +366,11 @@ fn list<O: Into<ListOptions>>(opts: O) {
             .cases()
             .into_iter()
             .filter(|case| {
-                if !filter_parts.is_empty() {
+                if filter_parts.is_empty() {
+                    true
+                } else {
                     let haystack = format!("{} {}", puzzle.name(), case.name()).to_lowercase();
                     filter_parts.iter().all(|needle| haystack.contains(needle))
-                } else {
-                    true
                 }
             })
             .collect();

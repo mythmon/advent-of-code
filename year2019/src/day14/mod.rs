@@ -130,7 +130,7 @@ fn make_fuel<'a>(fuel_count: usize, rule_map: &HashMap<&'a str, Rule<'a>>) -> us
         for (input_count, input_compound) in inputs.iter() {
             let mut needed_input_count = input_count * mult;
 
-            let excess_entry = excess.entry(&input_compound).or_default();
+            let excess_entry = excess.entry(input_compound).or_default();
             if *excess_entry > 0 {
                 match (*excess_entry).cmp(&needed_input_count) {
                     Ordering::Greater | Ordering::Equal => {
@@ -157,7 +157,7 @@ fn make_fuel<'a>(fuel_count: usize, rule_map: &HashMap<&'a str, Rule<'a>>) -> us
 }
 
 #[allow(clippy::ptr_arg)] // TODO this could probably be better
-fn parse_input<'a>(input: &'a String) -> HashMap<&'a str, Rule<'a>> {
+fn parse_input(input: &String) -> HashMap<&str, Rule> {
     input
         .trimmed_lines()
         .map(|line| {

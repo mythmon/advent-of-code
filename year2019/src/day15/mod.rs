@@ -11,10 +11,7 @@ use std::{
 };
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    vec![
-        Box::new(Part1),
-        Box::new(Part2),
-    ]
+    vec![Box::new(Part1), Box::new(Part2)]
 }
 
 // TODO this uses A* with a lot of repetition. It would probably be better
@@ -99,7 +96,12 @@ impl PuzzleRunner for Part2 {
         grid.cells
             .iter()
             .filter(|(_p, c)| walkable_tiles.contains(c))
-            .map(|(p, _)| grid.astar(*o2_position, *p, &walkable_tiles).expect("no path").len() - 1)
+            .map(|(p, _)| {
+                grid.astar(*o2_position, *p, &walkable_tiles)
+                    .expect("no path")
+                    .len()
+                    - 1
+            })
             .max()
             .unwrap()
     }
@@ -168,39 +170,38 @@ fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
             continue;
         }
 
-        let directions = match position.direction_to(goal) {
-            Some(dir) => vec![dir],
-            None => {
-                // assume the target is an empty floor for path finding purposes
-                let should_reset = if grid.get(goal).is_none() {
-                    grid.set(goal, Area::Floor);
-                    true
-                } else {
-                    false
-                };
+        let directions = if let Some(dir) = position.direction_to(goal) {
+            vec![dir]
+        } else {
+            // assume the target is an empty floor for path finding purposes
+            let should_reset = if grid.get(goal).is_none() {
+                grid.set(goal, Area::Floor);
+                true
+            } else {
+                false
+            };
 
-                let route = grid.astar(position, goal, &walkable_tiles);
+            let route = grid.astar(position, goal, &walkable_tiles);
 
-                if should_reset {
-                    grid.remove(&goal);
-                }
+            if should_reset {
+                grid.remove(&goal);
+            }
 
-                if let Some(route) = route {
-                    route
-                        .iter()
-                        .tuple_windows()
-                        .map(|(&from, &to)| {
-                            from.direction_to(to).unwrap_or_else(|| {
-                                panic!(
-                                    "Invalid astar path, {:?} -> {:?} is not a 4-direction",
-                                    from, to
-                                )
-                            })
+            if let Some(route) = route {
+                route
+                    .iter()
+                    .tuple_windows()
+                    .map(|(&from, &to)| {
+                        from.direction_to(to).unwrap_or_else(|| {
+                            panic!(
+                                "Invalid astar path, {:?} -> {:?} is not a 4-direction",
+                                from, to
+                            )
                         })
-                        .collect()
-                } else {
-                    continue 'next_goal;
-                }
+                    })
+                    .collect()
+            } else {
+                continue 'next_goal;
             }
         };
 
@@ -227,7 +228,7 @@ fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
                     position += dir;
                     grid.entry(position).or_insert(Area::OxygenSystem);
                 }
-                _ => Err("Invalid robot activity")?,
+                _ => return Err("Invalid robot activity".into()),
             }
         }
     }

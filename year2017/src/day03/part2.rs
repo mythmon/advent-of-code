@@ -21,8 +21,7 @@ impl PuzzleRunner for Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         GridStressValues::new()
-            .skip_while(|v| *v <= input)
-            .next()
+            .find(|v| *v > input)
             .unwrap()
     }
 }

@@ -77,7 +77,7 @@ impl PuzzleRunner for Part2 {
     }
 }
 
-fn parse_input<'a>(input: &'a str) -> Vec<(&'a str, &'a str)> {
+fn parse_input(input: &str) -> Vec<(&str, &str)> {
     input.trim()
         // .trimmed_lines()
         .lines()
@@ -102,7 +102,7 @@ fn build_orbit_graph<'a>(orbits: Vec<(&'a str, &'a str)>) -> OrbitInfo<'a> {
 
     let mut name_map = HashMap::new();
 
-    for (parent, satellite) in orbits.into_iter() {
+    for (parent, satellite) in orbits {
         let is_com = parent == "COM";
         let satellite_index = *name_map
             .entry(satellite)

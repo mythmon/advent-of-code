@@ -77,6 +77,12 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
+        #[allow(clippy::missing_const_for_fn)] // It can't be since it consumes its inputs
+        fn first<T, U>((a, _b): (T, U)) -> T
+        {
+            a
+        }
+
         let mut pos = Point::zero();
         let mut dir = Dir::Up;
         let mut cells: HashMap<Point<_>, isize> = HashMap::new();
@@ -95,10 +101,6 @@ impl PuzzleRunner for Part2 {
             }
             pos += dir;
             computer.add_input(*cells.get(&pos).unwrap_or(&0));
-        }
-
-        fn first<T, U>((a, _b): (T, U)) -> T {
-            a
         }
 
         let top_left: Point<isize> = cells.iter().map(first).fold(Point::zero(), |min, new| {

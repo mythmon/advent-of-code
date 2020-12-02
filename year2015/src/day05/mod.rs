@@ -35,12 +35,12 @@ impl PuzzleRunner for Part1 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.par_iter().filter(|s| is_nice_v1(&s)).count()
+        input.par_iter().filter(|s| is_nice_v1(s)).count()
     }
 }
 
 fn is_nice_v1(s: &str) -> bool {
-    if s.len() == 0 {
+    if s.is_empty() {
         return false;
     }
 
@@ -98,7 +98,7 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.par_iter().filter(|s| is_nice_v2(&s)).count()
+        input.par_iter().filter(|s| is_nice_v2(s)).count()
     }
 }
 
@@ -120,7 +120,7 @@ fn is_nice_v2(s: &str) -> bool {
         .fold(HashMap::new(), |mut map: HashMap<_, Vec<usize>>, (idx, pair)| {
             map.entry(pair)
                 .and_modify(|l| l.push(idx))
-                .or_insert(vec![idx]);
+                .or_insert_with(|| vec![idx]);
             map
         })
         // and then find any pairs that occurred more than twice

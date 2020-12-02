@@ -9,12 +9,16 @@ use std::{cmp, iter::Iterator, str::FromStr};
 #[cfg(windows)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "\\day10\\parser.rs"
 );
 #[cfg(unix)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "/day10/parser.rs"
 );

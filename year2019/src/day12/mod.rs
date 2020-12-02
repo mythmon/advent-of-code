@@ -134,7 +134,7 @@ impl PuzzleRunner for Part2 {
 }
 
 // TODO unify this between here and 2017-d13 and 2019-d10
-fn gcd(mut a: usize, mut b: usize) -> usize {
+const fn gcd(mut a: usize, mut b: usize) -> usize {
     // euclid's algorithm
     while b > 0 {
         let t = b;
@@ -234,7 +234,7 @@ impl Universe {
             }
         }
 
-        // veloicty
+        // velocity
         for mut planet in &mut self.planets {
             planet.pos.x += planet.vel.x;
             planet.pos.y += planet.vel.y;
@@ -274,7 +274,7 @@ impl Universe1d {
             }
         }
 
-        // veloicty
+        // velocity
         for mut planet in &mut self.planets {
             planet.pos += planet.vel;
         }

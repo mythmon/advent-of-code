@@ -9,12 +9,16 @@ use std::{collections::HashMap, iter::Iterator, str::FromStr};
 #[cfg(windows)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "\\day04\\parser.rs"
 );
 #[cfg(unix)]
 lalrpop_mod!(
     #[allow(clippy::all)]
+    #[allow(clippy::nursery)]
+    #[allow(clippy::pedantic)]
     parser,
     "/day04/parser.rs"
 );
@@ -64,10 +68,7 @@ impl PuzzleRunner for Part1 {
         let mut guard_asleep_total = HashMap::new();
         let sleep_wake_cycles = log
             .iter()
-            .filter(|l| match l.event {
-                LogEvent::BeginsShift { .. } => false,
-                _ => true,
-            })
+            .filter(|l| !matches!(l.event, LogEvent::BeginsShift { .. }))
             .tuples();
         for (asleep, awake) in sleep_wake_cycles {
             assert_eq!(awake.guard_id, asleep.guard_id);
@@ -94,11 +95,7 @@ impl PuzzleRunner for Part1 {
         let guard_sleep_wake_cycles = log
             .iter()
             .filter(|l| {
-                l.guard_id == Some(guard_most_asleep)
-                    && match l.event {
-                        LogEvent::BeginsShift { .. } => false,
-                        _ => true,
-                    }
+                l.guard_id == Some(guard_most_asleep) && !matches!(l.event, LogEvent::BeginsShift { .. })
             })
             .tuples();
         let mut asleep_minutes = [0_u32; 60];
@@ -159,10 +156,7 @@ impl PuzzleRunner for Part2 {
         let mut guard_asleep_at_minute_counts = HashMap::new();
         let sleep_wake_cycles = log
             .iter()
-            .filter(|l| match l.event {
-                LogEvent::BeginsShift { .. } => false,
-                _ => true,
-            })
+            .filter(|l| !matches!(l.event, LogEvent::BeginsShift { .. }))
             .tuples();
         for (asleep, awake) in sleep_wake_cycles {
             for minute in asleep.datetime.minute..awake.datetime.minute {
