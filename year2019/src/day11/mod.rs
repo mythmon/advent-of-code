@@ -1,6 +1,7 @@
 use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    grid_letters::{Recognizer, ALPHABET_2019_D11},
     twodee::{Dir, Point, Turn},
 };
 use std::{
@@ -63,7 +64,7 @@ pub struct Part2;
 
 impl PuzzleRunner for Part2 {
     type Input = Vec<isize>;
-    type Output = ();
+    type Output = String;
 
     fn name(&self) -> String {
         "2019-D11-P2".to_owned()
@@ -72,14 +73,13 @@ impl PuzzleRunner for Part2 {
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
         GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), ())
+            .transformed_case("Solution", include_str!("input"), "RAPRCBPH".to_string())
             .collect()
     }
 
-    fn run_puzzle(input: Self::Input) -> Self::Output {
+    fn try_run_puzzle(input: Self::Input) -> Result<Self::Output, Self::Error> {
         #[allow(clippy::missing_const_for_fn)] // It can't be since it consumes its inputs
-        fn first<T, U>((a, _b): (T, U)) -> T
-        {
+        fn first<T, U>((a, _b): (T, U)) -> T {
             a
         }
 
@@ -110,16 +110,22 @@ impl PuzzleRunner for Part2 {
             Point::new(cmp::max(max.x, new.x), cmp::max(max.y, new.y))
         });
 
+        let output_height = (bottom_right.y - top_left.y).abs() as usize + 1;
+        let output_width = (bottom_right.x - top_left.x).abs() as usize + 1;
+        let mut output = String::with_capacity(output_height * output_width);
+
         for y in (top_left.y)..=(bottom_right.y) {
             for x in (top_left.x)..=(bottom_right.x) {
-                match cells.get(&Point::new(x, y)).unwrap_or(&0) {
-                    0 => print!("  "),
-                    1 => print!("██"),
+                output.extend(match cells.get(&Point::new(x, y)).unwrap_or(&0) {
+                    0 => "  ".chars(),
+                    1 => "██".chars(),
                     v => panic!("unexpected cell value {}", v),
-                }
+                });
             }
-            println!();
+            output.push('\n');
         }
+
+        Recognizer::new(ALPHABET_2019_D11).parse(&output)
     }
 }
 

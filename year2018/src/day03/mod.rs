@@ -141,6 +141,8 @@ impl FromStr for Claim {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parser::ClaimParser::new().parse(s).map_err(|err| err.to_string())
+        parser::ClaimParser::new()
+            .parse(s)
+            .map_err(|err| err.to_string())
     }
 }

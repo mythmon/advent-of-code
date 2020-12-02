@@ -1,5 +1,5 @@
 use advent_lib::cases::Puzzle;
-use std::{str::FromStr, num::ParseIntError};
+use std::{num::ParseIntError, str::FromStr};
 
 pub mod part1;
 pub mod part2;
@@ -22,15 +22,23 @@ impl FromStr for Instruction {
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = input.split_whitespace().collect();
         if parts.len() != 7 {
-            return Err(format!("Expected 7 instruction parts, found {}", parts.len()));
+            return Err(format!(
+                "Expected 7 instruction parts, found {}",
+                parts.len()
+            ));
         }
 
         // c inc -20 if c == 10
         Ok(Self {
             register: parts[0].into(),
-            op: parts[1].parse().map_err(|err| format!("Couldn't parse operator: {}", err))?,
-            amount: parts[2].parse().map_err(|err: ParseIntError| format!("Could not parse amount: {}", err))?,
-            condition: Condition::from_parts(&parts[4..]).map_err(|err| format!("Couldn't parse condition: {}", err))?,
+            op: parts[1]
+                .parse()
+                .map_err(|err| format!("Couldn't parse operator: {}", err))?,
+            amount: parts[2]
+                .parse()
+                .map_err(|err: ParseIntError| format!("Could not parse amount: {}", err))?,
+            condition: Condition::from_parts(&parts[4..])
+                .map_err(|err| format!("Couldn't parse condition: {}", err))?,
         })
     }
 }
@@ -65,8 +73,12 @@ impl Condition {
         assert_eq!(parts.len(), 3);
         Ok(Self {
             register: parts[0].into(),
-            comparison: parts[1].parse().map_err(|err| format!("Couldn't parse comparison: {}", err))?,
-            value: parts[2].parse().map_err(|err| format!("Couldn't parse value: {}", err))?,
+            comparison: parts[1]
+                .parse()
+                .map_err(|err| format!("Couldn't parse comparison: {}", err))?,
+            value: parts[2]
+                .parse()
+                .map_err(|err| format!("Couldn't parse value: {}", err))?,
         })
     }
 

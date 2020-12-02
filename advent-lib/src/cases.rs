@@ -1,6 +1,8 @@
 use std::{
+    fmt::Display,
     marker::PhantomData,
     time::{Duration, Instant},
+    unimplemented,
 };
 
 /// A puzzle case that can be executed, comparing expected output to actual
@@ -25,10 +27,27 @@ pub trait Puzzle: std::fmt::Debug + Sync + Send {
 pub trait PuzzleRunner: std::fmt::Debug + Sync + Send {
     type Input;
     type Output;
+    type Error = Box<dyn std::error::Error>;
 
+    /// The name of this puzzle
     fn name(&self) -> String;
+
+    /// The cases this puzzle has, including examples and solutions
     fn cases(&self) -> Vec<Box<dyn PuzzleCase>>;
-    fn run_puzzle(input: Self::Input) -> Self::Output;
+
+    /// Run the puzzle infallibly. This might panic if the puzzle is not
+    /// infallible
+    fn run_puzzle(_input: Self::Input) -> Self::Output {
+        unimplemented!();
+    }
+
+    /// Run the puzzle.
+    ///
+    /// # Errors
+    /// Returns an error if the puzzle could not be solved
+    fn try_run_puzzle(input: Self::Input) -> Result<Self::Output, Self::Error> {
+        Ok(Self::run_puzzle(input))
+    }
 }
 
 impl<T: PuzzleRunner> Puzzle for T {
@@ -89,13 +108,15 @@ pub enum PuzzleResultStatus {
     Match,
     Fail,
     Unknown,
+    Error,
 }
 
-impl<'a, T, I, O> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
+impl<'a, T, I, O, E> PuzzleCase for GenericPuzzleCase<'a, T, I, O>
 where
-    T: PuzzleRunner<Input = I, Output = O>,
+    T: PuzzleRunner<Input = I, Output = O, Error = E>,
     O: PartialEq + std::fmt::Debug + Sync + Send,
     I: Clone + std::fmt::Debug + Sync + Send,
+    E: Display,
 {
     fn name(&self) -> String {
         self.name.clone()
@@ -103,8 +124,17 @@ where
 
     fn run(&self) -> PuzzleResult {
         let start = Instant::now();
-        let actual = T::run_puzzle(self.input.clone());
+        let actual_result = T::try_run_puzzle(self.input.clone());
         let duration = start.elapsed();
+
+        if let Err(err) = actual_result {
+            return PuzzleResult {
+                status: PuzzleResultStatus::Error,
+                duration,
+                description: format!("Error: {}", err),
+            };
+        }
+        let actual = actual_result.ok().unwrap();
 
         match self.expected {
             ExpectedValue::Exact(ref expected) => {
@@ -146,11 +176,12 @@ where
     }
 }
 
-impl<'a, T, I, O> GenericPuzzleCase<'a, T, I, O>
+impl<'a, T, I, O, E> GenericPuzzleCase<'a, T, I, O>
 where
-    T: PuzzleRunner<Input = I, Output = O>,
+    T: PuzzleRunner<Input = I, Output = O, Error = E>,
     O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
     I: Clone + 'a + std::fmt::Debug + Sync + Send,
+    E: Display,
 {
     #[must_use]
     pub fn build_set() -> CaseSetBuilder<'a, T, I, O> {
@@ -164,11 +195,12 @@ pub struct CaseSetBuilder<'a, T, I, O> {
     phantom: PhantomData<&'a T>,
 }
 
-impl<'a, T, I, O> CaseSetBuilder<'a, T, I, O>
+impl<'a, T, I, O, E> CaseSetBuilder<'a, T, I, O>
 where
-    T: PuzzleRunner<Input = I, Output = O>,
+    T: PuzzleRunner<Input = I, Output = O, Error = E>,
     O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
     I: Clone + 'a + std::fmt::Debug + Sync + Send,
+    E: Display,
 {
     fn new() -> Self {
         Self {

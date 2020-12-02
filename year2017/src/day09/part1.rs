@@ -35,15 +35,21 @@ impl PuzzleRunner for Part1 {
         for c in input.trim().chars() {
             let next_action = match (state_stack.last(), c) {
                 (Some(&s), '!') if s != ParseState::Cancel => ParseAction::Push(ParseState::Cancel),
-                (Some(ParseState::Cancel), _) | (Some(ParseState::Garbage), '>') => ParseAction::Pop,
+                (Some(ParseState::Cancel), _) | (Some(ParseState::Garbage), '>') => {
+                    ParseAction::Pop
+                }
                 (None, '{') => ParseAction::Push(ParseState::InGroup(1)),
-                (Some(ParseState::InGroup(v)), '{') => ParseAction::Push(ParseState::InGroup(v + 1)),
+                (Some(ParseState::InGroup(v)), '{') => {
+                    ParseAction::Push(ParseState::InGroup(v + 1))
+                }
                 (Some(&ParseState::InGroup(v)), '}') => {
                     total_score += v;
                     ParseAction::Pop
                 }
                 (Some(ParseState::InGroup(_)), '<') => ParseAction::Push(ParseState::Garbage),
-                (Some(ParseState::InGroup(_)), ',') | (Some(ParseState::Garbage), _) => ParseAction::Nothing,
+                (Some(ParseState::InGroup(_)), ',') | (Some(ParseState::Garbage), _) => {
+                    ParseAction::Nothing
+                }
 
                 (s, c) => panic!("unexpected input '{}' in {:?}", c, s),
             };

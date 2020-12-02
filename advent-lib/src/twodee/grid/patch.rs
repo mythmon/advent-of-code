@@ -46,7 +46,8 @@ where
     }
 
     fn get(&self, p: Point<I>) -> Option<C> {
-        self.patches.get(&p)
+        self.patches
+            .get(&p)
             .map_or_else(|| self.grid.get(p), |patch| Some(patch.clone()))
     }
 }

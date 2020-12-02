@@ -7,6 +7,7 @@
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
     clippy::cast_precision_loss,
+    clippy::non_ascii_literal,
 
     clippy::use_self, // doesn't work well with generics
 )]
@@ -14,11 +15,14 @@
     associated_type_defaults,
     step_trait,
     try_trait,
+    min_const_generics,
+    once_cell
 )]
 
 use std::cmp;
 
 pub mod cases;
+pub mod grid_letters;
 pub mod helpers;
 pub mod twodee;
 

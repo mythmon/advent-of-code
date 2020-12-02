@@ -1,4 +1,7 @@
-use std::{convert::{TryFrom, TryInto}, fmt};
+use std::{
+    convert::{TryFrom, TryInto},
+    fmt,
+};
 
 #[allow(clippy::clippy::module_name_repetitions)]
 pub struct IntcodeComputer {
@@ -29,7 +32,8 @@ pub enum PauseReason {
 
 // public methods
 impl IntcodeComputer {
-    #[must_use] pub fn build(initial_memory: Vec<isize>) -> IntcodeComputerBuilder {
+    #[must_use]
+    pub fn build(initial_memory: Vec<isize>) -> IntcodeComputerBuilder {
         IntcodeComputerBuilder::new(initial_memory)
     }
 
@@ -171,9 +175,15 @@ impl IntcodeComputer {
         let instruction = self.read_mem(self.instruction_pointer);
         let opcode = instruction % 100;
         let param_modes: [ParameterMode; 3] = [
-            (instruction / 100 % 10).try_into().expect("Couldn't parse parameter mode"),
-            (instruction / 1_000 % 10).try_into().expect("Couldn't parse parameter mode"),
-            (instruction / 10_000 % 10).try_into().expect("Couldn't parse parameter mode"),
+            (instruction / 100 % 10)
+                .try_into()
+                .expect("Couldn't parse parameter mode"),
+            (instruction / 1_000 % 10)
+                .try_into()
+                .expect("Couldn't parse parameter mode"),
+            (instruction / 10_000 % 10)
+                .try_into()
+                .expect("Couldn't parse parameter mode"),
         ];
 
         match opcode {
@@ -274,7 +284,8 @@ impl IntcodeComputer {
         }
     }
 
-    #[must_use] pub fn read_mem(&self, addr: isize) -> isize {
+    #[must_use]
+    pub fn read_mem(&self, addr: isize) -> isize {
         assert!(addr >= 0, "invalid memory address");
         *self.memory.get(addr as usize).unwrap_or(&0)
     }

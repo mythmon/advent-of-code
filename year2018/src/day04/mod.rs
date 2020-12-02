@@ -95,7 +95,8 @@ impl PuzzleRunner for Part1 {
         let guard_sleep_wake_cycles = log
             .iter()
             .filter(|l| {
-                l.guard_id == Some(guard_most_asleep) && !matches!(l.event, LogEvent::BeginsShift { .. })
+                l.guard_id == Some(guard_most_asleep)
+                    && !matches!(l.event, LogEvent::BeginsShift { .. })
             })
             .tuples();
         let mut asleep_minutes = [0_u32; 60];

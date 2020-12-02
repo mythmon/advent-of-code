@@ -178,12 +178,15 @@ where
                         PuzzleResultStatus::Match => "PASS".green(),
                         PuzzleResultStatus::Unknown => "UNKO".yellow(),
                         PuzzleResultStatus::Fail => "FAIL".red(),
+                        PuzzleResultStatus::Error => "ERRO".black().on_red(),
                     }
                 );
                 print!("{:<10} ", case.name());
                 match result.status {
                     PuzzleResultStatus::Match => (),
-                    PuzzleResultStatus::Unknown | PuzzleResultStatus::Fail => {
+                    PuzzleResultStatus::Unknown
+                    | PuzzleResultStatus::Fail
+                    | PuzzleResultStatus::Error => {
                         print!(" -> {}", result.description)
                     }
                 }
@@ -196,6 +199,7 @@ where
                     PuzzleResultStatus::Match => print!("{}", "✔".green()),
                     PuzzleResultStatus::Unknown => print!("{}", "?".yellow()),
                     PuzzleResultStatus::Fail => print!("{}", "✗".red()),
+                    PuzzleResultStatus::Error => print!("{}", "!".black().on_red()),
                 }
             }
 
@@ -214,6 +218,12 @@ where
                     PuzzleResultStatus::Fail => println!(
                         "   {} {:<10} -> {}",
                         "FAIL".red(),
+                        case.name(),
+                        result.description
+                    ),
+                    PuzzleResultStatus::Error => println!(
+                        "   {} {:<10} -> {}",
+                        "ERRO".black().on_red(),
                         case.name(),
                         result.description
                     ),

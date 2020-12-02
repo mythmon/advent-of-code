@@ -5,10 +5,7 @@ use advent_lib::{
 use std::iter::Iterator;
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    vec![
-        Box::new(Part1),
-        Box::new(Part2),
-    ]
+    vec![Box::new(Part1), Box::new(Part2)]
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -41,12 +38,17 @@ impl PuzzleRunner for Part1 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.into_iter()
-        .filter(|entry| {
-            let count = entry.password.chars().filter(|c| *c == entry.letter).count();
-            count >= entry.first && count <= entry.second
-        })
-        .count()
+        input
+            .into_iter()
+            .filter(|entry| {
+                let count = entry
+                    .password
+                    .chars()
+                    .filter(|c| *c == entry.letter)
+                    .count();
+                count >= entry.first && count <= entry.second
+            })
+            .count()
     }
 }
 #[derive(Debug)]
@@ -71,13 +73,15 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        input.into_iter()
-        .filter(|entry| {
-            let first_match = entry.password.chars().nth(entry.first - 1)== Some(entry.letter);
-            let second_match = entry.password.chars().nth(entry.second - 1) == Some(entry.letter);
-            first_match ^ second_match
-        })
-        .count()
+        input
+            .into_iter()
+            .filter(|entry| {
+                let first_match = entry.password.chars().nth(entry.first - 1) == Some(entry.letter);
+                let second_match =
+                    entry.password.chars().nth(entry.second - 1) == Some(entry.letter);
+                first_match ^ second_match
+            })
+            .count()
     }
 }
 

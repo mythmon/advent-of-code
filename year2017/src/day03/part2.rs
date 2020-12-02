@@ -20,9 +20,7 @@ impl PuzzleRunner for Part2 {
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
-        GridStressValues::new()
-            .find(|v| *v > input)
-            .unwrap()
+        GridStressValues::new().find(|v| *v > input).unwrap()
     }
 }
 

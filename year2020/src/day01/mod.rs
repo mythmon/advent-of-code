@@ -5,10 +5,7 @@ use advent_lib::{
 use std::{collections::HashSet, iter::Iterator};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
-    vec![
-        Box::new(Part1),
-        Box::new(Part2),
-    ]
+    vec![Box::new(Part1), Box::new(Part2)]
 }
 
 #[derive(Debug)]
@@ -40,10 +37,10 @@ impl PuzzleRunner for Part1 {
             let y = 2020 - x;
             if *x == y {
                 // Can't pair a number with itself
-                continue
+                continue;
             }
             if numbers.contains(&y) {
-                return x * y
+                return x * y;
             }
         }
         panic!("No answer found");
@@ -81,14 +78,14 @@ impl PuzzleRunner for Part2 {
         for (idx1, x) in input.iter().enumerate() {
             for y in input[(idx1 + 1)..].iter() {
                 if x + y >= 2020 {
-                    continue
+                    continue;
                 }
                 let z = 2020 - x - y;
                 if z == *x || z == *y {
                     continue;
                 }
                 if numbers.contains(&z) {
-                    return x * y * z
+                    return x * y * z;
                 }
             }
         }
