@@ -10,6 +10,7 @@
 
     clippy::use_self, // doesn't work well with generics
 )]
+
 use advent_lib::cases::Puzzle;
 
 mod day01;
