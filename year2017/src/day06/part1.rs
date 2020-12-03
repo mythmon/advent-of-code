@@ -12,8 +12,8 @@ impl PuzzleRunner for Part1 {
         "2017-D06-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|raw_input| {
                 raw_input
                     .split_whitespace()
@@ -21,8 +21,8 @@ impl PuzzleRunner for Part1 {
                     .collect()
             })
             .case("Example", vec![0, 2, 7, 0], 5_usize)
-            .transformed_case("Solution", include_str!("input"), 14_029_usize)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 14_029_usize)?
+            .collect())
     }
 
     fn run_puzzle(mut input: Self::Input) -> Self::Output {

@@ -19,12 +19,12 @@ impl PuzzleRunner for Part1 {
         "2018-D12-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.parse().unwrap())
-            .transformed_case("Example", include_str!("example"), 325)
-            .transformed_case("Solution", include_str!("input"), 1_184)
-            .collect()
+            .transformed_case("Example", include_str!("example"), 325)?
+            .transformed_case("Solution", include_str!("input"), 1_184)?
+            .collect())
     }
 
     fn run_puzzle(mut pot_state: Self::Input) -> Self::Output {
@@ -192,11 +192,11 @@ impl PuzzleRunner for Part2 {
         "2018-D12-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.parse().unwrap())
-            .transformed_case("Solution", include_str!("input"), 250_000_000_219)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 250_000_000_219)?
+            .collect())
     }
 
     fn run_puzzle(mut pots_state: Self::Input) -> Self::Output {

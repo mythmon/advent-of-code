@@ -20,11 +20,11 @@ impl PuzzleRunner for Part1 {
         "2019-D05-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), 7_566_643)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 7_566_643)?
+            .collect())
     }
 
     fn run_puzzle(program: Self::Input) -> Self::Output {
@@ -45,11 +45,11 @@ impl PuzzleRunner for Part2 {
         "2019-D05-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Solution", include_str!("input"), 9_265_694)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 9_265_694)?
+            .collect())
     }
 
     fn run_puzzle(program: Self::Input) -> Self::Output {

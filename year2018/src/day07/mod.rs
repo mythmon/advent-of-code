@@ -25,13 +25,13 @@ impl PuzzleRunner for Part1 {
         "2018-D07-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             // spell-checker: disable
             .case("Example", include_str!("example"), "CABDFE".to_owned())
             .case("Solution", include_str!("input"), "JDEKPFABTUHOQSXVYMLZCNIGRW".to_owned())
             // spell-checker: enable
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -114,15 +114,15 @@ impl PuzzleRunner for Part2 {
         "2018-D07-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example", (include_str!("example"), 2_usize, 0_u32), 15_u32)
             .case(
                 "Solution",
                 (include_str!("input"), 6_usize, 60_u32),
                 1_048_u32,
             )
-            .collect()
+            .collect())
     }
 
     fn run_puzzle((input, max_workers, extra_time_per): Self::Input) -> Self::Output {

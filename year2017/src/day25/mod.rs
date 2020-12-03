@@ -18,10 +18,10 @@ impl PuzzleRunner for Day25 {
         "2017-D25".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Solution", 12_523_873_usize, 4_225_usize)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(_input: Self::Input) -> Self::Output {

@@ -11,11 +11,11 @@ impl PuzzleRunner for Part2 {
         "2017-D17-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.trim().parse().unwrap())
-            .transformed_case("Solution", include_str!("input"), 11_162_912)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 11_162_912)?
+            .collect())
     }
 
     fn run_puzzle(step: Self::Input) -> Self::Output {

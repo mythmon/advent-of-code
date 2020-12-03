@@ -27,14 +27,14 @@ impl PuzzleRunner for Part1 {
         "2020-D02-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Example 1a", "1-3 a: abcde", 1)
-            .transformed_case("Example 1b", "1-3 b: cdefg", 0)
-            .transformed_case("Example 1c", "2-9 c: ccccccccc", 1)
-            .transformed_case("Solution", include_str!("input"), 580)
-            .collect()
+            .transformed_case("Example 1a", "1-3 a: abcde", 1)?
+            .transformed_case("Example 1b", "1-3 b: cdefg", 0)?
+            .transformed_case("Example 1c", "2-9 c: ccccccccc", 1)?
+            .transformed_case("Solution", include_str!("input"), 580)?
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -62,14 +62,14 @@ impl PuzzleRunner for Part2 {
         "2020-D02-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Example 1a", "1-3 a: abcde", 1)
-            .transformed_case("Example 1b", "1-3 b: cdefg", 0)
-            .transformed_case("Example 1c", "2-9 c: ccccccccc", 0)
-            .transformed_case("Solution", include_str!("input"), 611)
-            .collect()
+            .transformed_case("Example 1a", "1-3 a: abcde", 1)?
+            .transformed_case("Example 1b", "1-3 b: cdefg", 0)?
+            .transformed_case("Example 1c", "2-9 c: ccccccccc", 0)?
+            .transformed_case("Solution", include_str!("input"), 611)?
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {

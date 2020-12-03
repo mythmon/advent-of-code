@@ -15,10 +15,10 @@ impl PuzzleRunner for Part2 {
         "2017-D07-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
         // spell-checker: disable
-        GenericPuzzleCase::<Self, _, _>::build_set()
-            .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
+            .add_try_transform(|s| s.lines().map(|l| l.parse()).collect())
             .transformed_case(
                 "Example",
                 indoc!(
@@ -39,9 +39,9 @@ impl PuzzleRunner for Part2 {
                     "
                 ),
                 60,
-            )
-            .transformed_case("Solution", include_str!("input"), 1_526)
-            .collect()
+            )?
+            .transformed_case("Solution", include_str!("input"), 1_526)?
+            .collect())
         // spell-checker: enable
     }
 
@@ -114,7 +114,7 @@ pub struct NodeDesc {
 }
 
 impl FromStr for NodeDesc {
-    type Err = ();
+    type Err = Box<dyn std::error::Error>;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let parts: Vec<String> = input.split_whitespace().map(String::from).collect();
@@ -123,8 +123,7 @@ impl FromStr for NodeDesc {
             let weight = parts[1]
                 .trim_start_matches('(')
                 .trim_end_matches(')')
-                .parse()
-                .unwrap();
+                .parse()?;
             Ok(Self {
                 name: parts[0].clone(),
                 holding: vec![],
@@ -138,19 +137,18 @@ impl FromStr for NodeDesc {
             let weight = parts[1]
                 .trim_start_matches('(')
                 .trim_end_matches(')')
-                .parse()
-                .unwrap();
+                .parse()?;
             Ok(Self {
                 name: parts[0].clone(),
                 holding,
                 weight,
             })
         } else {
-            panic!(format!(
+            Err(format!(
                 "Unexpected number of parts in {}: {}",
                 input,
                 parts.len()
-            ));
+            ).into())
         }
     }
 }

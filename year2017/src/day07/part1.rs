@@ -13,9 +13,9 @@ impl PuzzleRunner for Part1 {
         "2017-D07-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
         // spell-checker: disable
-        GenericPuzzleCase::<Self, _, _>::build_set()
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(|s| s.lines().map(|l| l.parse().unwrap()).collect())
             .case(
                 "Example",
@@ -36,8 +36,8 @@ impl PuzzleRunner for Part1 {
                 ],
                 "tknk".to_owned(),
             )
-            .transformed_case("Solution", include_str!("input"), "gynfwly".to_owned())
-            .collect()
+            .transformed_case("Solution", include_str!("input"), "gynfwly".to_owned())?
+            .collect())
         // spell-checker: enable
     }
 

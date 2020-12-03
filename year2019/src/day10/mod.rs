@@ -19,17 +19,17 @@ impl PuzzleRunner for Part1 {
         "2019-D10-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Debug", "###\n#..\n...", 3)
-            .transformed_case("Example 0", include_str!("example0"), 8)
-            .transformed_case("Example 1", include_str!("example1"), 33)
-            .transformed_case("Example 2", include_str!("example2"), 35)
-            .transformed_case("Example 3", include_str!("example3"), 41)
-            .transformed_case("Example 4", include_str!("example4"), 210)
-            .transformed_case("Solution", include_str!("input"), 260)
-            .collect()
+            .transformed_case("Debug", "###\n#..\n...", 3)?
+            .transformed_case("Example 0", include_str!("example0"), 8)?
+            .transformed_case("Example 1", include_str!("example1"), 33)?
+            .transformed_case("Example 2", include_str!("example2"), 35)?
+            .transformed_case("Example 3", include_str!("example3"), 41)?
+            .transformed_case("Example 4", include_str!("example4"), 210)?
+            .transformed_case("Solution", include_str!("input"), 260)?
+            .collect())
     }
 
     fn run_puzzle(map: Self::Input) -> Self::Output {
@@ -48,12 +48,12 @@ impl PuzzleRunner for Part2 {
         "2019-D10-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
-            .transformed_case("Example 4", include_str!("example4"), 802)
-            .transformed_case("Solution", include_str!("input"), 608)
-            .collect()
+            .transformed_case("Example 4", include_str!("example4"), 802)?
+            .transformed_case("Solution", include_str!("input"), 608)?
+            .collect())
     }
 
     fn run_puzzle(mut map: Self::Input) -> Self::Output {

@@ -17,14 +17,14 @@ impl PuzzleRunner for Part1 {
         "2019-D04-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example 1", (111_111, 111_111), 1)
             .case("Example 2", (223_450, 223_450), 0)
             .case("Example 3", (123_789, 123_789), 0)
             .case("Debug 1", (100_000, 100_100), 0)
             .case("Solution", (367_479, 893_698), 495)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle((low, high): Self::Input) -> Self::Output {
@@ -52,13 +52,13 @@ impl PuzzleRunner for Part2 {
         "2019-D04-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example 1", (11_22_33, 11_22_33), 1)
             .case("Example 2", (123_444, 123_444), 0)
             .case("Example 3", (111_122, 111_122), 1)
             .case("Solution", (367_479, 893_698), 305)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle((low, high): Self::Input) -> Self::Output {

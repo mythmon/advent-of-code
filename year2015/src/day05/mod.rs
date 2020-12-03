@@ -20,18 +20,18 @@ impl PuzzleRunner for Part1 {
         "2015-D05-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
             /* spell-checker: disable */
-            .transformed_case("Example 1", "ugknbfddgicrmopn", 1)
-            .transformed_case("Example 2", "aaa", 1)
-            .transformed_case("Example 3", "jchzalrnumimnmhp", 0)
-            .transformed_case("Example 4", "haegwjzuvuyypxyu", 0)
-            .transformed_case("Example 5", "dvszwmarrgswjxmb", 0)
+            .transformed_case("Example 1", "ugknbfddgicrmopn", 1)?
+            .transformed_case("Example 2", "aaa", 1)?
+            .transformed_case("Example 3", "jchzalrnumimnmhp", 0)?
+            .transformed_case("Example 4", "haegwjzuvuyypxyu", 0)?
+            .transformed_case("Example 5", "dvszwmarrgswjxmb", 0)?
             /* spell-checker: enable */
-            .transformed_case("Solution", include_str!("input"), 238)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 238)?
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -83,18 +83,18 @@ impl PuzzleRunner for Part2 {
         "2015-D05-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .add_transform(parse_input)
             /* spell-checker: disable */
-            .transformed_case("Example 1", "qjhvhtzxzqqjkmpb", 1)
-            .transformed_case("Example 2", "xxyxx", 1)
-            .transformed_case("Example 3", "uurcxstgmygtbstg", 0)
-            .transformed_case("Example 4", "ieodomkazucvgmuy", 0)
-            .transformed_case("Test 1", "sknufchjdvccccta", 1)
+            .transformed_case("Example 1", "qjhvhtzxzqqjkmpb", 1)?
+            .transformed_case("Example 2", "xxyxx", 1)?
+            .transformed_case("Example 3", "uurcxstgmygtbstg", 0)?
+            .transformed_case("Example 4", "ieodomkazucvgmuy", 0)?
+            .transformed_case("Test 1", "sknufchjdvccccta", 1)?
             /* spell-checker: enable */
-            .transformed_case("Solution", include_str!("input"), 69)
-            .collect()
+            .transformed_case("Solution", include_str!("input"), 69)?
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {

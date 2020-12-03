@@ -14,14 +14,14 @@ impl PuzzleRunner for Part2 {
         "2017-D16-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Solution",
                 (16, include_str!("input").trim()),
                 "fjpmholcibdgeakn".to_owned(), // spell-checker: disable-line
             )
-            .collect()
+            .collect())
     }
 
     fn run_puzzle((num_dancers, input): Self::Input) -> Self::Output {

@@ -13,11 +13,11 @@ impl PuzzleRunner for Part2 {
         "2017-D14-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example", "flqrgnkx", 1_242_usize)  // spell-checker: disable-line
             .case("Solution", include_str!("input").trim(), 1_180_usize)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {

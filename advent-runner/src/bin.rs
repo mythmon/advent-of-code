@@ -148,7 +148,7 @@ where
 
     for puzzle in get_puzzles() {
         let results: Vec<_> = puzzle
-            .cases()
+            .cases().expect(&format!("Could not determine cases for {}", puzzle.name()))
             .into_iter()
             .filter(|case| {
                 if filter_parts.is_empty() {
@@ -373,7 +373,7 @@ where
 
     for puzzle in get_puzzles() {
         let results: Vec<_> = puzzle
-            .cases()
+            .cases().expect("Could not determine cases")
             .into_iter()
             .filter(|case| {
                 if filter_parts.is_empty() {

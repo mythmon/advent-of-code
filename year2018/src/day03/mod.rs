@@ -38,8 +38,8 @@ impl PuzzleRunner for Part1 {
         "2018-D03-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Example",
                 indoc!(
@@ -52,7 +52,7 @@ impl PuzzleRunner for Part1 {
                 4_usize,
             )
             .case("Solution", include_str!("input"), 109_143_usize)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -81,8 +81,8 @@ impl PuzzleRunner for Part2 {
         "2018-D03-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Example",
                 indoc!(
@@ -95,7 +95,7 @@ impl PuzzleRunner for Part2 {
                 3_u32,
             )
             .case("Solution", include_str!("input"), 506_u32)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {

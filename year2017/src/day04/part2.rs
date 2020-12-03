@@ -12,9 +12,9 @@ impl PuzzleRunner for Part2 {
         "2017-D04-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
         // spell-checker: disable
-        GenericPuzzleCase::<Self, _, _>::build_set()
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case(
                 "Example",
                 "abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi \
@@ -22,7 +22,7 @@ impl PuzzleRunner for Part2 {
                 3_usize,
             )
             .case("Solution", include_str!("input"), 251_usize)
-            .collect()
+            .collect())
         // spell-checker: enable
     }
 

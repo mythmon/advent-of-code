@@ -17,7 +17,7 @@ pub trait PuzzleCase: std::fmt::Debug + Sync + Send {
 /// Importantly, this does not depend on the types of the input or outputs.
 pub trait Puzzle: std::fmt::Debug + Sync + Send {
     fn name(&self) -> String;
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>>;
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>>;
 }
 
 /// A function to run a specific puzzle's code
@@ -33,7 +33,7 @@ pub trait PuzzleRunner: std::fmt::Debug + Sync + Send {
     fn name(&self) -> String;
 
     /// The cases this puzzle has, including examples and solutions
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>>;
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>>;
 
     /// Run the puzzle infallibly. This might panic if the puzzle is not
     /// infallible
@@ -55,7 +55,7 @@ impl<T: PuzzleRunner> Puzzle for T {
         PuzzleRunner::name(self)
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
         PuzzleRunner::cases(self)
     }
 }
@@ -189,23 +189,23 @@ where
     }
 }
 
-pub struct CaseSetBuilder<'a, T, I, O> {
+pub struct CaseSetBuilder<'a, T, I, O, E = Box<dyn std::error::Error>> {
     cases: Vec<GenericPuzzleCase<'a, T, I, O>>,
-    transform: Option<Box<dyn Fn(&str) -> I>>,
+    try_transform: Option<Box<dyn Fn(&str) -> Result<I, E>>>,
     phantom: PhantomData<&'a T>,
 }
 
-impl<'a, T, I, O, E> CaseSetBuilder<'a, T, I, O>
+impl<'a, T, I, O, ERunner, ETransform> CaseSetBuilder<'a, T, I, O, ETransform>
 where
-    T: PuzzleRunner<Input = I, Output = O, Error = E>,
+    T: PuzzleRunner<Input = I, Output = O, Error = ERunner>,
     O: PartialEq + 'a + std::fmt::Debug + Sync + Send,
     I: Clone + 'a + std::fmt::Debug + Sync + Send,
-    E: Display,
+    ERunner: Display,
 {
     fn new() -> Self {
         Self {
             cases: vec![],
-            transform: None,
+            try_transform: None,
             phantom: PhantomData::<&T>,
         }
     }
@@ -214,7 +214,15 @@ where
     where
         F: Fn(&str) -> I + 'static,
     {
-        self.transform = Some(Box::new(transform));
+        self.try_transform = Some(Box::new(move |input| Ok(transform(input))));
+        self
+    }
+
+    pub fn add_try_transform<F>(mut self, transform: F) -> Self
+    where
+        F: Fn(&str) -> Result<I, ETransform> + 'static,
+    {
+        self.try_transform = Some(Box::new(transform));
         self
     }
 
@@ -233,15 +241,15 @@ where
         self
     }
 
-    pub fn transformed_case<S, O_>(self, name: S, raw_input: &str, expected: O_) -> Self
+    pub fn transformed_case<S, O_>(self, name: S, raw_input: &str, expected: O_) -> Result<Self, ETransform>
     where
         S: Into<String>,
         O_: Into<ExpectedValue<O>>,
     {
-        match self.transform {
-            Some(ref transform) => {
-                let transformed_input = transform(raw_input);
-                self.case(name, transformed_input, expected)
+        match self.try_transform {
+            Some(ref try_transform) => {
+                let transformed_input = try_transform(raw_input)?;
+                Ok(self.case(name, transformed_input, expected))
             }
             None => panic!("Must call `add_transform` before transformed_case"),
         }

@@ -20,11 +20,11 @@ impl PuzzleRunner for Part1 {
         "2018-D02-P1".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             .case("Example", "abcdef\nbababc\nabbcde\nabcccd\naabcdd\nabcdee\nababab", 12_usize) // spell-checker: disable-line
             .case("Solution", include_str!("input"), 5_880_usize)
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
@@ -59,13 +59,13 @@ impl PuzzleRunner for Part2 {
         "2018-D02-P2".to_owned()
     }
 
-    fn cases(&self) -> Vec<Box<dyn PuzzleCase>> {
-        GenericPuzzleCase::<Self, _, _>::build_set()
+    fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
+        Ok(GenericPuzzleCase::<Self, _, _>::build_set()
             // spell-checker: disable
             .case("Example", "abcde\nfghij\nklmno\npqrst\nfguij\naxcye\nwvxyz\n", "fgij".to_owned())
             .case("Solution", include_str!("input"), "tiwcdpbseqhxryfmgkvjujvza".to_owned())
             // spell-checker: enable
-            .collect()
+            .collect())
     }
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
