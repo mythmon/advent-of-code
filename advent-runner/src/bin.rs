@@ -148,7 +148,8 @@ where
 
     for puzzle in get_puzzles() {
         let results: Vec<_> = puzzle
-            .cases().expect(&format!("Could not determine cases for {}", puzzle.name()))
+            .cases().unwrap_or_else(|err|
+                panic!(format!("Could not determine cases for {}: {}", puzzle.name(), err)))
             .into_iter()
             .filter(|case| {
                 if filter_parts.is_empty() {

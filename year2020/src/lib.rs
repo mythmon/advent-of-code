@@ -10,6 +10,7 @@
 
     clippy::use_self, // doesn't work well with generics
 )]
+#![feature(str_split_once, once_cell)]
 
 use advent_lib::cases::Puzzle;
 
