@@ -2587,4 +2587,5 @@ version = "0.1.0"
 dependencies = [
  "advent-lib",
  "indoc 1.0.3",
+ "regex",
 ]
