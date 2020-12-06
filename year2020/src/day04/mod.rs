@@ -1,4 +1,7 @@
-use advent_lib::{helpers::StringAdventExt, cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner}};
+use advent_lib::{
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    helpers::StringAdventExt,
+};
 use indoc::indoc;
 use regex::Regex;
 use std::{

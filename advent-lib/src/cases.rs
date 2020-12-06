@@ -241,7 +241,12 @@ where
         self
     }
 
-    pub fn transformed_case<S, O_>(self, name: S, raw_input: &str, expected: O_) -> Result<Self, ETransform>
+    pub fn transformed_case<S, O_>(
+        self,
+        name: S,
+        raw_input: &str,
+        expected: O_,
+    ) -> Result<Self, ETransform>
     where
         S: Into<String>,
         O_: Into<ExpectedValue<O>>,

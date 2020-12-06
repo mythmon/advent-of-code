@@ -144,11 +144,7 @@ impl FromStr for NodeDesc {
                 weight,
             })
         } else {
-            Err(format!(
-                "Unexpected number of parts in {}: {}",
-                input,
-                parts.len()
-            ).into())
+            Err(format!("Unexpected number of parts in {}: {}", input, parts.len()).into())
         }
     }
 }
