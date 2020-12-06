@@ -6,17 +6,26 @@ use std::{
 
 pub trait StringAdventExt {
     fn trimmed_lines(&self) -> TrimmedLines;
+    fn paragraphs(&self) -> Paragraphs;
 }
 
 impl StringAdventExt for &str {
     fn trimmed_lines(&self) -> TrimmedLines {
         TrimmedLines(self.lines())
     }
+
+    fn paragraphs(&self) -> Paragraphs {
+        Paragraphs(self.lines())
+    }
 }
 
 impl StringAdventExt for String {
     fn trimmed_lines(&self) -> TrimmedLines {
         TrimmedLines(self.lines())
+    }
+
+    fn paragraphs(&self) -> Paragraphs {
+        Paragraphs(self.lines())
     }
 }
 
@@ -34,6 +43,35 @@ impl<'a> Iterator for TrimmedLines<'a> {
             }
         }
         None
+    }
+}
+
+pub struct Paragraphs<'a>(std::str::Lines<'a>);
+
+impl<'a> Iterator for Paragraphs<'a> {
+    type Item = String;
+
+    fn next(&mut self) -> Option<String> {
+        let mut acc = vec![];
+        // skip over any leading blank lines
+        while let Some(line) = self.0.next() {
+            if !line.is_empty() {
+                acc.push(line);
+                break;
+            }
+        }
+        while let Some(line) = self.0.next() {
+            if line.is_empty() {
+                break;
+            }
+            acc.push(line);
+        }
+
+        if acc.is_empty() {
+            None
+        } else {
+            Some(acc.join("\n"))
+        }
     }
 }
 
@@ -233,5 +271,51 @@ impl Difference for usize {
         } else {
             other - self
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_paragraphs_empty() {
+        assert!("".paragraphs().collect::<Vec<_>>().is_empty());
+    }
+
+    #[test]
+    fn test_paragraphs_single() {
+        assert_eq!(
+            "first\nparagraph".paragraphs().collect::<Vec<_>>(),
+            vec!["first\nparagraph".to_string()]
+        );
+    }
+
+    #[test]
+    fn test_paragraphs_multiple() {
+        assert_eq!(
+            "first\nparagraph\n\nsecond\nparagraph\n\nthird"
+                .paragraphs()
+                .collect::<Vec<_>>(),
+            vec![
+                "first\nparagraph".to_string(),
+                "second\nparagraph".to_string(),
+                "third".to_string()
+            ]
+        );
+    }
+
+    #[test]
+    fn test_paragraphs_extra_whitespace() {
+        assert_eq!(
+            "\nfirst\nparagraph\n\n\n\nsecond\nparagraph\n\n\nthird\n\n\n"
+                .paragraphs()
+                .collect::<Vec<_>>(),
+            vec![
+                "first\nparagraph".to_string(),
+                "second\nparagraph".to_string(),
+                "third".to_string()
+            ]
+        );
     }
 }

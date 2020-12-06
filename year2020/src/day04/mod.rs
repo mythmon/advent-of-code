@@ -1,4 +1,4 @@
-use advent_lib::cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner};
+use advent_lib::{helpers::StringAdventExt, cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner}};
 use indoc::indoc;
 use regex::Regex;
 use std::{
@@ -122,13 +122,11 @@ impl PuzzleRunner for Part2 {
 }
 
 fn parse_input(input: &str) -> Result<Vec<Passport>, Box<dyn Error>> {
-    let v = input
-        .trim()
-        .split("\n\n")
-        .map(|paragraph| paragraph.parse::<Passport>())
-        // .collect::<Result<_, PassportError>>()?
-        .collect::<Result<Vec<_>, _>>();
-    v.map_err(|err| err.into())
+    input
+        .paragraphs()
+        .map(|p| p.parse())
+        .collect::<Result<Vec<_>, PassportError>>()
+        .map_err(|err| err.into())
 }
 
 #[derive(Clone, Debug, Default)]
@@ -172,9 +170,7 @@ impl Passport {
                 .passport_id
                 .validated_set(Some(value), |s| s.len() == 9),
 
-            "cid" => self
-                .country_id
-                .validated_set(Some(value), |s| s.len() == 9),
+            "cid" => self.country_id.validated_set(Some(value), |s| s.len() == 9),
 
             _ => return Err(PassportError::UnknownKey(key.to_string())),
         }
