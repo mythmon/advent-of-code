@@ -244,7 +244,7 @@ where
 fn format_sum_duration(ds: &[Duration]) -> impl fmt::Display {
     let sum: u128 = ds.iter().map(Duration::as_micros).sum();
     let s = sum.to_formatted_string(&Locale::en);
-    let s = format!("{:>10} us ", s);
+    let s = format!("{:>10} μs ", s);
     match sum {
         0 => s.bright_black(),
         d if d < 1_000 => s.bright_black(),
