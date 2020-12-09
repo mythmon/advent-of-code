@@ -11,3 +11,4 @@ advent-lib = { path = "../advent-lib" }
 indoc = "1.0.3"
 regex = "1.4.2"
 rayon = "1.5.0"
+itertools = "0.9.0"

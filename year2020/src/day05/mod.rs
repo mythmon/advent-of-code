@@ -1,7 +1,4 @@
-use advent_lib::{
-    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
-    helpers::StringAdventExt,
-};
+use advent_lib::{cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner}, helpers::{Bounds, StringAdventExt}};
 use std::{collections::HashSet, iter::Iterator};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -62,23 +59,8 @@ impl PuzzleRunner for Part2 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let seen_seats: HashSet<_> = input.into_iter().map(|s| seat_id(&s)).collect();
-        let (min_seat, max_seat) = seen_seats.iter().fold((None, None), |bounds, next| {
-            if bounds == (None, None) {
-                (Some(next), Some(next))
-            } else {
-                if next < bounds.0.unwrap() {
-                    (Some(next), bounds.1)
-                } else if next > bounds.1.unwrap() {
-                    (bounds.0, Some(next))
-                } else {
-                    bounds
-                }
-            }
-        });
-        let min_seat = *min_seat.unwrap();
-        let max_seat = *max_seat.unwrap();
-        let all_seats: HashSet<_> = (min_seat..=max_seat).into_iter().collect();
-
+        let (min_seat, max_seat) = seen_seats.iter().bounds().unwrap();
+        let all_seats: HashSet<_> = (*min_seat..=*max_seat).into_iter().collect();
         *all_seats.difference(&seen_seats).next().unwrap()
     }
 }

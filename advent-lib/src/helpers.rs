@@ -274,6 +274,32 @@ impl Difference for usize {
     }
 }
 
+pub trait Bounds<T> {
+    fn bounds(self) -> Option<(T, T)>;
+}
+
+impl<Iter, T> Bounds<T> for Iter
+where
+    Iter: Iterator<Item = T> + Sized,
+    T: Ord + Clone,
+{
+    fn bounds(self) -> Option<(T, T)> {
+        self.fold(None, |bounds, next| {
+            if let Some((prev_min, prev_max)) = bounds {
+                if next < prev_min {
+                    Some((next, prev_max))
+                } else if next > prev_max {
+                    Some((prev_min, next))
+                } else {
+                    Some((prev_min, prev_max))
+                }
+            } else {
+                Some((next.clone(), next.clone()))
+            }
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

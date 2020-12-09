@@ -3,8 +3,8 @@ use advent_lib::{
     helpers::StringAdventExt,
 };
 use indoc::indoc;
-use std::{collections::HashSet, error::Error, iter::Iterator, str::FromStr, sync::mpsc::channel};
 use rayon::prelude::*;
+use std::{collections::HashSet, error::Error, iter::Iterator, str::FromStr, sync::mpsc::channel};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![Box::new(Part1), Box::new(Part2)]
@@ -180,43 +180,61 @@ impl PuzzleRunner for Part2 {
     }
 
     fn try_run_puzzle(program: Self::Input) -> Result<Self::Output, Self::Error> {
-        let iter = (0..program.len())
-            .par_bridge()
-            .map(|index_to_change| -> Result<Option<i32>, String> {
-                let mut changed_program = program.clone();
-                changed_program[index_to_change] = match changed_program[index_to_change] {
-                    Instruction { op: Operation::Nop, data } => Instruction { op: Operation::Jmp, data },
-                    Instruction { op: Operation::Jmp, data } => Instruction { op: Operation::Nop, data },
-                    _ => return Ok(None),
-                };
+        let iter =
+            (0..program.len())
+                .par_bridge()
+                .map(|index_to_change| -> Result<Option<i32>, String> {
+                    let mut changed_program = program.clone();
+                    changed_program[index_to_change] = match changed_program[index_to_change] {
+                        Instruction {
+                            op: Operation::Nop,
+                            data,
+                        } => Instruction {
+                            op: Operation::Jmp,
+                            data,
+                        },
+                        Instruction {
+                            op: Operation::Jmp,
+                            data,
+                        } => Instruction {
+                            op: Operation::Nop,
+                            data,
+                        },
+                        _ => return Ok(None),
+                    };
 
-                let mut console = GameConsole::new(changed_program);
-                let mut indexes_executed = HashSet::new();
+                    let mut console = GameConsole::new(changed_program);
+                    let mut indexes_executed = HashSet::new();
 
-                loop {
-                    if console.program_counter >= program.len() {
-                        return Ok(Some(console.accumulator));
+                    loop {
+                        if console.program_counter >= program.len() {
+                            return Ok(Some(console.accumulator));
+                        }
+                        if indexes_executed.contains(&console.program_counter) {
+                            return Ok(None);
+                        }
+                        indexes_executed.insert(console.program_counter);
+                        console.step()?;
                     }
-                    if indexes_executed.contains(&console.program_counter) {
-                        return Ok(None);
-                    }
-                    indexes_executed.insert(console.program_counter);
-                    console.step()?;
-                }
-            });
+                });
 
         let (answer_tx, answer_rx) = channel();
         let (error_tx, error_rx) = channel();
 
-        iter
-            .try_for_each_with((answer_tx, error_tx), |(answer_tx, error_tx), candidate| {
-                match candidate {
-                    Ok(Some(answer)) => { answer_tx.send(answer).unwrap(); Ok(()) },
-                    Ok(None) => Ok(()),
-                    Err(err) => { error_tx.send(err).unwrap(); Err(()) },
+        iter.try_for_each_with((answer_tx, error_tx), |(answer_tx, error_tx), candidate| {
+            match candidate {
+                Ok(Some(answer)) => {
+                    answer_tx.send(answer).unwrap();
+                    Ok(())
                 }
-            })
-            .map_err(|_| format!("There was an error: {:?}", error_rx.iter().next().unwrap()))?;
+                Ok(None) => Ok(()),
+                Err(err) => {
+                    error_tx.send(err).unwrap();
+                    Err(())
+                }
+            }
+        })
+        .map_err(|_| format!("There was an error: {:?}", error_rx.iter().next().unwrap()))?;
 
         answer_rx.iter().next().ok_or("No answer found".into())
     }
