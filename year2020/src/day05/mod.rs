@@ -1,4 +1,7 @@
-use advent_lib::{cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner}, helpers::{Bounds, StringAdventExt}};
+use advent_lib::{
+    cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
+    helpers::{Bounds, StringAdventExt},
+};
 use std::{collections::HashSet, iter::Iterator};
 
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {

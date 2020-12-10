@@ -196,21 +196,19 @@ impl FromStr for Rule {
                         let p = p.trim_end_matches('.');
                         if p == "no other bags" {
                             vec![]
-                        } else {
-                            if let Some((count, description)) = p.split_once(' ') {
-                                if let Ok(count) = count.parse() {
-                                    let description = description
-                                        .trim_end_matches(".")
-                                        .trim_end_matches("s")
-                                        .trim_end_matches("bag")
-                                        .trim();
-                                    vec![Ok((count, description.to_string()))]
-                                } else {
-                                    vec![Err(format!("Syntax error: Bad digit in `{}`", p))]
-                                }
+                        } else if let Some((count, description)) = p.split_once(' ') {
+                            if let Ok(count) = count.parse() {
+                                let description = description
+                                    .trim_end_matches(".")
+                                    .trim_end_matches("s")
+                                    .trim_end_matches("bag")
+                                    .trim();
+                                vec![Ok((count, description.to_string()))]
                             } else {
-                                vec![Err(format!("Syntax error: Bad format in `{}`", p))]
+                                vec![Err(format!("Syntax error: Bad digit in `{}`", p))]
                             }
+                        } else {
+                            vec![Err(format!("Syntax error: Bad format in `{}`", p))]
                         }
                     })
                     .collect::<Vec<_>>()
