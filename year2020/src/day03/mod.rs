@@ -9,7 +9,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     vec![Box::new(Part1), Box::new(Part2)]
 }
 
-fn tree_on_slopes(trees: &Vec<Vec<bool>>, dx: usize, dy: usize) -> u64 {
+fn tree_on_slopes(trees: &[Vec<bool>], dx: usize, dy: usize) -> u64 {
     let mut x = 0;
     let mut y = 0;
     let mut tree_count = 0;

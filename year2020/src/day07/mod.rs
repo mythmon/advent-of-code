@@ -75,10 +75,11 @@ impl PuzzleRunner for Part1 {
             // If the bag directly contains shiny gold, or contains a bag that
             // can (possibly indirectly) contain shiny gold, mark it as being
             // able to contain gold.
-            if to_check.contains.iter().any(|(_, inner_color)| {
+            let inner_check = to_check.contains.iter().any(|(_, inner_color)| {
                 inner_color == "shiny gold"
                     || matches!(can_contain_gold.get(inner_color), Some(true))
-            }) {
+            });
+            if inner_check {
                 can_contain_gold.insert(to_check.outer_color.clone(), true);
                 continue;
             }
@@ -159,7 +160,7 @@ impl PuzzleRunner for Part2 {
 
 fn count_bags_in(
     source: &HashMap<String, Vec<(usize, String)>>,
-    target: &String,
+    target: &str,
 ) -> Result<usize, String> {
     let bag_info = source
         .get(target)
@@ -188,10 +189,10 @@ impl FromStr for Rule {
             .split_once(" bags contain ")
             .ok_or("Syntax error, did not match first split")?;
         let contains = rest
-            .split(",")
+            .split(',')
             .flat_map(|s| {
-                s.split(",")
-                    .map(|p| p.trim())
+                s.split(',')
+                    .map(str::trim)
                     .flat_map(|p| {
                         let p = p.trim_end_matches('.');
                         if p == "no other bags" {
@@ -199,8 +200,8 @@ impl FromStr for Rule {
                         } else if let Some((count, description)) = p.split_once(' ') {
                             if let Ok(count) = count.parse() {
                                 let description = description
-                                    .trim_end_matches(".")
-                                    .trim_end_matches("s")
+                                    .trim_end_matches('.')
+                                    .trim_end_matches('s')
                                     .trim_end_matches("bag")
                                     .trim();
                                 vec![Ok((count, description.to_string()))]

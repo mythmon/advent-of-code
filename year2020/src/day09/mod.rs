@@ -46,7 +46,7 @@ impl PuzzleRunner for Part1 {
         for n in input_iter.skip(window_size) {
             let window = &log[log.len() - window_size..log.len()];
             if !window
-                .into_iter()
+                .iter()
                 .combinations(2)
                 .any(|combo| combo.into_iter().sum::<u64>() == n)
             {
@@ -99,9 +99,9 @@ impl PuzzleRunner for Part2 {
                     std::cmp::Ordering::Less => (),
                     std::cmp::Ordering::Equal => {
                         return input[start..=end]
-                            .into_iter()
+                            .iter()
                             .bounds()
-                            .ok_or("Matched range was empty?".into())
+                            .ok_or_else(|| "Matched range was empty?".into())
                             .map(|(min, max)| *min + *max)
                     }
                     std::cmp::Ordering::Greater => break,
@@ -116,7 +116,7 @@ impl PuzzleRunner for Part2 {
 fn parse_input(input: &str) -> Result<(usize, Vec<u64>), Box<dyn Error>> {
     input
         .trimmed_lines()
-        .map(|line| line.parse())
+        .map(str::parse)
         .collect::<Result<Vec<u64>, _>>()
         .map_err(|err| err.into())
         .map(|vec| (25, vec))

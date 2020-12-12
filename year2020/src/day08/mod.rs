@@ -185,22 +185,25 @@ impl PuzzleRunner for Part2 {
                 .par_bridge()
                 .map(|index_to_change| -> Result<Option<i32>, String> {
                     let mut changed_program = program.clone();
-                    changed_program[index_to_change] = match changed_program[index_to_change] {
-                        Instruction {
+                    changed_program[index_to_change] = match changed_program.get(index_to_change) {
+                        Some(Instruction {
                             op: Operation::Nop,
                             data,
-                        } => Instruction {
+                        }) => Instruction {
                             op: Operation::Jmp,
-                            data,
+                            data: *data,
                         },
-                        Instruction {
+                        Some(Instruction {
                             op: Operation::Jmp,
                             data,
-                        } => Instruction {
+                        }) => Instruction {
                             op: Operation::Nop,
-                            data,
+                            data: *data,
                         },
-                        _ => return Ok(None),
+                        Some(Instruction {
+                            op: Operation::Acc, ..
+                        }) => return Ok(None),
+                        None => return Err("Bug! index out of bounds".into()),
                     };
 
                     let mut console = GameConsole::new(changed_program);
@@ -234,15 +237,18 @@ impl PuzzleRunner for Part2 {
                 }
             }
         })
-        .map_err(|_| format!("There was an error: {:?}", error_rx.iter().next().unwrap()))?;
+        .map_err(|()| format!("There was an error: {:?}", error_rx.iter().next().unwrap()))?;
 
-        answer_rx.iter().next().ok_or("No answer found".into())
+        answer_rx
+            .iter()
+            .next()
+            .ok_or_else(|| "No answer found".into())
     }
 }
 
 fn parse_input(input: &str) -> Result<Vec<Instruction>, Box<dyn Error>> {
     Ok(input
         .trimmed_lines()
-        .map(|line| line.parse())
+        .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?)
 }

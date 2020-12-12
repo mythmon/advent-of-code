@@ -9,7 +9,7 @@ use std::{
     error::Error,
     fmt::Display,
     iter::Iterator,
-    lazy::Lazy,
+    lazy::SyncLazy,
     ops::RangeBounds,
     str::FromStr,
 };
@@ -277,14 +277,12 @@ impl<T: FromStr> PassportField<T> {
     where
         F: Fn(&T) -> bool,
     {
-        *self = if let Some(s) = value {
-            match s.parse() {
+        *self = value
+            .map(|s| match s.parse() {
                 Ok(parsed) if is_valid(&parsed) => Self::Valid(parsed),
                 _ => Self::Invalid(s.to_string()),
-            }
-        } else {
-            Self::Missing
-        }
+            })
+            .unwrap_or(Self::Missing);
     }
 }
 
@@ -305,9 +303,7 @@ impl FromStr for Height {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (num, unit) = s.split_at(s.len() - 2);
-        let num = num
-            .parse()
-            .map_err(|err| PassportError::NumberSyntax(err))?;
+        let num = num.parse().map_err(PassportError::NumberSyntax)?;
         Ok(match unit {
             "cm" => Self::Centimeters(num),
             "in" => Self::Inches(num),
@@ -347,7 +343,7 @@ impl FromStr for EyeColor {
 #[derive(Clone, Debug, PartialEq)]
 pub struct Color(String);
 
-const COLOR_RE: Lazy<Regex> = Lazy::new(|| Regex::new("^#[0-9a-f]{6}$").unwrap());
+static COLOR_RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new("^#[0-9a-f]{6}$").unwrap());
 
 impl FromStr for Color {
     type Err = PassportError;

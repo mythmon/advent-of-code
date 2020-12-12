@@ -43,7 +43,7 @@ impl PuzzleRunner for Part1 {
         let mut with_extra = Vec::with_capacity(input.len() + 2);
         with_extra.push(0);
         with_extra.extend(input.into_iter());
-        with_extra.sort();
+        with_extra.sort_unstable();
         with_extra.push(with_extra[with_extra.len() - 1] + 3);
 
         let mut diffs = HashMap::new();
@@ -89,7 +89,7 @@ impl PuzzleRunner for Part2 {
             return Ok(0);
         }
 
-        converters.sort();
+        converters.sort_unstable();
         let source = 0;
         let target = converters[converters.len() - 1] + 3;
 
@@ -129,7 +129,7 @@ impl PuzzleRunner for Part2 {
 fn parse_input(input: &str) -> Result<Vec<i32>, Box<dyn Error>> {
     input
         .trimmed_lines()
-        .map(|line| line.parse())
+        .map(str::parse)
         .collect::<Result<Vec<_>, _>>()
         .map_err(|err: ParseIntError| err.into())
 }

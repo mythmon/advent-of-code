@@ -18,7 +18,7 @@ impl PuzzleRunner for Part2 {
     fn cases(&self) -> Result<Vec<Box<dyn PuzzleCase>>, Box<dyn std::error::Error>> {
         // spell-checker: disable
         Ok(GenericPuzzleCase::<Self, _, _>::build_set()
-            .add_try_transform(|s| s.lines().map(|l| l.parse()).collect())
+            .add_try_transform(|s| s.lines().map(str::parse).collect())
             .transformed_case(
                 "Example",
                 indoc!(

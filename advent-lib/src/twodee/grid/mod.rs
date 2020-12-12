@@ -55,20 +55,20 @@ where
         Ok(())
     }
 
-    fn iter_coords(&self) -> GridCoordinateIterator<I> {
-        GridCoordinateIterator::new(self.bounds())
+    fn iter_coords(&self) -> CoordinateIterator<I> {
+        CoordinateIterator::new(self.bounds())
     }
 
-    fn iter_values(&self) -> GridValueIterator<'_, Self, I, C>
+    fn iter_values(&self) -> ValueIterator<'_, Self, I, C>
     where
         Self: Sized,
     {
-        GridValueIterator::new(self)
+        ValueIterator::new(self)
     }
 }
 
 #[derive(Clone, Debug)]
-pub struct GridCoordinateIterator<I>
+pub struct CoordinateIterator<I>
 where
     I: PointAxe,
 {
@@ -76,7 +76,7 @@ where
     bounds: Bounds<I>,
 }
 
-impl<I> GridCoordinateIterator<I>
+impl<I> CoordinateIterator<I>
 where
     I: PointAxe,
 {
@@ -88,7 +88,7 @@ where
     }
 }
 
-impl<I> Iterator for GridCoordinateIterator<I>
+impl<I> Iterator for CoordinateIterator<I>
 where
     I: PointAxe,
     I: AddAssign,
@@ -112,18 +112,18 @@ where
     }
 }
 
-pub struct GridValueIterator<'a, G, I, C>
+pub struct ValueIterator<'a, G, I, C>
 where
     G: Grid<C, I>,
     C: Display,
     I: Debug + Display + PointAxe + Step + Into<isize>,
 {
-    coord_iter: GridCoordinateIterator<I>,
+    coord_iter: CoordinateIterator<I>,
     grid: &'a G,
     phantom: PhantomData<C>,
 }
 
-impl<'a, G, I, C> GridValueIterator<'a, G, I, C>
+impl<'a, G, I, C> ValueIterator<'a, G, I, C>
 where
     G: Grid<C, I>,
     C: Display,
@@ -138,7 +138,7 @@ where
     }
 }
 
-impl<'a, G, I, C> Iterator for GridValueIterator<'a, G, I, C>
+impl<'a, G, I, C> Iterator for ValueIterator<'a, G, I, C>
 where
     G: Grid<C, I>,
     C: Display + 'a,

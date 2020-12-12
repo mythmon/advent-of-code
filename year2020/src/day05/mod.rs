@@ -69,5 +69,8 @@ impl PuzzleRunner for Part2 {
 }
 
 fn parse_input(input: &str) -> Vec<String> {
-    input.trimmed_lines().map(|line| line.to_string()).collect()
+    input
+        .trimmed_lines()
+        .map(std::string::ToString::to_string)
+        .collect()
 }
