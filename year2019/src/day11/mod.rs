@@ -2,7 +2,7 @@ use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
     grid_letters::{Recognizer, ALPHABET_2019_D11},
-    twodee::{Dir, Point, Turn},
+    twodee::{Dir4, Point, Turn},
 };
 use std::{
     cmp,
@@ -34,7 +34,7 @@ impl PuzzleRunner for Part1 {
 
     fn run_puzzle(input: Self::Input) -> Self::Output {
         let mut pos = Point::zero();
-        let mut dir = Dir::Up;
+        let mut dir = Dir4::Up;
         let mut cells: HashMap<Point<isize>, isize> = HashMap::new();
         let mut visited_positions = HashSet::new();
         let mut computer = IntcodeComputer::build(input)
@@ -84,7 +84,7 @@ impl PuzzleRunner for Part2 {
         }
 
         let mut pos = Point::zero();
-        let mut dir = Dir::Up;
+        let mut dir = Dir4::Up;
         let mut cells: HashMap<Point<_>, isize> = HashMap::new();
         let mut computer = IntcodeComputer::build(input)
             .with_input(vec![*cells.get(&pos).unwrap_or(&1)])

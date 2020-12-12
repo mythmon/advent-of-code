@@ -18,9 +18,9 @@ where
 
 impl<'a, G, C, I> PatchedGrid<'a, G, C, I>
 where
-    I: PointAxe + Hash + fmt::Display + Step + Into<isize>,
     G: Grid<C, I> + Clone + fmt::Debug,
-    C: fmt::Display,
+    I: PointAxe + Hash + fmt::Display + Step + Into<isize>,
+    C: fmt::Display + Clone,
 {
     pub fn new(grid: &'a G) -> Self {
         Self {
@@ -30,7 +30,7 @@ where
     }
 
     pub fn with_patch(mut self, p: Point<I>, v: C) -> Self {
-        self.patches.insert(p, v);
+        self.set(p, v);
         self
     }
 }
@@ -45,10 +45,12 @@ where
         self.grid.bounds()
     }
 
-    fn get(&self, p: Point<I>) -> Option<C> {
-        self.patches
-            .get(&p)
-            .map_or_else(|| self.grid.get(p), |patch| Some(patch.clone()))
+    fn get(&self, p: Point<I>) -> Option<&C> {
+        self.patches.get(&p).or_else(|| self.grid.get(p))
+    }
+
+    fn set(&mut self, p: Point<I>, v: C) {
+        self.patches.insert(p, v);
     }
 }
 
@@ -59,6 +61,6 @@ where
     C: fmt::Display + Clone,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        Grid::display(self, f)
+        self.display(f)
     }
 }

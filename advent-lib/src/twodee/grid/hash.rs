@@ -31,8 +31,12 @@ where
     }
 
     #[must_use]
-    fn get(&self, p: Point<I>) -> Option<C> {
-        self.cells.get(&p).copied()
+    fn get(&self, p: Point<I>) -> Option<&C> {
+        self.cells.get(&p)
+    }
+
+    fn set(&mut self, p: Point<I>, v: C) {
+        self.cells.insert(p, v);
     }
 }
 
@@ -41,10 +45,6 @@ where
     I: PointAxe + Hash + fmt::Display + Step + Into<isize> + cmp::Ord,
     C: Copy + fmt::Debug + fmt::Display,
 {
-    pub fn set(&mut self, p: Point<I>, v: C) {
-        self.cells.insert(p, v);
-    }
-
     pub fn entry(&mut self, p: Point<I>) -> Entry<Point<I>, C> {
         self.cells.entry(p)
     }

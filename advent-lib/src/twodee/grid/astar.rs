@@ -66,7 +66,7 @@ where
             for &neighbor in &current.neighbors4() {
                 // print!("        Scoring neighbor at {:?}", &neighbor);
                 let neighbor_cell: C = match self.get(neighbor) {
-                    Some(c) => c,
+                    Some(c) => *c,
                     None => continue,
                 };
                 if !walkable.contains(&neighbor_cell) {

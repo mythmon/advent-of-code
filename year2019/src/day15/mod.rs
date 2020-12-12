@@ -1,7 +1,7 @@
 use crate::intcode::{IntcodeComputer, PauseReason};
 use advent_lib::{
     cases::{GenericPuzzleCase, Puzzle, PuzzleCase, PuzzleRunner},
-    twodee::{Dir, Grid, HashGrid, Point},
+    twodee::{Dir4, Grid, HashGrid, Point},
 };
 use itertools::Itertools;
 use std::{
@@ -170,7 +170,7 @@ fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
             continue;
         }
 
-        let directions = if let Some(dir) = position.direction_to(goal) {
+        let directions = if let Some(dir) = position.direction4_to(goal) {
             vec![dir]
         } else {
             // assume the target is an empty floor for path finding purposes
@@ -192,7 +192,7 @@ fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
                     .iter()
                     .tuple_windows()
                     .map(|(&from, &to)| {
-                        from.direction_to(to).unwrap_or_else(|| {
+                        from.direction4_to(to).unwrap_or_else(|| {
                             panic!(
                                 "Invalid astar path, {:?} -> {:?} is not a 4-direction",
                                 from, to
@@ -207,10 +207,10 @@ fn explore_grid(program: Vec<isize>) -> Result<HashGrid<Area>, String> {
 
         for dir in directions {
             robot.add_input(match dir {
-                Dir::Up => 1,
-                Dir::Down => 2,
-                Dir::Left => 3,
-                Dir::Right => 4,
+                Dir4::Up => 1,
+                Dir4::Down => 2,
+                Dir4::Left => 3,
+                Dir4::Right => 4,
             });
             match robot.run_until_io() {
                 PauseReason::Output(0) => {

@@ -1,13 +1,14 @@
 use num_traits::{sign::Signed, Num};
-use std::{cmp, fmt, iter, ops};
+use std::{cmp, fmt, iter, ops, ops::MulAssign};
 
 mod grid;
 
 pub use self::grid::Grid;
 pub use self::grid::HashGrid;
+pub use self::grid::VecGrid;
 
-pub trait PointAxe: fmt::Debug + Clone + Copy + Eq + Num {}
-impl<T> PointAxe for T where T: fmt::Debug + Clone + Copy + Eq + Num {}
+pub trait PointAxe: fmt::Debug + Clone + Copy + Eq + Num + PartialOrd {}
+impl<T> PointAxe for T where T: fmt::Debug + Clone + Copy + Eq + Num + PartialOrd {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Point<T: PointAxe> {
@@ -24,15 +25,32 @@ impl<T: PointAxe> Point<T> {
         self.x + self.y
     }
 
-    pub fn direction_to(&self, rhs: Point<T>) -> Option<Dir> {
+    pub fn direction4_to(&self, rhs: Point<T>) -> Option<Dir4> {
         let zero = T::zero();
         let one = T::one();
         let negative_one = zero - one;
         match rhs - *self {
-            Self { x, y } if x == zero && y == negative_one => Some(Dir::Up),
-            Self { x, y } if x == zero && y == one => Some(Dir::Down),
-            Self { x, y } if x == negative_one && y == zero => Some(Dir::Left),
-            Self { x, y } if x == one && y == zero => Some(Dir::Right),
+            Self { x, y } if x == zero && y == negative_one => Some(Dir4::Up),
+            Self { x, y } if x == zero && y == one => Some(Dir4::Down),
+            Self { x, y } if x == negative_one && y == zero => Some(Dir4::Left),
+            Self { x, y } if x == one && y == zero => Some(Dir4::Right),
+            _ => None,
+        }
+    }
+
+    pub fn direction8_to(&self, rhs: Point<T>) -> Option<Dir8> {
+        let zero = T::zero();
+        let one = T::one();
+        let negative_one = zero - one;
+        match rhs - *self {
+            Self { x, y } if x == zero && y == negative_one => Some(Dir8::Up),
+            Self { x, y } if x == one && y == negative_one => Some(Dir8::UpRight),
+            Self { x, y } if x == one && y == zero => Some(Dir8::Right),
+            Self { x, y } if x == one && y == one => Some(Dir8::DownRight),
+            Self { x, y } if x == zero && y == one => Some(Dir8::Down),
+            Self { x, y } if x == negative_one && y == one => Some(Dir8::DownLeft),
+            Self { x, y } if x == negative_one && y == zero => Some(Dir8::Left),
+            Self { x, y } if x == negative_one && y == negative_one => Some(Dir8::UpLeft),
             _ => None,
         }
     }
@@ -58,6 +76,43 @@ impl<T: PointAxe> Point<T> {
         ]
     }
 
+    pub fn neighbors8(&self) -> [Self; 8] {
+        [
+            Self {
+                x: self.x,
+                y: self.y + T::one(),
+            },
+            Self {
+                x: self.x + T::one(),
+                y: self.y + T::one(),
+            },
+            Self {
+                x: self.x + T::one(),
+                y: self.y,
+            },
+            Self {
+                x: self.x + T::one(),
+                y: self.y - T::one(),
+            },
+            Self {
+                x: self.x,
+                y: self.y - T::one(),
+            },
+            Self {
+                x: self.x - T::one(),
+                y: self.y - T::one(),
+            },
+            Self {
+                x: self.x - T::one(),
+                y: self.y,
+            },
+            Self {
+                x: self.x - T::one(),
+                y: self.y + T::one(),
+            },
+        ]
+    }
+
     #[must_use]
     pub fn zero() -> Self {
         Self::new(T::zero(), T::zero())
@@ -71,11 +126,50 @@ impl<T: PointAxe + Signed> Point<T> {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Dir {
+pub enum Dir4 {
     Up,
     Down,
     Left,
     Right,
+}
+
+impl Dir4 {
+    pub fn spin_iter() -> SpinIterator<Self> {
+        SpinIterator(Self::Up)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Dir8 {
+    Up,
+    UpRight,
+    Right,
+    DownRight,
+    Down,
+    DownLeft,
+    Left,
+    UpLeft,
+}
+
+impl Dir8 {
+    pub fn spin_iter() -> SpinIterator<Self> {
+        SpinIterator(Self::Up)
+    }
+}
+
+pub struct SpinIterator<D>(D);
+
+impl<D> Iterator for SpinIterator<D>
+where
+    D: MulAssign<Turn> + Clone,
+{
+    type Item = D;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let next = self.0.clone();
+        self.0 *= Turn::Cw;
+        Some(next)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -115,12 +209,12 @@ where
     }
 }
 
-impl<T: PointAxe> ops::Add<Dir> for Point<T> {
+impl<T: PointAxe> ops::Add<Dir4> for Point<T> {
     type Output = Self;
 
-    fn add(self, rhs: Dir) -> Self::Output {
+    fn add(self, rhs: Dir4) -> Self::Output {
         #![allow(clippy::suspicious_arithmetic_impl)]
-        use Dir::{Down, Left, Right, Up};
+        use Dir4::{Down, Left, Right, Up};
         match rhs {
             Up => Self {
                 x: self.x,
@@ -142,21 +236,72 @@ impl<T: PointAxe> ops::Add<Dir> for Point<T> {
     }
 }
 
-impl<T> ops::AddAssign<Dir> for Point<T>
+impl<T: PointAxe> ops::Add<Dir8> for Point<T> {
+    type Output = Self;
+
+    fn add(self, rhs: Dir8) -> Self::Output {
+        match rhs {
+            Dir8::Up => Self {
+                x: self.x,
+                y: self.y - T::one(),
+            },
+            Dir8::UpRight => Self {
+                x: self.x + T::one(),
+                y: self.y - T::one(),
+            },
+            Dir8::Right => Self {
+                x: self.x + T::one(),
+                y: self.y,
+            },
+            Dir8::DownRight => Self {
+                x: self.x + T::one(),
+                y: self.y + T::one(),
+            },
+            Dir8::Down => Self {
+                x: self.x,
+                y: self.y + T::one(),
+            },
+            Dir8::DownLeft => Self {
+                x: self.x - T::one(),
+                y: self.y + T::one(),
+            },
+            Dir8::Left => Self {
+                x: self.x - T::one(),
+                y: self.y,
+            },
+            Dir8::UpLeft => Self {
+                x: self.x - T::one(),
+                y: self.y - T::one(),
+            },
+        }
+    }
+}
+
+impl<T> ops::AddAssign<Dir4> for Point<T>
 where
     T: PointAxe,
-    Point<T>: ops::Add<Dir, Output = Point<T>>,
+    Point<T>: ops::Add<Dir4, Output = Point<T>>,
 {
-    fn add_assign(&mut self, rhs: Dir) {
+    fn add_assign(&mut self, rhs: Dir4) {
         *self = *self + rhs;
     }
 }
 
-impl ops::Mul<Turn> for Dir {
+impl<T> ops::AddAssign<Dir8> for Point<T>
+where
+    T: PointAxe,
+    Point<T>: ops::Add<Dir8, Output = Point<T>>,
+{
+    fn add_assign(&mut self, rhs: Dir8) {
+        *self = *self + rhs;
+    }
+}
+
+impl ops::Mul<Turn> for Dir4 {
     type Output = Self;
 
     fn mul(self, rhs: Turn) -> Self::Output {
-        use Dir::{Down, Left, Right, Up};
+        use Dir4::{Down, Left, Right, Up};
         use Turn::{Ccw, Cw, Flip};
         #[allow(clippy::match_same_arms)]
         match (self, rhs) {
@@ -176,7 +321,47 @@ impl ops::Mul<Turn> for Dir {
     }
 }
 
-impl ops::MulAssign<Turn> for Dir {
+impl ops::MulAssign<Turn> for Dir4 {
+    fn mul_assign(&mut self, rhs: Turn) {
+        *self = *self * rhs;
+    }
+}
+
+impl ops::Mul<Turn> for Dir8 {
+    type Output = Self;
+
+    fn mul(self, rhs: Turn) -> Self::Output {
+        #[allow(clippy::match_same_arms)]
+        match (self, rhs) {
+            (Dir8::Up, Turn::Cw) => Dir8::UpRight,
+            (Dir8::Up, Turn::Ccw) => Dir8::UpLeft,
+            (Dir8::Up, Turn::Flip) => Dir8::Down,
+            (Dir8::UpRight, Turn::Cw) => Dir8::Right,
+            (Dir8::UpRight, Turn::Ccw) => Dir8::Up,
+            (Dir8::UpRight, Turn::Flip) => Dir8::DownLeft,
+            (Dir8::Right, Turn::Cw) => Dir8::DownRight,
+            (Dir8::Right, Turn::Ccw) => Dir8::UpRight,
+            (Dir8::Right, Turn::Flip) => Dir8::Left,
+            (Dir8::DownRight, Turn::Cw) => Dir8::Down,
+            (Dir8::DownRight, Turn::Ccw) => Dir8::Right,
+            (Dir8::DownRight, Turn::Flip) => Dir8::UpLeft,
+            (Dir8::Down, Turn::Cw) => Dir8::DownLeft,
+            (Dir8::Down, Turn::Ccw) => Dir8::DownRight,
+            (Dir8::Down, Turn::Flip) => Dir8::Up,
+            (Dir8::DownLeft, Turn::Cw) => Dir8::Left,
+            (Dir8::DownLeft, Turn::Ccw) => Dir8::Down,
+            (Dir8::DownLeft, Turn::Flip) => Dir8::UpRight,
+            (Dir8::Left, Turn::Cw) => Dir8::UpLeft,
+            (Dir8::Left, Turn::Ccw) => Dir8::DownLeft,
+            (Dir8::Left, Turn::Flip) => Dir8::Right,
+            (Dir8::UpLeft, Turn::Cw) => Dir8::Up,
+            (Dir8::UpLeft, Turn::Ccw) => Dir8::Left,
+            (Dir8::UpLeft, Turn::Flip) => Dir8::DownRight,
+        }
+    }
+}
+
+impl ops::MulAssign<Turn> for Dir8 {
     fn mul_assign(&mut self, rhs: Turn) {
         *self = *self * rhs;
     }
@@ -242,6 +427,7 @@ where
     }
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Bounds<I> {
     top: I,
     left: I,
@@ -253,12 +439,35 @@ impl<I> Bounds<I>
 where
     I: PointAxe,
 {
-    fn top_left(&self) -> Point<I> {
+    pub fn new(top: I, left: I, right: I, bottom: I) -> Self {
+        assert!(top <= bottom);
+        assert!(left <= right);
+        Self {
+            top,
+            left,
+            right,
+            bottom,
+        }
+    }
+
+    pub fn top_left(&self) -> Point<I> {
         Point::new(self.left, self.top)
     }
 
-    fn bottom_right(&self) -> Point<I> {
+    pub fn bottom_right(&self) -> Point<I> {
         Point::new(self.right, self.bottom)
+    }
+
+    pub fn width(&self) -> I {
+        self.right - self.left
+    }
+
+    pub fn height(&self) -> I {
+        self.bottom - self.top
+    }
+
+    pub fn contains(&self, p: Point<I>) -> bool {
+        (self.left..self.right).contains(&p.x) && (self.top..self.bottom).contains(&p.y)
     }
 }
 
