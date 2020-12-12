@@ -11,6 +11,14 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
     ]
 }
 
+fn parse_input(input: &str) -> Result<Vec<u32>, Box<dyn Error>> {
+    input
+        .trimmed_lines()
+        .map(str::parse)
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|err| err.into())
+}
+
 #[derive(Debug)]
 pub struct Part1;
 
@@ -58,11 +66,3 @@ impl PuzzleRunner for Part1 {
 //         Err("Not implemented".into())
 //     }
 // }
-
-fn parse_input(input: &str) -> Result<Vec<u32>, Box<dyn Error>> {
-    input
-        .trimmed_lines()
-        .map(|line| line.parse())
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(|err| err.into())
-}

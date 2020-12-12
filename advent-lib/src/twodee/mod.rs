@@ -1,5 +1,5 @@
 use num_traits::{sign::Signed, Num};
-use std::{cmp, fmt, iter, ops, ops::MulAssign};
+use std::{cmp, fmt, iter, ops};
 
 mod grid;
 
@@ -21,8 +21,11 @@ impl<T: PointAxe> Point<T> {
         Self { x, y }
     }
 
-    pub fn manhattan_magnitude(&self) -> T {
-        self.x + self.y
+    pub fn manhattan_magnitude(&self) -> T
+    where
+        T: Signed,
+    {
+        self.x.abs() + self.y.abs()
     }
 
     pub fn direction4_to(&self, rhs: Point<T>) -> Option<Dir4> {
@@ -161,7 +164,7 @@ pub struct SpinIterator<D>(D);
 
 impl<D> Iterator for SpinIterator<D>
 where
-    D: MulAssign<Turn> + Clone,
+    D: ops::MulAssign<Turn> + Clone,
 {
     type Item = D;
 
@@ -209,11 +212,21 @@ where
     }
 }
 
+impl<T, R> ops::AddAssign<Point<R>> for Point<T>
+where
+    T: PointAxe + ops::AddAssign<R>,
+    R: PointAxe,
+{
+    fn add_assign(&mut self, rhs: Point<R>) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
 impl<T: PointAxe> ops::Add<Dir4> for Point<T> {
     type Output = Self;
 
     fn add(self, rhs: Dir4) -> Self::Output {
-        #![allow(clippy::suspicious_arithmetic_impl)]
         use Dir4::{Down, Left, Right, Up};
         match rhs {
             Up => Self {
@@ -297,13 +310,51 @@ where
     }
 }
 
+impl<T> ops::Mul<Turn> for Point<T>
+where
+    T: PointAxe + ops::Neg<Output = T>,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: Turn) -> Self::Output {
+        match rhs {
+            Turn::Cw => Point::new(-self.y, self.x),
+            Turn::Ccw => Point::new(self.y, -self.x),
+            Turn::Flip => Point::new(-self.x, -self.y),
+        }
+    }
+}
+
+impl<T> ops::MulAssign<Turn> for Point<T>
+where
+    T: PointAxe + ops::Neg<Output = T>,
+{
+    fn mul_assign(&mut self, rhs: Turn) {
+        match rhs {
+            Turn::Cw => {
+                let tmp = self.x;
+                self.x = -self.y;
+                self.y = tmp;
+            }
+            Turn::Ccw => {
+                let tmp = self.x;
+                self.x = self.y;
+                self.y = -tmp;
+            }
+            Turn::Flip => {
+                self.x = -self.x;
+                self.y = -self.y;
+            }
+        }
+    }
+}
+
 impl ops::Mul<Turn> for Dir4 {
     type Output = Self;
 
     fn mul(self, rhs: Turn) -> Self::Output {
         use Dir4::{Down, Left, Right, Up};
         use Turn::{Ccw, Cw, Flip};
-        #[allow(clippy::match_same_arms)]
         match (self, rhs) {
             (Up, Cw) => Right,
             (Up, Ccw) => Left,
@@ -397,6 +448,32 @@ where
         Self::Output {
             x: self.x / rhs,
             y: self.y / rhs,
+        }
+    }
+}
+
+impl<R> ops::Mul<R> for Dir4
+where
+    R: PointAxe + ops::Neg<Output = R>,
+{
+    type Output = Point<R>;
+
+    fn mul(self, rhs: R) -> Self::Output {
+        let as_point: Point<R> = self.into();
+        as_point * rhs
+    }
+}
+
+impl<R> Into<Point<R>> for Dir4
+where
+    R: PointAxe + ops::Neg<Output = R>,
+{
+    fn into(self) -> Point<R> {
+        match self {
+            Self::Up => Point::new(R::zero(), -(R::one())),
+            Self::Down => Point::new(R::zero(), R::one()),
+            Self::Left => Point::new(-(R::one()), R::zero()),
+            Self::Right => Point::new(R::one(), R::zero()),
         }
     }
 }
