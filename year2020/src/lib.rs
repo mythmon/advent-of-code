@@ -10,7 +10,13 @@
 
     clippy::use_self, // doesn't work well with generics
 )]
-#![feature(str_split_once, once_cell, step_trait, map_into_keys_values)]
+#![feature(
+    str_split_once,
+    once_cell,
+    step_trait,
+    map_into_keys_values,
+    min_const_generics
+)]
 
 use advent_lib::cases::Puzzle;
 
@@ -30,6 +36,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 
 #[must_use]
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -50,6 +57,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         day14::get_puzzles(),
         day15::get_puzzles(),
         day16::get_puzzles(),
+        day17::get_puzzles(),
     ]
     .into_iter()
     .flatten()
