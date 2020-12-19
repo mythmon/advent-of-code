@@ -1,0 +1,41 @@
+use std::str::FromStr;
+use lalrpop_util::ParseError;
+
+grammar;
+
+pub P1Expr: u64 = {
+  <l:P1Expr> "+" <r:P1Term> => l + r,
+  <l:P1Expr> "*" <r:P1Term> => l * r,
+  P1Term,
+};
+
+P1Term: u64 = {
+  Num,
+  "(" <P1Expr> ")",
+};
+
+pub P2Expr: u64 = {
+  <l:P2Expr> "*" <r:P2TermA> => l * r,
+  P2TermA,
+}
+
+P2TermA: u64 = {
+  <l:P2TermA> "+" <r:P2TermB> => l + r,
+  P2TermB,
+}
+
+P2TermB: u64 = {
+  Num,
+  "(" <P2Expr> ")",
+}
+
+Num: u64 = {
+  r"[0-9+]" =>? u64::from_str(<>)
+    .map_err(|err| ParseError::User {
+      error: format!("Could not parse number: {}", err),
+    })
+};
+
+extern {
+  type Error = String;
+}

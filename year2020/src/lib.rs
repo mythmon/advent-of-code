@@ -37,6 +37,7 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
+mod day18;
 
 #[must_use]
 pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
@@ -58,6 +59,7 @@ pub fn get_puzzles() -> Vec<Box<dyn Puzzle>> {
         day15::get_puzzles(),
         day16::get_puzzles(),
         day17::get_puzzles(),
+        day18::get_puzzles(),
     ]
     .into_iter()
     .flatten()

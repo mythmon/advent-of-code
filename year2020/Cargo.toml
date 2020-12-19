@@ -3,6 +3,7 @@ name = "year2020"
 version = "0.1.0"
 authors = ["Mike Cooper <mythmon@gmail.com>"]
 edition = "2018"
+build = "build.rs"
 
 # See more keys andtheir definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -12,3 +13,7 @@ indoc = "1.0.3"
 regex = "1.4.2"
 rayon = "1.5.0"
 itertools = "0.9.0"
+lalrpop-util = "0.19.1"
+
+[build-dependencies]
+lalrpop = { version = "0.19.1", features = ["lexer"] }
